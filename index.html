@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdamAndroid.ai — Helping Humans Ride Robots</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange:  #FF9900;
+      --red:     #FF6600;
+      --bg:      #0f0f0f;
+      --surface: #181818;
+      --border:  #212121;
+      --text:    #FFFFFF;
+      --muted:   #AAAAAA;
+      --dim:     #484848;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── UTILITIES ── */
+    .grad {
+      background: linear-gradient(135deg, var(--orange) 0%, var(--red) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+
+    .rule { height: 1px; background: var(--border); }
+
+    /* ── LOGO SVG (inline, shared gradient via hidden def) ── */
+    .aa-mark { display: block; overflow: visible; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 56px;
+      background: rgba(15,15,15,0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 13px;
+      text-decoration: none;
+    }
+
+    .nav-name {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.3px;
+      color: var(--text);
+    }
+    .nav-name .ai { color: var(--orange); }
+
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: linear-gradient(135deg, var(--orange), var(--red));
+      color: #000;
+      font-size: 13px; font-weight: 700;
+      padding: 10px 22px; border-radius: 6px;
+      text-decoration: none; letter-spacing: 0.2px;
+      transition: opacity 0.2s;
+    }
+    .nav-btn:hover { opacity: 0.88; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 140px 32px 100px;
+      position: relative; overflow: hidden;
+    }
+
+    /* dot matrix */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,153,0,0.09) 1px, transparent 1px);
+      background-size: 42px 42px;
+      pointer-events: none;
+    }
+
+    /* radial glow behind logo */
+    .hero-glow {
+      position: absolute; top: 46%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 640px; height: 640px;
+      background: radial-gradient(circle, rgba(255,153,0,0.11) 0%, transparent 62%);
+      pointer-events: none;
+    }
+
+    .hero-mark {
+      margin-bottom: 44px;
+      position: relative; z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: clamp(46px, 6.8vw, 88px);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -3px;
+      max-width: 840px;
+      margin-bottom: 26px;
+      position: relative; z-index: 1;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 1.8vw, 19px);
+      color: var(--muted);
+      max-width: 510px;
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 50px;
+      position: relative; z-index: 1;
+    }
+
+    .hero-ctas {
+      display: flex; gap: 14px; align-items: center;
+      flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 1;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 15px; font-weight: 600;
+      padding: 14px 32px; border-radius: 8px;
+      text-decoration: none; transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-fill {
+      background: linear-gradient(135deg, var(--orange), var(--red));
+      color: #000;
+    }
+
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* ── SCROLL HINT ── */
+    .scroll-hint {
+      position: absolute; bottom: 36px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0.35; z-index: 1;
+    }
+    .scroll-hint span { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+    .scroll-arrow {
+      width: 1px; height: 36px;
+      background: linear-gradient(to bottom, var(--orange), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    /* ── PROBLEM ── */
+    .problem {
+      max-width: 980px; margin: 0 auto;
+      padding: 110px 48px;
+    }
+
+    .problem h2 {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 800;
+      letter-spacing: -2.5px;
+      line-height: 1.0;
+      margin-bottom: 30px;
+    }
+
+    .problem p {
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.85;
+      max-width: 580px;
+      font-weight: 300;
+    }
+
+    /* accent bar */
+    .accent-bar {
+      width: 48px; height: 3px;
+      background: linear-gradient(90deg, var(--orange), var(--red));
+      border-radius: 2px;
+      margin-bottom: 32px;
+    }
+
+    /* ── SERVICES ── */
+    .services {
+      max-width: 1080px; margin: 0 auto;
+      padding: 110px 48px;
+    }
+
+    .services > h2 {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 800;
+      letter-spacing: -2.5px;
+      line-height: 1.0;
+      margin-bottom: 64px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 38px 30px;
+      transition: border-color 0.25s, transform 0.25s;
+      position: relative; overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--orange), var(--red));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .card:hover { border-color: rgba(255,153,0,0.28); transform: translateY(-4px); }
+    .card:hover::before { opacity: 1; }
+
+    .card-num {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 22px;
+    }
+
+    .card h3 {
+      font-size: 22px; font-weight: 700;
+      letter-spacing: -0.6px;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* ── WHO WE HELP ── */
+    .who {
+      max-width: 980px; margin: 0 auto;
+      padding: 110px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .who h2 {
+      font-size: clamp(38px, 4.2vw, 56px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    .who p {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.85;
+      font-weight: 300;
+      margin-bottom: 14px;
+    }
+
+    .who-mark {
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Large faint logo watermark */
+    .who-mark svg {
+      opacity: 0.6;
+      filter: drop-shadow(0 0 60px rgba(255,153,0,0.2));
+    }
+
+    /* ── CTA ── */
+    .cta {
+      text-align: center;
+      padding: 130px 40px;
+      position: relative; overflow: hidden;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,153,0,0.07) 1px, transparent 1px);
+      background-size: 42px 42px;
+      pointer-events: none;
+    }
+
+    .cta-glow {
+      position: absolute; bottom: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 500px;
+      background: radial-gradient(ellipse, rgba(255,102,0,0.16) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .cta h2 {
+      font-size: clamp(44px, 6.5vw, 84px);
+      font-weight: 800;
+      letter-spacing: -3px;
+      line-height: 1.0;
+      margin-bottom: 20px;
+      position: relative; z-index: 1;
+    }
+
+    .cta > p {
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 50px;
+      position: relative; z-index: 1;
+    }
+
+    .cta-row {
+      display: flex; gap: 12px;
+      justify-content: center; flex-wrap: wrap;
+      position: relative; z-index: 1;
+    }
+
+    .email-in {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 22px;
+      font-size: 15px;
+      color: var(--text);
+      font-family: inherit;
+      width: 290px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .email-in::placeholder { color: var(--dim); }
+    .email-in:focus { border-color: rgba(255,153,0,0.45); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+
+    .footer-name {
+      font-size: 13px; font-weight: 600;
+      color: var(--dim);
+    }
+    .footer-name .ai { color: var(--orange); }
+
+    footer small { font-size: 12px; color: var(--dim); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 800px) {
+      nav { padding: 16px 24px; }
+      .problem, .services { padding: 72px 24px; }
+      .cards { grid-template-columns: 1fr; }
+      .who { grid-template-columns: 1fr; padding: 72px 24px; gap: 40px; }
+      .who-mark { display: none; }
+      .cta { padding: 80px 24px; }
+      footer { flex-direction: column; gap: 14px; padding: 28px 24px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Shared SVG gradient definition -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+  <defs>
+    <linearGradient id="og" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF9900"/>
+      <stop offset="100%" stop-color="#FF6600"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-brand">
+    <svg class="aa-mark" width="30" height="37" viewBox="0 0 180 220" fill="none">
+      <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="62" cy="95"  r="32" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="114" cy="89" r="43" stroke="url(#og)" stroke-width="13"/>
+    </svg>
+    <span class="nav-name">AdamAndroid<span class="ai">.ai</span></span>
+  </a>
+  <a href="#contact" class="nav-btn">Start the Tour →</a>
+</nav>
+
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-mark">
+    <svg class="aa-mark" width="96" height="118" viewBox="0 0 180 220" fill="none">
+      <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="62" cy="95"  r="32" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="114" cy="89" r="43" stroke="url(#og)" stroke-width="13"/>
+    </svg>
+  </div>
+
+  <h1>Helping Humans<br><span class="grad">Ride Robots.</span></h1>
+
+  <p class="hero-sub">
+    AI is moving fast and it's loud. We're your guide through the wild west — helping you find, understand, and deploy the right tools for your company, your story, and your mission.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="#contact" class="btn btn-fill">Start the Tour →</a>
+    <a href="#what-we-do" class="btn btn-ghost">How it works</a>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ── PROBLEM ── -->
+<section class="problem">
+  <span class="label">The Landscape</span>
+  <div class="accent-bar"></div>
+  <h2>AI is loud.<br>We help you<br><span class="grad">cut through it.</span></h2>
+  <p>
+    New tools launch every week. Everyone's selling transformation. It's hard to know what's real, what's hype, and what's actually built for a company like yours. You don't need another tutorial — you need a guide who knows the terrain.
+  </p>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ── SERVICES ── -->
+<section class="services" id="what-we-do">
+  <span class="label">What We Do</span>
+  <h2>We translate.<br>We navigate.<br><span class="grad">We deliver.</span></h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <p class="card-num">01 — Translate</p>
+      <h3>Plain language.<br>Real answers.</h3>
+      <p>
+        We decode the AI landscape into terms that make sense for your business. No jargon, no hype — just clear-eyed guidance on what matters and why.
+      </p>
+    </div>
+
+    <div class="card">
+      <p class="card-num">02 — Navigate</p>
+      <h3>The right tools<br>for your mission.</h3>
+      <p>
+        We map the AI ecosystem to your specific goals. You get a personalized path forward — not an overwhelming list of options you have to sort through alone.
+      </p>
+    </div>
+
+    <div class="card">
+      <p class="card-num">03 — Deploy</p>
+      <h3>Real tools.<br>Real results.</h3>
+      <p>
+        We help you implement what works and skip what doesn't — supporting your company's story, every step of the way.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ── WHO WE HELP ── -->
+<section class="who">
+  <div>
+    <span class="label">Who We Help</span>
+    <div class="accent-bar"></div>
+    <h2>Human-first.<br><span class="grad">AI-powered.</span></h2>
+    <p>
+      We're not a software company. We're not a consultancy selling seats. We're the crossing guard at the intersection of your business and the AI revolution.
+    </p>
+    <p>
+      Whether you're a founder, a creative team, or a company building something real — we know the tools, we know the terrain, and we know how to match both to where you're going.
+    </p>
+  </div>
+  <div class="who-mark">
+    <svg class="aa-mark" width="220" height="270" viewBox="0 0 180 220" fill="none">
+      <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og)" stroke-width="11"/>
+      <circle cx="62" cy="95"  r="32" stroke="url(#og)" stroke-width="11"/>
+      <circle cx="114" cy="89" r="43" stroke="url(#og)" stroke-width="11"/>
+    </svg>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+
+<!-- ── CTA ── -->
+<section class="cta" id="contact">
+  <div class="cta-glow"></div>
+  <span class="label">Ready to Explore?</span>
+  <h2>Let's start<br>the <span class="grad">tour.</span></h2>
+  <p>Tell us about your company, your tools, and where you're headed.</p>
+  <div class="cta-row">
+    <input type="email" class="email-in" placeholder="your@company.com">
+    <a href="mailto:Adam@adamandroid.ai" class="btn btn-fill">Get in Touch →</a>
+  </div>
+</section>
+
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a href="#" class="footer-brand">
+    <svg class="aa-mark" width="22" height="27" viewBox="0 0 180 220" fill="none">
+      <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="62" cy="95"  r="32" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="114" cy="89" r="43" stroke="url(#og)" stroke-width="13"/>
+    </svg>
+    <span class="footer-name">AdamAndroid<span class="ai">.ai</span></span>
+  </a>
+  <small>© 2026 AdamAndroid.ai — Helping Humans Ride Robots</small>
+</footer>
+
+</body>
+</html>

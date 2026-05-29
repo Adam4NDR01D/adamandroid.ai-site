@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdamAndroid.ai — Logo Exploration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange: #FF9900;
+      --red:    #FF6600;
+      --bg:     #0f0f0f;
+      --surface:#161616;
+      --border: #222;
+      --text:   #fff;
+      --muted:  #888;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 80px 60px;
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header { margin-bottom: 80px; }
+
+    .page-tag {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 14px;
+      display: block;
+    }
+
+    .page-header h1 {
+      font-size: 42px; font-weight: 800;
+      letter-spacing: -2px; line-height: 1.05;
+      margin-bottom: 16px;
+    }
+
+    .page-header p {
+      font-size: 16px; color: var(--muted);
+      max-width: 560px; line-height: 1.75;
+      font-weight: 300;
+    }
+
+    /* ─── SECTION ─── */
+    .section { margin-bottom: 100px; }
+
+    .section-title {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 32px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── LOGO CARDS ─── */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .logo-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 32px 36px;
+      display: flex; flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-card.featured {
+      border-color: rgba(255,153,0,0.3);
+      background: #181410;
+      box-shadow: 0 0 60px rgba(255,153,0,0.05);
+    }
+
+    .logo-display {
+      margin-bottom: 32px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 160px;
+    }
+
+    .logo-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .logo-name {
+      font-size: 16px; font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px; text-align: center;
+    }
+
+    .logo-desc {
+      font-size: 12px; color: var(--muted);
+      line-height: 1.65; text-align: center;
+      max-width: 200px;
+    }
+
+    /* ─── EVOLUTION STRIP ─── */
+    .evolution {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr 40px 1fr;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+
+    .evo-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 24px 28px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .evo-arrow {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--border);
+      font-size: 20px;
+    }
+
+    .evo-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 24px;
+    }
+
+    /* ─── SPLIT LOGO DETAIL ─── */
+    .split-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .split-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    /* ─── APPLICATION PREVIEW ─── */
+    .app-preview {
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 40px;
+    }
+
+    .app-brand {
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .app-name {
+      font-size: 18px; font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .app-name .ai { color: var(--orange); }
+
+    .app-tagline {
+      font-size: 13px; color: var(--muted);
+      font-weight: 300;
+    }
+
+    .app-btn {
+      background: linear-gradient(135deg, var(--orange), var(--red));
+      color: #000; font-size: 13px; font-weight: 700;
+      padding: 11px 24px; border-radius: 6px;
+      text-decoration: none; white-space: nowrap;
+    }
+
+    /* ─── NOTES ─── */
+    .notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-top: 20px;
+    }
+
+    .notes h4 {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 14px;
+    }
+
+    .notes ul {
+      list-style: none; display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .notes li {
+      font-size: 14px; color: var(--muted);
+      line-height: 1.6; padding-left: 16px;
+      position: relative;
+    }
+
+    .notes li::before {
+      content: '→';
+      position: absolute; left: 0;
+      color: var(--orange); font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      body { padding: 40px 24px; }
+      .logo-grid { grid-template-columns: 1fr; }
+      .evolution { grid-template-columns: 1fr; }
+      .evo-arrow { display: none; }
+      .split-detail { grid-template-columns: 1fr; }
+      .app-preview { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─ PAGE HEADER ─ -->
+<header class="page-header">
+  <span class="page-tag">AdamAndroid.ai — Logo Exploration</span>
+  <h1>The Dual-Nature Mark</h1>
+  <p>
+    One head. Two halves. The left side — Adam — carries the rough, human energy of a hand-drawn sketch. The right side — Android — is polished, precise, computer-generated geometry. Together they tell the story: human creativity, refined by AI.
+  </p>
+</header>
+
+
+<!-- ─ SECTION 1: Evolution stages ─ -->
+<section class="section">
+  <p class="section-title">01 — The Three Stages of the Mark</p>
+
+  <div class="evolution">
+
+    <!-- Stage 1: Sketch -->
+    <div class="evo-step">
+      <p class="evo-label">Stage 1 · Sketch</p>
+      <div class="logo-display">
+        <svg width="100" height="122" viewBox="0 0 180 220" fill="none">
+          <defs>
+            <filter id="f-sketch" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.055 0.075" numOctaves="4" seed="9" result="noise"/>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+          </defs>
+          <g filter="url(#f-sketch)">
+            <!-- Primary sketch stroke -->
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#CC7700" stroke-width="13" opacity="0.85"/>
+            <circle cx="62" cy="95" r="32" stroke="#CC7700" stroke-width="13" opacity="0.85"/>
+            <circle cx="114" cy="89" r="43" stroke="#CC7700" stroke-width="13" opacity="0.85"/>
+            <!-- Secondary light underdrawing -->
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#FF9900" stroke-width="4" opacity="0.2"/>
+            <circle cx="62" cy="95" r="32" stroke="#FF9900" stroke-width="4" opacity="0.2"/>
+            <circle cx="114" cy="89" r="43" stroke="#FF9900" stroke-width="4" opacity="0.2"/>
+            <!-- Sketch overshoot marks -->
+            <line x1="8" y1="100" x2="5" y2="94" stroke="#CC7700" stroke-width="7" stroke-linecap="round" opacity="0.4"/>
+            <line x1="172" y1="115" x2="176" y2="118" stroke="#CC7700" stroke-width="5" stroke-linecap="round" opacity="0.3"/>
+          </g>
+        </svg>
+      </div>
+      <p class="logo-label">Hand-Drawn</p>
+      <p class="logo-desc">Organic, imperfect. The human starting point. Pencil on paper energy.</p>
+    </div>
+
+    <div class="evo-arrow">→</div>
+
+    <!-- Stage 2: Draftsman -->
+    <div class="evo-step">
+      <p class="evo-label">Stage 2 · Draftsman</p>
+      <div class="logo-display">
+        <svg width="100" height="122" viewBox="0 0 180 220" fill="none">
+          <!-- Construction guide lines (CAD scaffolding) -->
+          <g opacity="0.18" stroke="#FF9900" stroke-width="0.8">
+            <!-- Center cross -->
+            <line x1="0" y1="110" x2="180" y2="110" stroke-dasharray="4 4"/>
+            <line x1="90" y1="0" x2="90" y2="220" stroke-dasharray="4 4"/>
+            <!-- Circle centers crosshairs -->
+            <line x1="52" y1="95" x2="72" y2="95"/>
+            <line x1="62" y1="85" x2="62" y2="105"/>
+            <line x1="104" y1="89" x2="124" y2="89"/>
+            <line x1="114" y1="79" x2="114" y2="99"/>
+            <!-- Radius tick marks -->
+            <line x1="114" y1="89" x2="157" y2="89" stroke-dasharray="3 3"/>
+            <line x1="62" y1="95" x2="94" y2="95" stroke-dasharray="3 3"/>
+            <!-- Boundary box -->
+            <rect x="10" y="5" width="160" height="210" stroke-dasharray="2 6" opacity="0.5"/>
+          </g>
+          <!-- Clean uniform strokes, no gradient — mechanical orange -->
+          <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#FF9900" stroke-width="13"/>
+          <circle cx="62" cy="95" r="32" stroke="#FF9900" stroke-width="13"/>
+          <circle cx="114" cy="89" r="43" stroke="#FF9900" stroke-width="13"/>
+          <!-- Tiny corner registration marks -->
+          <g stroke="#FF9900" stroke-width="1" opacity="0.4">
+            <path d="M 14 18 L 14 10 L 22 10"/>
+            <path d="M 166 18 L 166 10 L 158 10"/>
+            <path d="M 14 202 L 14 210 L 22 210"/>
+            <path d="M 166 202 L 166 210 L 158 210"/>
+          </g>
+        </svg>
+      </div>
+      <p class="logo-label">Draftsman / CAD</p>
+      <p class="logo-desc">Precise geometry. Construction lines visible. Technical origin story.</p>
+    </div>
+
+    <div class="evo-arrow">→</div>
+
+    <!-- Stage 3: Polished -->
+    <div class="evo-step">
+      <p class="evo-label">Stage 3 · AI-Polished</p>
+      <div class="logo-display">
+        <svg width="100" height="122" viewBox="0 0 180 220" fill="none">
+          <defs>
+            <linearGradient id="og3" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og3)" stroke-width="13"/>
+          <circle cx="62" cy="95" r="32" stroke="url(#og3)" stroke-width="13"/>
+          <circle cx="114" cy="89" r="43" stroke="url(#og3)" stroke-width="13"/>
+        </svg>
+      </div>
+      <p class="logo-label">CG / AI-Polished</p>
+      <p class="logo-desc">Clean gradient, perfect geometry. Machine precision. Where we are now.</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ─ SECTION 2: The Split Logo ─ -->
+<section class="section">
+  <p class="section-title">02 — The Split Mark: Adam Left / Android Right</p>
+
+  <div class="logo-grid">
+
+    <!-- Variant A: Hard split, high contrast -->
+    <div class="logo-card">
+      <div class="logo-display">
+        <svg width="120" height="147" viewBox="0 0 180 220" fill="none">
+          <defs>
+            <linearGradient id="og-a" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+            <filter id="f-sk-a" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.05 0.07" numOctaves="4" seed="5"/>
+              <feDisplacementMap in="SourceGraphic" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <!-- Gradient masks for smooth split -->
+            <linearGradient id="fade-l-a" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="48%" stop-color="white"/>
+              <stop offset="72%" stop-color="black"/>
+            </linearGradient>
+            <linearGradient id="fade-r-a" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="28%" stop-color="black"/>
+              <stop offset="52%" stop-color="white"/>
+            </linearGradient>
+            <mask id="m-l-a">
+              <rect width="180" height="220" fill="url(#fade-l-a)"/>
+            </mask>
+            <mask id="m-r-a">
+              <rect width="180" height="220" fill="url(#fade-r-a)"/>
+            </mask>
+          </defs>
+
+          <!-- Sketch layer (left/Adam) -->
+          <g filter="url(#f-sk-a)" mask="url(#m-l-a)">
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#CC7700" stroke-width="13" opacity="0.9"/>
+            <circle cx="62" cy="95" r="32" stroke="#CC7700" stroke-width="13" opacity="0.9"/>
+            <circle cx="114" cy="89" r="43" stroke="#CC7700" stroke-width="13" opacity="0.9"/>
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#FF9900" stroke-width="5" opacity="0.15"/>
+            <circle cx="62" cy="95" r="32" stroke="#FF9900" stroke-width="5" opacity="0.15"/>
+          </g>
+
+          <!-- Polished layer (right/Android) -->
+          <g mask="url(#m-r-a)">
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og-a)" stroke-width="13"/>
+            <circle cx="62" cy="95" r="32" stroke="url(#og-a)" stroke-width="13"/>
+            <circle cx="114" cy="89" r="43" stroke="url(#og-a)" stroke-width="13"/>
+          </g>
+
+          <!-- Center seam: subtle dashed line -->
+          <line x1="90" y1="8" x2="90" y2="212" stroke="rgba(255,153,0,0.18)" stroke-width="1" stroke-dasharray="3 7"/>
+        </svg>
+      </div>
+      <p class="logo-label">Variant A</p>
+      <p class="logo-name">Gradient Split</p>
+      <p class="logo-desc">Smooth blend from sketched to polished. Seam is suggested, not hard-cut.</p>
+    </div>
+
+    <!-- Variant B: More dramatic sketch, CAD annotations on right -->
+    <div class="logo-card featured">
+      <div class="logo-display">
+        <svg width="140" height="171" viewBox="0 0 180 220" fill="none">
+          <defs>
+            <linearGradient id="og-b" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+            <filter id="f-sk-b" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.042 0.068" numOctaves="5" seed="14"/>
+              <feDisplacementMap in="SourceGraphic" scale="4.5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <linearGradient id="fade-l-b" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="44%" stop-color="white"/>
+              <stop offset="74%" stop-color="black"/>
+            </linearGradient>
+            <linearGradient id="fade-r-b" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="26%" stop-color="black"/>
+              <stop offset="56%" stop-color="white"/>
+            </linearGradient>
+            <mask id="m-l-b">
+              <rect width="180" height="220" fill="url(#fade-l-b)"/>
+            </mask>
+            <mask id="m-r-b">
+              <rect width="180" height="220" fill="url(#fade-r-b)"/>
+            </mask>
+          </defs>
+
+          <!-- Heavy sketch layer (left/Adam) -->
+          <g filter="url(#f-sk-b)" mask="url(#m-l-b)">
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#CC7700" stroke-width="14" opacity="0.88"/>
+            <circle cx="62" cy="95" r="32" stroke="#CC7700" stroke-width="14" opacity="0.88"/>
+            <circle cx="114" cy="89" r="43" stroke="#CC7700" stroke-width="14" opacity="0.88"/>
+            <!-- Underdrawing marks -->
+            <ellipse cx="90" cy="110" rx="78" ry="103" stroke="#FF9900" stroke-width="3" opacity="0.22"/>
+            <ellipse cx="90" cy="110" rx="82" ry="107" stroke="#FF6600" stroke-width="2" opacity="0.12"/>
+          </g>
+
+          <!-- Clean polished layer (right/Android) -->
+          <g mask="url(#m-r-b)">
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og-b)" stroke-width="13"/>
+            <circle cx="62" cy="95" r="32" stroke="url(#og-b)" stroke-width="13"/>
+            <circle cx="114" cy="89" r="43" stroke="url(#og-b)" stroke-width="13"/>
+            <!-- CAD annotations (right side only, very subtle) -->
+            <g opacity="0.2" stroke="#FF9900" stroke-width="0.8">
+              <line x1="114" y1="89" x2="158" y2="89" stroke-dasharray="2 3"/>
+              <line x1="109" y1="84" x2="119" y2="84" stroke-width="0.6"/>
+              <line x1="109" y1="94" x2="119" y2="94" stroke-width="0.6"/>
+            </g>
+          </g>
+
+          <!-- Center seam with small circle node at midpoint -->
+          <line x1="90" y1="8" x2="90" y2="212" stroke="rgba(255,153,0,0.22)" stroke-width="0.8" stroke-dasharray="4 8"/>
+          <circle cx="90" cy="110" r="2.5" fill="rgba(255,153,0,0.45)"/>
+        </svg>
+      </div>
+      <p class="logo-label">Variant B · Recommended</p>
+      <p class="logo-name">Deep Split + CAD Hints</p>
+      <p class="logo-desc">More dramatic sketch contrast. Subtle CAD annotation on the Android side. Center node marks the bridge point.</p>
+    </div>
+
+    <!-- Variant C: Stroke weight split (sketch = thin/multiple, polish = thick/single) -->
+    <div class="logo-card">
+      <div class="logo-display">
+        <svg width="120" height="147" viewBox="0 0 180 220" fill="none">
+          <defs>
+            <linearGradient id="og-c" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+            <filter id="f-sk-c" x="-25%" y="-25%" width="150%" height="150%">
+              <feTurbulence type="turbulence" baseFrequency="0.06 0.09" numOctaves="3" seed="21"/>
+              <feDisplacementMap in="SourceGraphic" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <linearGradient id="fade-l-c" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="46%" stop-color="white"/>
+              <stop offset="68%" stop-color="black"/>
+            </linearGradient>
+            <linearGradient id="fade-r-c" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="32%" stop-color="black"/>
+              <stop offset="54%" stop-color="white"/>
+            </linearGradient>
+            <mask id="m-l-c">
+              <rect width="180" height="220" fill="url(#fade-l-c)"/>
+            </mask>
+            <mask id="m-r-c">
+              <rect width="180" height="220" fill="url(#fade-r-c)"/>
+            </mask>
+          </defs>
+
+          <!-- Multi-stroke sketch layer (left) -->
+          <g filter="url(#f-sk-c)" mask="url(#m-l-c)">
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#BB6600" stroke-width="16" opacity="0.7"/>
+            <circle cx="62" cy="95" r="32" stroke="#BB6600" stroke-width="16" opacity="0.7"/>
+            <circle cx="114" cy="89" r="43" stroke="#BB6600" stroke-width="16" opacity="0.7"/>
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#FF9900" stroke-width="6" opacity="0.35"/>
+            <circle cx="62" cy="95" r="32" stroke="#FF9900" stroke-width="6" opacity="0.35"/>
+            <circle cx="114" cy="89" r="43" stroke="#FF9900" stroke-width="6" opacity="0.35"/>
+          </g>
+
+          <!-- Polished layer (right) -->
+          <g mask="url(#m-r-c)">
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og-c)" stroke-width="13"/>
+            <circle cx="62" cy="95" r="32" stroke="url(#og-c)" stroke-width="13"/>
+            <circle cx="114" cy="89" r="43" stroke="url(#og-c)" stroke-width="13"/>
+          </g>
+        </svg>
+      </div>
+      <p class="logo-label">Variant C</p>
+      <p class="logo-name">Heavy Sketch Texture</p>
+      <p class="logo-desc">Bolder, rougher left side. More energy in the sketch — almost gestural charcoal.</p>
+    </div>
+
+  </div>
+
+
+  <!-- ─ Application preview ─ -->
+  <div style="margin-top: 20px;">
+    <p class="section-title" style="font-size:10px; margin-bottom:20px;">Application Preview — Nav Bar</p>
+    <div class="app-preview">
+      <div class="app-brand">
+        <!-- Variant B in miniature -->
+        <svg width="34" height="41" viewBox="0 0 180 220" fill="none">
+          <defs>
+            <linearGradient id="og-nav" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+            <filter id="f-sk-nav" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.042 0.068" numOctaves="5" seed="14"/>
+              <feDisplacementMap in="SourceGraphic" scale="4.5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <linearGradient id="fl-nav" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="44%" stop-color="white"/>
+              <stop offset="74%" stop-color="black"/>
+            </linearGradient>
+            <linearGradient id="fr-nav" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="26%" stop-color="black"/>
+              <stop offset="56%" stop-color="white"/>
+            </linearGradient>
+            <mask id="ml-nav"><rect width="180" height="220" fill="url(#fl-nav)"/></mask>
+            <mask id="mr-nav"><rect width="180" height="220" fill="url(#fr-nav)"/></mask>
+          </defs>
+          <g filter="url(#f-sk-nav)" mask="url(#ml-nav)">
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="#CC7700" stroke-width="14" opacity="0.88"/>
+            <circle cx="62" cy="95" r="32" stroke="#CC7700" stroke-width="14" opacity="0.88"/>
+            <circle cx="114" cy="89" r="43" stroke="#CC7700" stroke-width="14" opacity="0.88"/>
+          </g>
+          <g mask="url(#mr-nav)">
+            <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og-nav)" stroke-width="13"/>
+            <circle cx="62" cy="95" r="32" stroke="url(#og-nav)" stroke-width="13"/>
+            <circle cx="114" cy="89" r="43" stroke="url(#og-nav)" stroke-width="13"/>
+          </g>
+          <line x1="90" y1="8" x2="90" y2="212" stroke="rgba(255,153,0,0.25)" stroke-width="0.8" stroke-dasharray="4 8"/>
+          <circle cx="90" cy="110" r="2.5" fill="rgba(255,153,0,0.5)"/>
+        </svg>
+        <div>
+          <div class="app-name">AdamAndroid<span class="ai">.ai</span></div>
+          <div class="app-tagline">Your guide through the AI wild west</div>
+        </div>
+      </div>
+      <a href="#" class="app-btn">Start the Tour →</a>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h4>Design Notes</h4>
+    <ul>
+      <li>The left "Adam" side uses SVG fractal noise displacement to create organic, hand-drawn wobble — same geometry underneath, just roughened.</li>
+      <li>The right "Android" side is the same geometry rendered clean with the orange gradient — zero filter, perfect precision.</li>
+      <li>The gradient mask creates a blend zone in the middle — no hard cut — so the two natures feel like one unified mark.</li>
+      <li>The small center node (dot on the seam) represents the bridge point — the place where human and machine meet.</li>
+      <li>At small sizes (nav bar), the sketch vs. polish reads as texture contrast rather than an obvious split — it still holds together as a logo.</li>
+      <li>On "too strange": the asymmetry (different-sized eyes) is actually your strongest distinctive asset. At small sizes it reads as a face. At large sizes it rewards close attention. Keep it.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ─ SECTION 3: Naming ─ -->
+<section class="section">
+  <p class="section-title">03 — On "Adam&amp;droid" vs. "AdamAndroid"</p>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+
+    <div class="logo-card" style="align-items:flex-start; padding:32px;">
+      <p class="logo-label" style="text-align:left; margin-bottom:14px;">Option A · Keep It Clean</p>
+      <div style="font-size:28px; font-weight:800; letter-spacing:-1px; margin-bottom:14px;">
+        AdamAndroid<span style="background:linear-gradient(135deg,#FF9900,#FF6600);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">.ai</span>
+      </div>
+      <p style="font-size:13px; color:var(--muted); line-height:1.65;">
+        The domain does the work. <code style="color:var(--orange); font-size:12px;">.ai</code> is already the signal. No ambiguity, full brand continuity with adamandroid.com.
+      </p>
+    </div>
+
+    <div class="logo-card" style="align-items:flex-start; padding:32px; border-color:rgba(255,153,0,0.2);">
+      <p class="logo-label" style="text-align:left; margin-bottom:14px;">Option B · Lean Into the Split</p>
+      <div style="font-size:28px; font-weight:800; letter-spacing:-1px; margin-bottom:14px;">
+        Adam<span style="background:linear-gradient(135deg,#FF9900,#FF6600);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">&amp;</span>AI
+      </div>
+      <p style="font-size:13px; color:var(--muted); line-height:1.65;">
+        Drops the "droid" entirely. "Adam & AI" — human + machine, built right into the name. Clean, contemporary, no trademark concerns. Works perfectly with the split-face logo concept.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>
