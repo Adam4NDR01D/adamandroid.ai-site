@@ -3,646 +3,646 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sidebar · Network Diagram</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&family=Comfortaa:wght@400;600&display=swap" rel="stylesheet">
+<title>SidebarOS · Operations Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:       #0d0d0d;
-  --surface:  #141414;
-  --surface2: #1a1a1a;
-  --border:   #222;
+  --bg:       #080808;
+  --surface:  #0f0f0f;
+  --surface2: #151515;
+  --border:   #1e1e1e;
   --border2:  #2a2a2a;
-  --text:     #e0e0e0;
-  --dim:      #666;
-  --dim2:     #444;
-  --orange:   #FF9900;
-  --green:    #00e87a;
-  --yellow:   #FFD60A;
-  --red:      #FF4D4D;
-  --blue:     #4A8FFF;
-  --purple:   #b57bee;
+  --text:     #e2e2e2;
+  --dim:      #555;
+  --dim-mid:  #777;
+  --red:      #ff3b3b; --red-bg:     #ff3b3b10; --red-border: #ff3b3b35;
+  --yellow:   #ffd60a; --yellow-bg:  #ffd60a0d; --yellow-border: #ffd60a35;
+  --green:    #00e87a; --green-bg:   #00e87a0d; --green-border: #00e87a35;
+  --orange:   #FF9900; --orange-bg:  #FF99000d; --orange-border: #FF990035;
+  --blue:     #4a8fff; --blue-bg:    #4a8fff0d; --blue-border: #4a8fff35;
+  --purple:   #9b6dff; --purple-bg:  #9b6dff0d; --purple-border: #9b6dff35;
+  --mono:    'Space Mono', monospace;
+  --sans:    'Syne', sans-serif;
+  --display: 'Comfortaa', cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;
+     -webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
+
+/* ── Topbar (identical to workflow.html) ── */
+.topbar{position:sticky;top:0;z-index:100;background:#080808ee;
+        backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.topbar-inner{padding:12px 32px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:var(--mono);font-size:12px;color:var(--orange);letter-spacing:.15em;text-transform:uppercase;}
+.topbar-meta{display:flex;align-items:center;gap:14px;}
+.tag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+     padding:3px 8px;border:1px solid var(--border2);color:var(--dim-mid);}
+.tag.red   {border-color:var(--red-border);   color:var(--red);   background:var(--red-bg);}
+.tag.yellow{border-color:var(--yellow-border);color:var(--yellow);background:var(--yellow-bg);}
+.legend{display:flex;gap:18px;align-items:center;}
+.leg{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9px;
+     color:var(--dim);letter-spacing:.1em;text-transform:uppercase;}
+.leg-line{width:26px;height:0;}
+.leg-line.flow  {border-top:1.5px solid rgba(80,80,80,.85);}
+.leg-line.manual{border-top:1.5px dashed rgba(255,214,10,.85);}
+.leg-line.auto  {border-top:1.5px solid rgba(74,143,255,.85);}
+.leg-line.fail  {border-top:1.5px dashed rgba(255,59,59,.85);}
+
+/* ── Layout ── */
+.main{flex:1;display:flex;overflow:hidden;}
+.canvas-wrap{flex:1;overflow:auto;padding:32px;position:relative;}
+#net-canvas{position:relative;width:1060px;height:740px;margin:0 auto;}
+
+/* ── Arrow SVG — sits BEHIND nodes but CAN receive pointer events on hit paths ── */
+#arrow-svg{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  overflow:visible;
+  z-index:1; /* nodes are z-index:2, so SVG is below them */
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Nodes (exact same classes + colors as workflow.html) ── */
+.node{
+  position:absolute;width:200px;
+  border:1px solid var(--border2);background:var(--surface);
+  border-radius:8px;overflow:hidden;z-index:2;
+  transition:box-shadow .18s,border-color .18s;
+}
+.node.wide{width:218px;}
+.node-header{display:flex;align-items:flex-start;gap:14px;padding:14px 16px 12px;
+             border-bottom:1px solid var(--border);}
+.node-icon{flex-shrink:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
+.node-icon svg{width:100%;height:100%;}
+.node-type {font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+            color:var(--dim);margin-bottom:3px;}
+.node-title{font-family:var(--display);font-size:15px;font-weight:700;line-height:1.2;}
+.node-role {font-family:var(--mono);font-size:8px;color:var(--dim-mid);margin-top:3px;}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Comfortaa', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+/* Node type color accents — exact copy of workflow.html */
+.node.human         {border-color:var(--orange-border);}
+.node.human         .node-header{background:var(--orange-bg);}
+.node.human         .node-title {color:var(--orange);}
+.node.human         .node-icon svg{fill:var(--orange);opacity:.75;}
+.node.system-four51 {border-color:var(--yellow-border);}
+.node.system-four51 .node-header{background:var(--yellow-bg);}
+.node.system-four51 .node-title {color:var(--yellow);}
+.node.system-four51 .node-icon svg{fill:var(--yellow);opacity:.75;}
+.node.system-quantum{border-color:var(--red-border);}
+.node.system-quantum .node-header{background:var(--red-bg);}
+.node.system-quantum .node-title {color:var(--red);}
+.node.system-quantum .node-icon svg{fill:var(--red);opacity:.75;}
+.node.system-ship   {border-color:var(--blue-border);}
+.node.system-ship   .node-header{background:var(--blue-bg);}
+.node.system-ship   .node-title {color:var(--blue);}
+.node.system-ship   .node-icon svg{fill:var(--blue);opacity:.75;}
+.node.system-courier{border-color:var(--purple-border);}
+.node.system-courier .node-header{background:var(--purple-bg);}
+.node.system-courier .node-title {color:var(--purple);}
+.node.system-courier .node-icon svg{fill:var(--purple);opacity:.75;}
+.node.end           {border-color:var(--green-border);}
+.node.end           .node-header{background:var(--green-bg);}
+.node.end           .node-title {color:var(--green);}
+.node.end           .node-icon svg{fill:var(--green);opacity:.75;}
+.node.external      {border-color:var(--border2);}
+.node.external      .node-header{background:#111;}
+.node.external      .node-title {color:var(--dim-mid);}
+.node.external      .node-icon svg{fill:var(--dim);opacity:.6;}
 
-/* ── Header ── */
-.page-header {
-  padding: 24px 32px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: baseline;
-  gap: 20px;
-}
-.page-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--orange);
-  letter-spacing: .04em;
-}
-.page-sub {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--dim);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-.legend {
-  margin-left: auto;
-  display: flex;
-  gap: 18px;
-  align-items: center;
-}
-.leg-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--dim);
-  letter-spacing: .08em;
-}
-.leg-line {
-  width: 28px;
-  height: 2px;
-}
-.leg-line.flow  { background: rgba(85,85,85,0.8); }
-.leg-line.manual{ background: rgba(255,214,10,0.7); border-top: 2px dashed rgba(255,214,10,0.7); height: 0; }
-.leg-line.auto  { background: rgba(74,143,255,0.7); }
-.leg-dot { width: 8px; height: 8px; border-radius: 50%; }
-.leg-dot.pain { background: var(--yellow); }
-.leg-dot.fail { background: var(--red); }
-.leg-dot.sol  { background: var(--orange); }
+/* Active highlight on hover */
+.node.net-hl.human         {box-shadow:0 0 0 2px var(--orange), 0 0 20px rgba(255,153,0,.2);}
+.node.net-hl.system-four51 {box-shadow:0 0 0 2px var(--yellow),0 0 20px rgba(255,214,10,.18);}
+.node.net-hl.system-quantum{box-shadow:0 0 0 2px var(--red),   0 0 20px rgba(255,59,59,.18);}
+.node.net-hl.system-ship   {box-shadow:0 0 0 2px var(--blue),  0 0 20px rgba(74,143,255,.18);}
+.node.net-hl.system-courier{box-shadow:0 0 0 2px var(--purple),0 0 20px rgba(155,109,255,.18);}
+.node.net-hl.end           {box-shadow:0 0 0 2px var(--green), 0 0 20px rgba(0,232,122,.18);}
+.node.net-hl.external      {box-shadow:0 0 0 2px var(--dim-mid),0 0 20px rgba(120,120,120,.12);}
 
-/* ── Main layout ── */
-.main {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
+/* ── Arrow tooltip ── */
+#arrow-tip{
+  position:fixed;z-index:200;
+  background:#080808;border:1px solid var(--border2);border-radius:5px;
+  padding:5px 10px;pointer-events:none;display:none;
+  font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+  white-space:nowrap;max-width:280px;
 }
-
-/* ── Canvas ── */
-.canvas-wrap {
-  flex: 1;
-  position: relative;
-  overflow: auto;
-  padding: 24px;
-}
-#network-canvas {
-  position: relative;
-  width: 900px;
-  height: 640px;
-  margin: 0 auto;
-}
-#arrow-svg {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  overflow: visible;
-}
-
-/* ── Nodes ── */
-.node {
-  position: absolute;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 10px 14px;
-  z-index: 2;
-  min-width: 110px;
-  text-align: center;
-  cursor: default;
-  transition: border-color .2s, box-shadow .2s;
-}
-.node:hover {
-  border-color: var(--dim2);
-  box-shadow: 0 0 0 1px var(--dim2);
-}
-.node.highlight {
-  border-color: var(--orange) !important;
-  box-shadow: 0 0 12px rgba(255,153,0,.2) !important;
-}
-.node-icon {
-  font-size: 22px;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.node-name {
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: .02em;
-  line-height: 1.2;
-}
-.node-type-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  color: var(--dim);
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-/* node color accents */
-.node.sidebar  { border-color: rgba(255,153,0,.35); }
-.node.sidebar .node-name { color: var(--orange); }
-.node.platform { border-color: rgba(74,143,255,.25); }
-.node.platform .node-name { color: var(--blue); }
-.node.external { border-color: var(--border2); }
-.node.human    { border-color: rgba(182,182,182,.2); }
-.node.end      { border-color: rgba(0,232,122,.25); }
-.node.end .node-name { color: var(--green); }
-.node.erp      { border-color: rgba(181,123,238,.3); }
-.node.erp .node-name { color: var(--purple); }
 
 /* ── Side panel ── */
-.side-panel {
-  width: 300px;
-  border-left: 1px solid var(--border);
-  overflow-y: auto;
-  padding: 20px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  flex-shrink: 0;
+.side-panel{
+  width:320px;flex-shrink:0;
+  border-left:1px solid var(--border);background:var(--surface);
+  overflow-y:auto;padding:18px 14px;display:flex;flex-direction:column;gap:9px;
 }
-.panel-title {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--dim);
-  margin-bottom: 4px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
+.panel-head{
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--dim);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:2px;
 }
+/* Cards use same color language as workflow.html pain/err/solution boxes */
+.net-card{
+  padding:12px 14px;border-radius:0 8px 8px 0;
+  border:1px solid;border-left-width:3px;border-left-style:solid;
+  font-family:var(--mono);
+  opacity:.28;transition:opacity .2s,box-shadow .2s;
+}
+.net-card.active{opacity:1;}
+.net-card.warn{
+  color:var(--yellow);background:var(--yellow-bg);
+  border-color:var(--yellow-border);border-left-color:var(--yellow);
+}
+.net-card.warn.active{box-shadow:0 0 12px rgba(255,214,10,.06);}
+.net-card.err{
+  color:var(--red);background:var(--red-bg);
+  border-color:var(--red-border);border-left-color:var(--red);
+}
+.net-card.err.active{box-shadow:0 0 12px rgba(255,59,59,.06);}
+.net-card.sol{
+  color:var(--blue);background:var(--blue-bg);
+  border-color:var(--blue-border);border-left-color:var(--blue);
+}
+.net-card.sol.active{box-shadow:0 0 12px rgba(74,143,255,.06);}
+.c-label{font-size:8px;letter-spacing:.18em;text-transform:uppercase;opacity:.65;margin-bottom:5px;}
+.c-title{font-family:var(--display);font-size:13px;font-weight:700;margin-bottom:5px;line-height:1.3;}
+.net-card.warn .c-title,.net-card.warn .c-label{color:var(--yellow);}
+.net-card.err  .c-title,.net-card.err  .c-label{color:var(--red);}
+.net-card.sol  .c-title,.net-card.sol  .c-label{color:var(--blue);}
+.c-desc{font-size:9px;color:#888;line-height:1.65;margin-bottom:9px;}
+.c-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.ctag{font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border:1px solid;}
+.ctag.orange{border-color:var(--orange-border);color:var(--orange);background:var(--orange-bg);}
+.ctag.blue  {border-color:var(--blue-border);  color:var(--blue);  background:var(--blue-bg);}
 
-/* Solution cards */
-.sol-card {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 12px 14px;
-  border-left: 3px solid var(--dim2);
-  transition: border-color .2s, opacity .2s, box-shadow .2s;
-  opacity: 0.45;
-}
-.sol-card.active {
-  opacity: 1;
-  box-shadow: 0 0 12px rgba(0,0,0,.4);
-}
-.sol-card.type-warn { border-left-color: var(--yellow); }
-.sol-card.type-err  { border-left-color: var(--red); }
-.sol-card.type-sol  { border-left-color: var(--orange); }
-.sol-card.type-auto { border-left-color: var(--blue); }
-
-.sol-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--dim);
-  margin-bottom: 5px;
-}
-.sol-label {
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
-  line-height: 1.3;
-}
-.sol-desc {
-  font-size: 11px;
-  color: #888;
-  line-height: 1.5;
-}
-.sol-badge {
-  display: inline-block;
-  margin-top: 6px;
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  letter-spacing: .1em;
-}
-.sol-badge.bot  { background: rgba(255,153,0,.12); color: var(--orange); border: 1px solid rgba(255,153,0,.25); }
-.sol-badge.warn { background: rgba(255,214,10,.10); color: var(--yellow); border: 1px solid rgba(255,214,10,.2); }
-.sol-badge.fail { background: rgba(255,77,77,.10);  color: var(--red);    border: 1px solid rgba(255,77,77,.2); }
-.sol-badge.api  { background: rgba(74,143,255,.10); color: var(--blue);   border: 1px solid rgba(74,143,255,.2); }
-
-/* ── Arrow label tooltip on hover ── */
-.arrow-label-tip {
-  position: absolute;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 5px;
-  padding: 3px 8px;
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--dim);
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 10;
-  display: none;
-}
-
-/* pain point pulse ring on arrow midpoint */
-@keyframes pulse-ring {
-  0%   { r: 5px; opacity: .8; }
-  100% { r: 12px; opacity: 0; }
-}
-.pulse-ring { animation: pulse-ring 1.6s ease-out infinite; }
+@keyframes pls{0%,100%{opacity:.85}50%{opacity:.2}}
+.ppulse{animation:pls 2s ease-in-out infinite;}
 </style>
 </head>
 <body>
 
-<div class="page-header">
-  <div>
-    <div class="page-title">Sidebar · Operations Network</div>
-    <div class="page-sub">Every entity once — arrows show data & handoff flow</div>
+<!-- Topbar -->
+<div class="topbar"><div class="topbar-inner">
+  <div class="logo">SidebarOS · Operations Network</div>
+  <div class="topbar-meta">
+    <div class="legend">
+      <div class="leg"><div class="leg-line flow"></div>Handoff</div>
+      <div class="leg"><div class="leg-line manual"></div>Manual ⚠</div>
+      <div class="leg"><div class="leg-line auto"></div>Automated</div>
+      <div class="leg"><div class="leg-line fail"></div>Fail Point</div>
+    </div>
+    <div class="tag yellow">⚠ 5 Pain Points</div>
+    <div class="tag red">🔴 1 Fail Point</div>
   </div>
-  <div class="legend">
-    <div class="leg-item"><div class="leg-line flow"></div> Handoff</div>
-    <div class="leg-item"><div class="leg-line manual"></div> Manual ⚠</div>
-    <div class="leg-item"><div class="leg-line auto"></div> Automated</div>
-    <div class="leg-item"><div class="leg-dot pain"></div> Pain Point</div>
-    <div class="leg-item"><div class="leg-dot fail"></div> Fail Point</div>
-    <div class="leg-item"><div class="leg-dot sol"></div> Solution</div>
-  </div>
-</div>
+</div></div>
+
+<!-- Floating arrow tooltip -->
+<div id="arrow-tip"></div>
 
 <div class="main">
-  <div class="canvas-wrap">
-    <div id="network-canvas">
 
-      <!-- SVG arrow overlay (populated by JS) -->
+  <!-- Canvas -->
+  <div class="canvas-wrap">
+    <div id="net-canvas">
+
       <svg id="arrow-svg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id="ah-dim"    markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(85,85,85,0.75)"/></marker>
-          <marker id="ah-manual" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,214,10,0.85)"/></marker>
-          <marker id="ah-auto"   markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(74,143,255,0.85)"/></marker>
-          <marker id="ah-fail"   markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,77,77,0.85)"/></marker>
-          <marker id="ah-orange" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,153,0,0.85)"/></marker>
+          <marker id="m-dim"    markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(70,70,70,.9)"/></marker>
+          <marker id="m-manual" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(255,214,10,.95)"/></marker>
+          <marker id="m-auto"   markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(74,143,255,.95)"/></marker>
+          <marker id="m-fail"   markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="rgba(255,59,59,.95)"/></marker>
         </defs>
       </svg>
 
-      <!-- ── NODES ── positioned via CSS left/top, overridden by JS layout -->
+      <!-- ═══════════════════════════════════
+           NODE POSITIONS
+           Left col  x=18  (supply chain)
+           Center    x=420 (Sidebar Team)
+           Right col x=840 (buyer / fulfillment)
+           ═══════════════════════════════════ -->
 
-      <!-- Row 1: top arc -->
-      <div class="node external" id="n-merchant" style="left:350px;top:20px">
-        <div class="node-icon">🏭</div>
-        <div class="node-name">Merchant</div>
-        <div class="node-type-label">Supplier</div>
+      <!-- LEFT COL — supply chain -->
+
+      <!-- Merchant -->
+      <div class="node external" id="n-merchant" style="left:18px;top:28px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <polygon points="12,3 1,10 23,10"/>
+            <rect x="3" y="10" width="18" height="12"/>
+            <rect x="9" y="14" width="6" height="8" fill="rgba(0,0,0,.4)"/>
+          </svg></div>
+          <div>
+            <div class="node-type">External · Supplier</div>
+            <div class="node-title">Merchant</div>
+            <div class="node-role">Ships raw goods to warehouse</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Row 2: left col -->
-      <div class="node human" id="n-buyer" style="left:20px;top:160px">
-        <div class="node-icon">🛍️</div>
-        <div class="node-name">Buyer</div>
-        <div class="node-type-label">Client Employee</div>
+      <!-- Quantum / Zoho -->
+      <div class="node system-quantum wide" id="n-quantum" style="left:18px;top:295px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <ellipse cx="12" cy="6" rx="9" ry="3.5"/>
+            <path d="M3,6 L3,18 Q3,21.5 12,21.5 Q21,21.5 21,18 L21,6"/>
+            <ellipse cx="12" cy="12" rx="9" ry="3.5" opacity=".4"/>
+          </svg></div>
+          <div>
+            <div class="node-type">System · ERP</div>
+            <div class="node-title">Quantum / Zoho</div>
+            <div class="node-role">Order routing · Aug 1 migration</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Row 2: center-left -->
-      <div class="node sidebar" id="n-sidebar" style="left:220px;top:200px">
-        <div class="node-icon">🟠</div>
-        <div class="node-name">Sidebar Team</div>
-        <div class="node-type-label">Ops + Account Mgmt</div>
+      <!-- Warehouse -->
+      <div class="node external wide" id="n-warehouse" style="left:18px;top:470px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <polygon points="12,2 22,7 22,19 12,22 2,19 2,7"/>
+            <polygon points="12,12 22,7 12,10 2,7" opacity=".4"/>
+          </svg></div>
+          <div>
+            <div class="node-type">Ops · Physical</div>
+            <div class="node-title">Sidebar Warehouse</div>
+            <div class="node-role">Inbound receiving + outbound pick</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Row 2: center-right -->
-      <div class="node platform" id="n-four51" style="left:560px;top:160px">
-        <div class="node-icon">🛒</div>
-        <div class="node-name">Four51</div>
-        <div class="node-type-label">Storefront</div>
+      <!-- Courier -->
+      <div class="node system-courier" id="n-courier" style="left:18px;top:620px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <rect x="1" y="8" width="14" height="11"/>
+            <path d="M15,10 L19,10 L22,14 L22,19 L15,19z"/>
+            <circle cx="5.5" cy="21" r="2"/>
+            <circle cx="18" cy="21" r="2"/>
+          </svg></div>
+          <div>
+            <div class="node-type">External · Carrier</div>
+            <div class="node-title">Courier</div>
+            <div class="node-role">UPS / FedEx last-mile delivery</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Row 3: left -->
-      <div class="node erp" id="n-quantum" style="left:80px;top:360px">
-        <div class="node-icon">🗄️</div>
-        <div class="node-name">Quantum / Zoho</div>
-        <div class="node-type-label">ERP · Aug 1 Migration</div>
+      <!-- CENTER — Sidebar Team -->
+      <div class="node human wide" id="n-sidebar" style="left:421px;top:290px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <circle cx="8" cy="8" r="3.5"/>
+            <circle cx="16" cy="7" r="3.5"/>
+            <path d="M0,20 Q0,13 8,13 Q12,13 14,16 Q15,13 16,13 Q23,13 23,20z"/>
+          </svg></div>
+          <div>
+            <div class="node-type">Human · Sidebar Ops</div>
+            <div class="node-title">Sidebar Team</div>
+            <div class="node-role">Ops, acct mgmt, order entry</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Row 3: center -->
-      <div class="node external" id="n-warehouse" style="left:340px;top:380px">
-        <div class="node-icon">📦</div>
-        <div class="node-name">Sidebar Warehouse</div>
-        <div class="node-type-label">Inbound + Outbound</div>
+      <!-- RIGHT COL — buyer / order / fulfillment -->
+
+      <!-- Buyer -->
+      <div class="node human" id="n-buyer" style="left:840px;top:28px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4.5"/>
+            <path d="M3,21 Q3,14 12,14 Q21,14 21,21z"/>
+          </svg></div>
+          <div>
+            <div class="node-type">Human · Client</div>
+            <div class="node-title">Buyer</div>
+            <div class="node-role">Places orders on Four51</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Row 3: right -->
-      <div class="node platform" id="n-shipstation" style="left:590px;top:360px">
-        <div class="node-icon">🚢</div>
-        <div class="node-name">ShipStation</div>
-        <div class="node-type-label">Fulfillment Platform</div>
+      <!-- Four51 -->
+      <div class="node system-four51" id="n-four51" style="left:840px;top:230px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <rect x="2" y="4" width="20" height="17" rx="2"/>
+            <rect x="2" y="10" width="20" height="2" fill="rgba(0,0,0,.35)"/>
+            <rect x="7" y="14" width="10" height="2" fill="rgba(0,0,0,.35)"/>
+          </svg></div>
+          <div>
+            <div class="node-type">Platform · Storefront</div>
+            <div class="node-title">Four51</div>
+            <div class="node-role">Buyer-facing order portal</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Row 4: bottom-center-left -->
-      <div class="node external" id="n-courier" style="left:200px;top:530px">
-        <div class="node-icon">🚚</div>
-        <div class="node-name">Courier</div>
-        <div class="node-type-label">UPS / FedEx</div>
+      <!-- ShipStation -->
+      <div class="node system-ship" id="n-shipstation" style="left:840px;top:455px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <path d="M2,20 L22,20 L21,17 L3,17z"/>
+            <rect x="8" y="7" width="8" height="10" rx="1"/>
+            <rect x="11" y="2" width="2" height="5"/>
+            <rect x="7" y="5" width="10" height="2"/>
+          </svg></div>
+          <div>
+            <div class="node-type">Platform · Fulfillment</div>
+            <div class="node-title">ShipStation</div>
+            <div class="node-role">Labels, tracking, EOD reports</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Row 4: bottom-center-right -->
-      <div class="node end" id="n-customer" style="left:520px;top:530px">
-        <div class="node-icon">🙋</div>
-        <div class="node-name">Customer</div>
-        <div class="node-type-label">End Recipient</div>
+      <!-- Customer -->
+      <div class="node end" id="n-customer" style="left:840px;top:620px;">
+        <div class="node-header">
+          <div class="node-icon"><svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4.5"/>
+            <path d="M3,21 Q3,14 12,14 Q21,14 21,21z"/>
+          </svg></div>
+          <div>
+            <div class="node-type">Human · End Recipient</div>
+            <div class="node-title">Customer</div>
+            <div class="node-role">Receives goods + shipping notice</div>
+          </div>
+        </div>
       </div>
 
-    </div><!-- /network-canvas -->
+    </div><!-- /net-canvas -->
   </div><!-- /canvas-wrap -->
 
-  <!-- ── Right panel ── -->
-  <div class="side-panel" id="side-panel">
-    <div class="panel-title">Pain Points &amp; Solutions</div>
+  <!-- ── Pain Points + Solutions panel ── -->
+  <div class="side-panel">
+    <div class="panel-head">Pain Points &amp; Solutions — hover any ⚠ arrow</div>
 
-    <div class="sol-card type-warn active" data-arrows="a-sidebar-quantum">
-      <div class="sol-tag">⚠ Pain Point · Manual Entry</div>
-      <div class="sol-label">Product Data Entry into Quantum</div>
-      <div class="sol-desc">Sidebar manually keys product details into Quantum/Zoho after receiving goods. Error-prone, time-consuming, no audit trail.</div>
-      <span class="sol-badge warn">BOT-02 Interop ID Audit</span>
+    <div class="net-card warn" data-ids="manual-entry,migration">
+      <div class="c-label">⚠ Pain Point · Manual Entry</div>
+      <div class="c-title">Product Data Entry into Quantum</div>
+      <div class="c-desc">Sidebar manually keys product details into Quantum/Zoho after receiving goods from the warehouse. Error-prone, slow, no audit trail.</div>
+      <div class="c-tags"><span class="ctag orange">Bot-02 · Interop ID Audit</span></div>
     </div>
 
-    <div class="sol-card type-err active" data-arrows="a-sidebar-quantum">
-      <div class="sol-tag">🔴 Fail Point · Migration Risk</div>
-      <div class="sol-label">Quantum → Zoho Aug 1 Deadline</div>
-      <div class="sol-desc">Zoho requires exact company name match AND interop ID per item/variant. Missing IDs will break order routing on cutover day.</div>
-      <span class="sol-badge api">Four51 GenerateMissingInteropIDs</span>
-      <span class="sol-badge bot">BOT-02 Interop Audit</span>
+    <div class="net-card err" data-ids="migration,catalog-sync">
+      <div class="c-label">🔴 Fail Point · Migration Risk</div>
+      <div class="c-title">Quantum → Zoho Aug 1 Deadline</div>
+      <div class="c-desc">Zoho requires exact company name match AND interop ID per item/variant. Missing IDs will break order routing on cutover day.</div>
+      <div class="c-tags">
+        <span class="ctag blue">Four51 GenerateMissingInteropIDs</span>
+        <span class="ctag orange">Bot-02 · Interop Audit</span>
+      </div>
     </div>
 
-    <div class="sol-card type-warn active" data-arrows="a-four51-sidebar">
-      <div class="sol-tag">⚠ Pain Point · Manual Check</div>
-      <div class="sol-label">New Order Detection from Four51</div>
-      <div class="sol-desc">No push notification when a buyer places an order on Four51. Someone has to log in and check — orders can sit unnoticed.</div>
-      <span class="sol-badge bot">BOT-04 Order Detection</span>
+    <div class="net-card warn" data-ids="new-order">
+      <div class="c-label">⚠ Pain Point · Manual Check</div>
+      <div class="c-title">New Order Detection from Four51</div>
+      <div class="c-desc">No push notification when a buyer places an order on Four51. Staff must log in and check — orders can sit unnoticed for hours.</div>
+      <div class="c-tags"><span class="ctag orange">Bot-04 · Order Detection</span></div>
     </div>
 
-    <div class="sol-card type-warn active" data-arrows="a-shipstation-sidebar">
-      <div class="sol-tag">⚠ Pain Point · EOD Report</div>
-      <div class="sol-label">ShipStation EOD Email Processing</div>
-      <div class="sol-desc">Staff reads ShipStation EOD emails and manually triggers customer shipping notifications. Delay risk, human bottleneck nightly.</div>
-      <span class="sol-badge bot">BOT-01 EOD Email Bot</span>
+    <div class="net-card warn" data-ids="eod-report">
+      <div class="c-label">⚠ Pain Point · EOD Report</div>
+      <div class="c-title">ShipStation EOD Email Processing</div>
+      <div class="c-desc">Staff reads ShipStation EOD emails and manually triggers customer shipping notifications. Delay risk and human bottleneck every night.</div>
+      <div class="c-tags"><span class="ctag orange">Bot-01 · EOD Email Bot</span></div>
     </div>
 
-    <div class="sol-card type-warn active" data-arrows="a-sidebar-customer">
-      <div class="sol-tag">⚠ Pain Point · Comms Lag</div>
-      <div class="sol-label">Customer Shipping Notification</div>
-      <div class="sol-desc">Sidebar manually emails shipping info to customers after checking ShipStation. Inconsistent timing, no automation.</div>
-      <span class="sol-badge bot">BOT-01 EOD Email Bot</span>
+    <div class="net-card warn" data-ids="shipping-email">
+      <div class="c-label">⚠ Pain Point · Comms Lag</div>
+      <div class="c-title">Customer Shipping Notification</div>
+      <div class="c-desc">Sidebar manually emails customers shipping info after checking ShipStation. Inconsistent timing, no automation.</div>
+      <div class="c-tags"><span class="ctag orange">Bot-01 · EOD Email Bot</span></div>
     </div>
 
-    <div class="sol-card type-warn active" data-arrows="a-four51-quantum">
-      <div class="sol-tag">⚠ Pain Point · Buyer Name Match</div>
-      <div class="sol-label">Buyer Name Reconciliation</div>
-      <div class="sol-desc">Four51 buyer names often don't exactly match Zoho company names. Causes order routing failures post-migration.</div>
-      <span class="sol-badge bot">BOT-03 Buyer Name Reconciliation</span>
+    <div class="net-card warn" data-ids="buyer-name,migration">
+      <div class="c-label">⚠ Pain Point · Name Mismatch</div>
+      <div class="c-title">Buyer Name Reconciliation</div>
+      <div class="c-desc">Four51 buyer names often don't match Zoho company names exactly. Causes order routing failures after the Aug 1 migration.</div>
+      <div class="c-tags"><span class="ctag orange">Bot-03 · Buyer Name Reconciliation</span></div>
     </div>
 
-    <div class="sol-card type-warn active" data-arrows="a-quantum-four51">
-      <div class="sol-tag">⚠ Pain Point · Pricing Staleness</div>
-      <div class="sol-label">Four51 Catalog Price Drift</div>
-      <div class="sol-desc">Prices set in Four51 can drift from Quantum/Zoho records with no automated sync or alerting.</div>
-      <span class="sol-badge bot">BOT-05 Pricing Staleness Scanner</span>
+    <div class="net-card warn" data-ids="catalog-sync">
+      <div class="c-label">⚠ Pain Point · Price Drift</div>
+      <div class="c-title">Four51 Catalog Price Staleness</div>
+      <div class="c-desc">Prices set in Four51 can drift from Quantum/Zoho records with no automated sync or alerting in place.</div>
+      <div class="c-tags"><span class="ctag orange">Bot-05 · Pricing Scanner</span></div>
     </div>
 
   </div><!-- /side-panel -->
 </div><!-- /main -->
 
 <script>
-// ── Arrow definitions ──────────────────────────────────────────────
-// Each arrow: { id, from, to, label, type, painIds, curvature }
-// type: 'dim' | 'manual' | 'auto' | 'fail' | 'orange'
-// painIds: array of sol-card [data-arrows] values that should light up
+// ── Arrow definitions ──────────────────────────────────────────────────────────
+// Layout: left col (Merchant, Quantum, Warehouse, Courier) | center (Sidebar) | right col (Buyer, Four51, ShipStation, Customer)
+// curve: positive = arcs toward viewer's left relative to arrow direction; negative = right
+// painIds: matches data-ids on side panel cards
+
 const ARROWS = [
-  // Inbound supply chain
-  { id:'a-sidebar-merchant',   from:'n-sidebar',     to:'n-merchant',    label:'issues PO',           type:'dim',    curve:0 },
-  { id:'a-merchant-warehouse', from:'n-merchant',    to:'n-warehouse',   label:'ships goods',          type:'dim',    curve:0 },
-  { id:'a-warehouse-sidebar',  from:'n-warehouse',   to:'n-sidebar',     label:'receipt confirmed',    type:'dim',    curve:0 },
+  // ── Inbound supply chain (left col + center)
+  { id:'po',         from:'n-sidebar',    to:'n-merchant',   label:'issues PO',                type:'dim',    curve:50 },
+  { id:'goods',      from:'n-merchant',   to:'n-warehouse',  label:'ships goods',              type:'dim',    curve:-30 },
+  { id:'receipt',    from:'n-warehouse',  to:'n-sidebar',    label:'receipt confirmed',        type:'dim',    curve:0 },
 
-  // Product setup & catalog
-  { id:'a-sidebar-quantum',    from:'n-sidebar',     to:'n-quantum',     label:'⚠ product data + orders', type:'manual', curve:-60, painIds:['a-sidebar-quantum'] },
-  { id:'a-quantum-four51',     from:'n-quantum',     to:'n-four51',      label:'catalog sync',         type:'auto',   curve:0,   painIds:['a-quantum-four51'] },
+  // ── Product data & ERP
+  { id:'prod-data',  from:'n-sidebar',    to:'n-quantum',    label:'product data + orders',   type:'manual', curve:-40,
+    painIds:['manual-entry','migration'] },
 
-  // Buyer → Order flow
-  { id:'a-buyer-four51',       from:'n-buyer',       to:'n-four51',      label:'places order',         type:'auto',   curve:0 },
-  { id:'a-four51-sidebar',     from:'n-four51',      to:'n-sidebar',     label:'⚠ new order (manual check)', type:'manual', curve:0, painIds:['a-four51-sidebar'] },
+  // ── Catalog: Quantum → Four51 arcs ABOVE Sidebar (curve gives upward arc)
+  { id:'cat-sync',   from:'n-quantum',    to:'n-four51',     label:'catalog sync',            type:'auto',   curve:-130,
+    painIds:['catalog-sync','migration'] },
 
-  // Buyer name / catalog reconciliation
-  { id:'a-four51-quantum',     from:'n-four51',      to:'n-quantum',     label:'⚠ buyer name match',   type:'fail',   curve:60, painIds:['a-four51-quantum'] },
+  // ── Orders
+  { id:'order',      from:'n-buyer',      to:'n-four51',     label:'places order',            type:'auto',   curve:-25 },
+  { id:'new-order',  from:'n-four51',     to:'n-sidebar',    label:'new order — manual check',type:'manual', curve:25,
+    painIds:['new-order'] },
 
-  // Fulfillment
-  { id:'a-quantum-shipstation',from:'n-quantum',     to:'n-shipstation', label:'fulfillment request',  type:'auto',   curve:0 },
-  { id:'a-shipstation-wh',     from:'n-shipstation', to:'n-warehouse',   label:'pick list',            type:'auto',   curve:0 },
-  { id:'a-warehouse-courier',  from:'n-warehouse',   to:'n-courier',     label:'packed shipment',      type:'dim',    curve:0 },
-  { id:'a-courier-customer',   from:'n-courier',     to:'n-customer',    label:'delivery',             type:'dim',    curve:0 },
+  // ── Buyer name match: Four51 → Quantum arcs BELOW (curve goes downward)
+  { id:'name-match', from:'n-four51',     to:'n-quantum',    label:'buyer name match',        type:'fail',   curve:130,
+    painIds:['buyer-name','migration'] },
 
-  // Notifications
-  { id:'a-shipstation-sidebar',from:'n-shipstation', to:'n-sidebar',     label:'⚠ EOD report (email)', type:'manual', curve:-50, painIds:['a-shipstation-sidebar'] },
-  { id:'a-sidebar-customer',   from:'n-sidebar',     to:'n-customer',    label:'⚠ shipping email (manual)', type:'manual', curve:0, painIds:['a-sidebar-customer'] },
+  // ── Fulfillment (passes naturally below Sidebar)
+  { id:'fulfill',    from:'n-quantum',    to:'n-shipstation',label:'fulfillment request',     type:'auto',   curve:-20 },
+  { id:'pick-list',  from:'n-shipstation',to:'n-warehouse',  label:'pick list',               type:'auto',   curve:30 },
+  { id:'packed',     from:'n-warehouse',  to:'n-courier',    label:'packed shipment',         type:'dim',    curve:-25 },
+  { id:'delivery',   from:'n-courier',    to:'n-customer',   label:'delivery',                type:'dim',    curve:60 },
+
+  // ── Notifications
+  { id:'eod',        from:'n-shipstation',to:'n-sidebar',    label:'EOD report (email)',      type:'manual', curve:-40,
+    painIds:['eod-report'] },
+  { id:'ship-email', from:'n-sidebar',    to:'n-customer',   label:'shipping email (manual)', type:'manual', curve:50,
+    painIds:['shipping-email'] },
 ];
 
-const COLOR = {
-  dim:    'rgba(85,85,85,0.7)',
-  manual: 'rgba(255,214,10,0.65)',
-  auto:   'rgba(74,143,255,0.65)',
-  fail:   'rgba(255,77,77,0.7)',
-  orange: 'rgba(255,153,0,0.8)',
+// ── Drawing ────────────────────────────────────────────────────────────────────
+const STROKE = {
+  dim:    'rgba(68,68,68,.85)',
+  manual: 'rgba(255,214,10,.72)',
+  auto:   'rgba(74,143,255,.72)',
+  fail:   'rgba(255,59,59,.82)',
 };
-const MARKER = {
-  dim:'ah-dim', manual:'ah-manual', auto:'ah-auto', fail:'ah-fail', orange:'ah-orange'
-};
-const PAIN_COLOR = { manual:'rgba(255,214,10,0.9)', fail:'rgba(255,77,77,0.9)' };
+const MARKER = { dim:'m-dim', manual:'m-manual', auto:'m-auto', fail:'m-fail' };
 
-// ── Draw ──────────────────────────────────────────────────────────
-function getCenter(el, canvas) {
-  const er = el.getBoundingClientRect();
-  const cr = canvas.getBoundingClientRect();
-  return {
-    x: er.left - cr.left + er.width / 2,
-    y: er.top  - cr.top  + er.height / 2,
-    w: er.width,
-    h: er.height,
-  };
+function nc(el, canvas) {
+  const er = el.getBoundingClientRect(), cr = canvas.getBoundingClientRect();
+  return { x: er.left-cr.left+er.width/2, y: er.top-cr.top+er.height/2, w:er.width, h:er.height };
 }
 
-// Find intersection of line from center through point on the node border
-function edgePoint(cx, cy, w, h, tx, ty) {
-  const dx = tx - cx, dy = ty - cy;
-  if (dx === 0 && dy === 0) return {x: cx, y: cy};
-  const hw = w / 2 - 2, hh = h / 2 - 2;
-  const scaleX = hw / Math.abs(dx || 1e-9);
-  const scaleY = hh / Math.abs(dy || 1e-9);
-  const scale = Math.min(scaleX, scaleY);
-  return { x: cx + dx * scale, y: cy + dy * scale };
+function edge(cx, cy, w, h, tx, ty) {
+  const dx=tx-cx, dy=ty-cy;
+  if(!dx&&!dy) return {x:cx,y:cy};
+  const s = Math.min((w/2-3)/Math.abs(dx||1e-9),(h/2-3)/Math.abs(dy||1e-9));
+  return {x:cx+dx*s, y:cy+dy*s};
 }
 
-function drawArrows() {
-  const svg = document.getElementById('arrow-svg');
-  // Remove old paths/groups (keep defs)
-  [...svg.querySelectorAll('.a-group')].forEach(g => g.remove());
+let rTimer;
 
-  const canvas = document.getElementById('network-canvas');
+function draw() {
+  const svg    = document.getElementById('arrow-svg');
+  const canvas = document.getElementById('net-canvas');
+  [...svg.querySelectorAll('.ag')].forEach(g=>g.remove());
 
-  ARROWS.forEach(arrow => {
-    const fromEl = document.getElementById(arrow.from);
-    const toEl   = document.getElementById(arrow.to);
-    if (!fromEl || !toEl) return;
+  ARROWS.forEach(a => {
+    const fromEl = document.getElementById(a.from);
+    const toEl   = document.getElementById(a.to);
+    if (!fromEl||!toEl) return;
 
-    const fc = getCenter(fromEl, canvas);
-    const tc = getCenter(toEl,   canvas);
+    const fc = nc(fromEl, canvas);
+    const tc = nc(toEl,   canvas);
+    const cv = a.curve||0;
 
-    // Edge points on node borders
-    const p1 = edgePoint(fc.x, fc.y, fc.w, fc.h, tc.x, tc.y);
-    const p2 = edgePoint(tc.x, tc.y, tc.w, tc.h, fc.x, fc.y);
+    // Quadratic bezier: perpendicular control point
+    const mx=(fc.x+tc.x)/2, my=(fc.y+tc.y)/2;
+    const dx=tc.x-fc.x, dy=tc.y-fc.y, len=Math.sqrt(dx*dx+dy*dy)||1;
+    const cpX = mx - (dy/len)*cv;
+    const cpY = my + (dx/len)*cv;
 
-    // Bezier with perpendicular offset for curve
-    const curve = arrow.curve || 0;
-    const dx = p2.x - p1.x, dy = p2.y - p1.y;
-    const len = Math.sqrt(dx*dx + dy*dy) || 1;
-    const ox = -dy / len * curve;
-    const oy =  dx / len * curve;
-    const cx1 = (p1.x + p2.x) / 2 + ox;
-    const cy1 = (p1.y + p2.y) / 2 + oy;
+    // Edge intersections aimed at control point
+    const p1 = edge(fc.x,fc.y,fc.w,fc.h, cpX,cpY);
+    const p2 = edge(tc.x,tc.y,tc.w,tc.h, cpX,cpY);
+    const d  = `M${p1.x},${p1.y} Q${cpX},${cpY} ${p2.x},${p2.y}`;
 
-    const d = `M${p1.x},${p1.y} Q${cx1},${cy1} ${p2.x},${p2.y}`;
+    const hasPain = a.painIds && a.painIds.length;
+    const sw = a.type==='dim' ? '1.3' : '1.9';
 
     const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.setAttribute('class','a-group');
-    g.dataset.arrowId = arrow.id;
+    g.setAttribute('class','ag');
 
-    // Hit area (invisible wide stroke for hover)
+    // ── Wide transparent hit area (receives mouse events)
     const hit = document.createElementNS('http://www.w3.org/2000/svg','path');
-    hit.setAttribute('d', d);
+    hit.setAttribute('d',d);
     hit.setAttribute('fill','none');
     hit.setAttribute('stroke','transparent');
-    hit.setAttribute('stroke-width','14');
-    hit.style.cursor = 'pointer';
-    hit.style.pointerEvents = 'stroke';
+    hit.setAttribute('stroke-width','20');
+    hit.setAttribute('pointer-events','stroke');
+    hit.style.cursor = hasPain ? 'pointer' : 'default';
     g.appendChild(hit);
 
-    // Visible path
-    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('class','arrow-path');
-    path.setAttribute('d', d);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke', COLOR[arrow.type] || COLOR.dim);
-    path.setAttribute('stroke-width', arrow.type === 'dim' ? '1.2' : '1.6');
-    if (arrow.type === 'manual') path.setAttribute('stroke-dasharray','6 4');
-    if (arrow.type === 'fail')   path.setAttribute('stroke-dasharray','3 3');
-    path.setAttribute('marker-end',`url(#${MARKER[arrow.type] || MARKER.dim})`);
-    path.style.pointerEvents = 'none';
-    g.appendChild(path);
+    // ── Visible arrow path
+    const vp = document.createElementNS('http://www.w3.org/2000/svg','path');
+    vp.setAttribute('d',d);
+    vp.setAttribute('fill','none');
+    vp.setAttribute('stroke',STROKE[a.type]);
+    vp.setAttribute('stroke-width',sw);
+    if(a.type==='manual') vp.setAttribute('stroke-dasharray','6 4');
+    if(a.type==='fail')   vp.setAttribute('stroke-dasharray','4 3');
+    vp.setAttribute('marker-end',`url(#${MARKER[a.type]})`);
+    vp.setAttribute('pointer-events','none');
+    g.appendChild(vp);
 
-    // Label at midpoint
-    const mx = (p1.x + p2.x) / 2 + ox * 0.6;
-    const my = (p1.y + p2.y) / 2 + oy * 0.6;
-    const hasPain = arrow.painIds && arrow.painIds.length;
-    const labelText = (arrow.label || '').replace(/^⚠ /,'');
+    // ── Label using SVG text (reliable, no foreignObject)
+    const lx = 0.25*p1.x + 0.5*cpX + 0.25*p2.x;
+    const ly = 0.25*p1.y + 0.5*cpY + 0.25*p2.y;
+    const rawLabel = a.label.replace(/^⚠ /,'');
+    const icon = hasPain ? (a.type==='fail'?'🔴 ':'⚠ ') : '';
+    const fgColor = hasPain
+      ? (a.type==='fail' ? 'rgba(255,59,59,.92)' : 'rgba(255,214,10,.92)')
+      : 'rgba(75,75,75,.9)';
 
-    // Background pill
-    const fo = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
-    fo.setAttribute('x', mx - 56);
-    fo.setAttribute('y', my - 11);
-    fo.setAttribute('width','112');
-    fo.setAttribute('height','22');
-    fo.style.pointerEvents = 'none';
-    fo.style.overflow = 'visible';
-    const div = document.createElement('div');
-    div.style.cssText = [
-      'display:flex','align-items:center','justify-content:center',
-      'background:rgba(13,13,13,0.82)','border:1px solid #2a2a2a',
-      'border-radius:4px','padding:2px 6px',
-      'font-family:Space Mono,monospace','font-size:9px',
-      'color:' + (hasPain ? (arrow.type==='fail' ? 'rgba(255,77,77,0.9)' : 'rgba(255,214,10,0.85)') : '#555'),
-      'white-space:nowrap','max-width:110px','overflow:hidden','text-overflow:ellipsis',
-      'letter-spacing:.06em',
-    ].join(';');
-    div.textContent = (hasPain ? (arrow.type==='fail'?'🔴 ':'⚠ ') : '') + labelText;
-    fo.appendChild(div);
-    g.appendChild(fo);
+    // Background rect
+    const charW = 5.5;
+    const fullText = icon + rawLabel;
+    const bw = fullText.length * charW + 14;
+    const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    bg.setAttribute('x', lx - bw/2); bg.setAttribute('y', ly-9);
+    bg.setAttribute('width',bw); bg.setAttribute('height',14);
+    bg.setAttribute('fill','rgba(8,8,8,.9)');
+    bg.setAttribute('rx','3'); bg.setAttribute('pointer-events','none');
+    g.appendChild(bg);
 
-    // Pain pulse dot
+    const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x',lx); txt.setAttribute('y',ly+1);
+    txt.setAttribute('text-anchor','middle');
+    txt.setAttribute('font-family',"'Space Mono', monospace");
+    txt.setAttribute('font-size','9');
+    txt.setAttribute('fill',fgColor);
+    txt.setAttribute('pointer-events','none');
+    txt.textContent = fullText;
+    g.appendChild(txt);
+
+    // ── Pulsing dot on pain/fail arrows
     if (hasPain) {
-      const pulseColor = arrow.type === 'fail' ? 'rgba(255,77,77' : 'rgba(255,214,10';
-      const pulseR = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      pulseR.setAttribute('cx', mx); pulseR.setAttribute('cy', my);
-      pulseR.setAttribute('r','5');
-      pulseR.setAttribute('fill', pulseColor + ',0)');
-      pulseR.setAttribute('stroke', pulseColor + ',0.7)');
-      pulseR.setAttribute('stroke-width','1.5');
-      pulseR.setAttribute('class','pulse-ring');
-      g.appendChild(pulseR);
+      const pc = a.type==='fail' ? 'rgba(255,59,59' : 'rgba(255,214,10';
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('cx',lx); dot.setAttribute('cy',ly);
+      dot.setAttribute('r','5'); dot.setAttribute('class','ppulse');
+      dot.setAttribute('fill',pc+',.08)');
+      dot.setAttribute('stroke',pc+',.9)');
+      dot.setAttribute('stroke-width','1.5');
+      dot.setAttribute('pointer-events','none');
+      g.appendChild(dot);
     }
 
-    // Hover interaction
-    hit.addEventListener('mouseenter', () => highlightArrow(arrow, g, path));
-    hit.addEventListener('mouseleave', () => unhighlightArrow(arrow, g, path));
-    g.addEventListener('mouseenter',   () => highlightArrow(arrow, g, path));
-    g.addEventListener('mouseleave',   () => unhighlightArrow(arrow, g, path));
+    // ── Hover events on hit area
+    const tip = document.getElementById('arrow-tip');
+    hit.addEventListener('mouseenter', e => onEnter(a, vp, sw, e));
+    hit.addEventListener('mousemove',  e => { tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY-6)+'px'; });
+    hit.addEventListener('mouseleave', () => onLeave(a, vp, sw));
 
     svg.appendChild(g);
   });
 }
 
-let activeArrow = null;
+let active = null;
 
-function highlightArrow(arrow, g, path) {
-  if (activeArrow) unhighlightArrow(activeArrow.arrow, activeArrow.g, activeArrow.path);
-  activeArrow = {arrow, g, path};
+function onEnter(a, vp, sw, e) {
+  if (active) onLeave(active.a, active.vp, active.sw);
+  active = {a, vp, sw};
 
-  path.setAttribute('stroke-width','2.5');
-  // Highlight connected nodes
-  const fromEl = document.getElementById(arrow.from);
-  const toEl   = document.getElementById(arrow.to);
-  if (fromEl) fromEl.classList.add('highlight');
-  if (toEl)   toEl.classList.add('highlight');
+  // Thicken arrow
+  vp.setAttribute('stroke-width', String(parseFloat(sw)+1.4));
 
-  // Activate matching solution cards
-  const allCards = document.querySelectorAll('.sol-card');
-  allCards.forEach(c => c.classList.remove('active'));
-  if (arrow.painIds && arrow.painIds.length) {
-    arrow.painIds.forEach(pid => {
-      document.querySelectorAll(`.sol-card[data-arrows="${pid}"]`).forEach(c => c.classList.add('active'));
+  // Highlight nodes
+  [a.from, a.to].forEach(id => document.getElementById(id)?.classList.add('net-hl'));
+
+  // Dim all cards, then activate matching ones
+  document.querySelectorAll('.net-card').forEach(c => c.classList.remove('active'));
+  if (a.painIds?.length) {
+    a.painIds.forEach(pid => {
+      document.querySelectorAll(`.net-card[data-ids*="${pid}"]`).forEach(c => c.classList.add('active'));
     });
   }
+
+  // Show tooltip
+  const tip = document.getElementById('arrow-tip');
+  const hasPain = a.painIds?.length;
+  const icon = hasPain ? (a.type==='fail' ? '🔴 ' : '⚠ ') : '';
+  const color = a.type==='fail' ? 'rgba(255,59,59,.9)'
+              : a.type==='manual' ? 'rgba(255,214,10,.9)'
+              : a.type==='auto' ? 'rgba(74,143,255,.9)'
+              : 'rgba(120,120,120,.9)';
+  tip.style.color = color;
+  tip.textContent = icon + a.label;
+  tip.style.display = 'block';
+  tip.style.left = (e.clientX+14)+'px';
+  tip.style.top  = (e.clientY-6)+'px';
 }
 
-function unhighlightArrow(arrow, g, path) {
-  path.setAttribute('stroke-width', arrow.type === 'dim' ? '1.2' : '1.6');
-  const fromEl = document.getElementById(arrow.from);
-  const toEl   = document.getElementById(arrow.to);
-  if (fromEl) fromEl.classList.remove('highlight');
-  if (toEl)   toEl.classList.remove('highlight');
-  // restore all active
-  document.querySelectorAll('.sol-card').forEach(c => c.classList.add('active'));
-  activeArrow = null;
+function onLeave(a, vp, sw) {
+  vp?.setAttribute('stroke-width', sw);
+  [a.from, a.to].forEach(id => document.getElementById(id)?.classList.remove('net-hl'));
+  document.querySelectorAll('.net-card').forEach(c => c.classList.add('active'));
+  document.getElementById('arrow-tip').style.display = 'none';
+  active = null;
 }
 
-// ── Init ──────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
-  setTimeout(drawArrows, 100);
-  // Start all cards active
-  document.querySelectorAll('.sol-card').forEach(c => c.classList.add('active'));
+  setTimeout(draw, 120);
+  document.querySelectorAll('.net-card').forEach(c=>c.classList.add('active'));
 });
-window.addEventListener('resize', () => setTimeout(drawArrows, 80));
+window.addEventListener('resize', () => { clearTimeout(rTimer); rTimer=setTimeout(draw,80); });
 </script>
 </body>
 </html>

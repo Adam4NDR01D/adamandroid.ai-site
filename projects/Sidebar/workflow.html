@@ -3,967 +3,1238 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SidebarOS · Order Fulfillment Flow — Current State</title>
+  <title>SidebarOS · Supply Chain — Internal Discovery Framework</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg:       #080808;
-      --surface:  #0f0f0f;
-      --surface2: #151515;
-      --border:   #1e1e1e;
-      --border2:  #2a2a2a;
-      --text:     #e2e2e2;
-      --dim:      #555;
-      --dim-mid:  #777;
-      --red:        #ff3b3b; --red-bg:     #ff3b3b10; --red-border: #ff3b3b35;
-      --yellow:    #ffd60a;  --yellow-bg:  #ffd60a0d; --yellow-border: #ffd60a35;
-      --green:     #00e87a;  --green-bg:   #00e87a0d; --green-border: #00e87a35;
-      --orange:    #FF9900;  --orange-bg:  #FF99000d; --orange-border: #FF990035;
-      --blue:      #4a8fff;  --blue-bg:    #4a8fff0d; --blue-border: #4a8fff35;
-      --purple:    #9b6dff;  --purple-bg:  #9b6dff0d; --purple-border: #9b6dff35;
-      --mono: 'Space Mono', monospace;
-      --sans: 'Syne', sans-serif;
-      --display: 'Comfortaa', cursive;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; -webkit-font-smoothing: antialiased; }
-
-    /* ── Topbar ── */
-    .topbar { position: sticky; top: 0; z-index: 100; background: #080808ee; backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-    .topbar-inner { max-width: 1280px; margin: 0 auto; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-family: var(--mono); font-size: 12px; color: var(--orange); letter-spacing: 0.15em; text-transform: uppercase; }
-    .topbar-meta { display: flex; align-items: center; gap: 10px; }
-    .tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--border2); color: var(--dim-mid); }
-    .tag.red { border-color: var(--red-border); color: var(--red); background: var(--red-bg); }
-
-    /* ── Page Header ── */
-    .page-header { max-width: 1280px; margin: 0 auto; padding: 32px 32px 24px; border-bottom: 1px solid var(--border); }
-    .page-title { font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
-    .page-sub { font-family: var(--mono); font-size: 10px; color: var(--dim-mid); letter-spacing: 0.1em; text-transform: uppercase; }
-    .col-headers { display: grid; grid-template-columns: 1fr 400px; gap: 24px; margin-top: 20px; }
-    .col-header { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); display: flex; align-items: center; gap: 8px; }
-    .col-header::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
-    .col-header.solution-col { color: var(--blue); }
-
-    /* ── Two-column flow layout ── */
-    .flow { max-width: 1280px; margin: 0 auto; padding: 32px 32px 80px; display: flex; flex-direction: column; }
-    .flow-row { display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: end; }
-    .flow-row.connector-row { align-items: stretch; }
-    .flow-left { display: flex; flex-direction: column; }
-    .flow-right { display: flex; flex-direction: column; justify-content: flex-end; }
-
-    /* ── Node ── */
-    .node { border: 1px solid var(--border2); background: var(--surface); border-radius: 8px; overflow: hidden; }
-    .node-header { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px 12px; border-bottom: 1px solid var(--border); }
-    .node-icon { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-    .node-icon svg { width: 100%; height: 100%; }
-    .node-type  { font-family: var(--mono); font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 3px; }
-    .node-title { font-family: var(--display); font-size: 16px; font-weight: 700; }
-    .node-role  { font-family: var(--mono); font-size: 9px; color: var(--dim-mid); margin-top: 2px; }
-    .node-body  { padding: 14px 18px 16px; }
-    .step-list  { list-style: none; }
-    .step-list li { font-family: var(--mono); font-size: 10px; color: #999; line-height: 1.7; padding: 2px 0 2px 14px; position: relative; }
-    .step-list li::before { content: '→'; position: absolute; left: 0; color: var(--dim); }
-
-    /* ── Pain point boxes ── */
-    .step-warn { font-family: var(--mono); color: var(--yellow); background: var(--yellow-bg); border: 1px solid var(--yellow-border); border-left: 3px solid var(--yellow); border-radius: 0 6px 6px 0; padding: 12px 14px; margin-top: 12px; display: flex; flex-direction: row; gap: 12px; align-items: flex-start; }
-    .step-warn-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
-    .step-warn-content { display: flex; flex-direction: column; gap: 4px; }
-    .step-warn-label { font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
-    .step-warn-text { font-size: 10px; line-height: 1.65; }
-    .step-err { font-family: var(--mono); color: var(--red); background: var(--red-bg); border: 1px solid var(--red-border); border-left: 3px solid var(--red); border-radius: 0 6px 6px 0; padding: 12px 14px; margin-top: 8px; display: flex; flex-direction: row; gap: 12px; align-items: flex-start; }
-    .step-err-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
-    .step-err-content { display: flex; flex-direction: column; gap: 4px; }
-    .step-err-label { font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
-    .step-err-text { font-size: 10px; line-height: 1.65; }
-
-    /* ── Solution panel ── */
-    .solution { border: 1px solid var(--blue-border); border-left: 3px solid var(--blue); border-radius: 0 8px 8px 0; background: var(--blue-bg); padding: 16px 18px; position: relative; }
-    .solution::before { content: ''; position: absolute; left: -26px; top: 50%; width: 22px; height: 1px; background: var(--blue-border); border-top: 1px dashed var(--blue-border); }
-    .sol-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .sol-icon { font-size: 20px; }
-    .sol-title { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--blue); }
-    .sol-list { list-style: none; }
-    .sol-list li { font-family: var(--mono); font-size: 10px; color: #999; line-height: 1.7; padding: 3px 0 3px 14px; position: relative; }
-    .sol-list li::before { content: '→'; position: absolute; left: 0; color: var(--blue); }
-    .sol-tag { display: inline-flex; font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--blue-border); color: var(--blue); margin-top: 10px; }
-    .sol-tag.green { border-color: var(--green-border); color: var(--green); }
-
-    /* ── Node type colors ── */
-    .node.human          { border-color: var(--orange-border); }
-    .node.human          .node-header { background: var(--orange-bg); }
-    .node.human          .node-title  { color: var(--orange); }
-    .node.human          .node-icon svg { fill: var(--orange); opacity: 0.7; }
-    .node.system-four51  { border-color: var(--yellow-border); }
-    .node.system-four51  .node-header { background: var(--yellow-bg); }
-    .node.system-four51  .node-title  { color: var(--yellow); }
-    .node.system-four51  .node-icon svg { fill: var(--yellow); opacity: 0.7; }
-    .node.system-quantum { border-color: var(--red-border); }
-    .node.system-quantum .node-header { background: var(--red-bg); }
-    .node.system-quantum .node-title  { color: var(--red); }
-    .node.system-quantum .node-icon svg { fill: var(--red); opacity: 0.7; }
-    .node.system-ship    { border-color: var(--blue-border); }
-    .node.system-ship    .node-header { background: var(--blue-bg); }
-    .node.system-ship    .node-title  { color: var(--blue); }
-    .node.system-ship    .node-icon svg { fill: var(--blue); opacity: 0.7; }
-    .node.system-courier { border-color: var(--purple-border); }
-    .node.system-courier .node-header { background: var(--purple-bg); }
-    .node.system-courier .node-title  { color: var(--purple); }
-    .node.system-courier .node-icon svg { fill: var(--purple); opacity: 0.7; }
-    .node.end            { border-color: var(--green-border); }
-    .node.end            .node-header { background: var(--green-bg); }
-    .node.end            .node-title  { color: var(--green); }
-    .node.end            .node-icon svg { fill: var(--green); opacity: 0.7; }
-
-    /* ── Phase divider ── */
-    .phase-divider { max-width: 1280px; margin: 0 auto 0; padding: 28px 32px 20px; }
-    .phase-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--orange); margin-bottom: 4px; }
-    .phase-sub { font-family: var(--mono); font-size: 9px; color: var(--dim); letter-spacing: 0.08em; }
-    .phase-rule { height: 1px; background: linear-gradient(to right, var(--orange-border), transparent); margin-bottom: 0; max-width: 1280px; margin: 0 auto; }
-    .phase-divider.p2 { border-top: 1px solid var(--border2); margin-top: 12px; }
-    .phase-divider.p2 .phase-label { color: var(--dim-mid); }
-
-    /* ── External node (merchant/supplier) ── */
-    .node.external          { border-color: var(--purple-border); }
-    .node.external          .node-header { background: var(--purple-bg); }
-    .node.external          .node-title  { color: var(--purple); }
-    .node.external          .node-icon svg { fill: var(--purple); opacity: 0.7; }
-
-    /* ── Connector ── */
-    .connector { display: flex; flex-direction: column; align-items: center; padding: 4px 0; gap: 3px; min-height: 64px; justify-content: center; position: relative; z-index: 1; }
-    .conn-line  { display: none; }
-    .conn-arrow { display: none; }
-    .conn-label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 3px 10px; margin: 2px 0; }
-    .conn-label.manual { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
-    .conn-label.auto   { color: var(--blue);   border-color: var(--blue-border);   background: var(--blue-bg); }
-
-    /* ── SVG arrow overlay ── */
-    .flow { position: relative; }
-    #flow-arrow-svg { position: absolute; top: 0; left: 0; width: 100%; pointer-events: none; z-index: 0; }
-  </style>
+  <link rel="stylesheet" href="workflow-style.css">
 </head>
 <body>
 
+<!-- ══ INTERNAL BANNER ══ -->
+<div class="internal-banner">
+  <span class="int-icon">⚠</span>
+  <span class="int-title">Internal · Discovery Framework</span>
+  <span class="int-sep">·</span>
+  <span class="int-sub">Working outline — Adam · Jesse · Stephen · v0.3 · June 15, 2026</span>
+  <div class="int-tags">
+    <span class="int-tag draft">Internal Draft</span>
+    <span class="int-tag noclient">Not Client-Facing</span>
+  </div>
+</div>
+
+<!-- ══ TOPBAR ══ -->
 <div class="topbar">
   <div class="topbar-inner">
     <div class="logo">SidebarOS · Full Supply Chain</div>
-    <div class="topbar-meta">
-      <div class="tag red">Current State</div>
-      <div class="tag">Merchant → Delivery · Pre-Migration</div>
+    <div class="topbar-right">
+      <div class="legend"><span class="legend-word"><span>L</span><span>E</span><span>G</span><span>E</span><span>N</span><span>D</span></span>
+        <div class="legend-popup">
+          <p class="legend-label">Stoplight · priority</p>
+          <div class="legend-stoplight">
+            <div class="legend-glyph"><span class="g-red"></span><span class="g-yellow"></span><span class="g-green"></span></div>
+            <div>
+              <div class="legend-line red"><b>RED</b> = IMMEDIATE PRIORITY</div>
+              <div class="legend-line yellow"><b>YELLOW</b> = NEEDS ATTENTION!</div>
+              <div class="legend-line green"><b>GREEN</b> = WORKING WELL</div>
+            </div>
+          </div>
+          <hr class="legend-divider">
+          <p class="legend-label">Key · marks &amp; colors</p>
+          <div class="legend-row"><span class="legend-icon red">✕</span><span><span class="legend-rowname">Known failure</span><span class="legend-sub">confirmed in call · red box</span></span></div>
+          <div class="legend-row"><span class="legend-icon yellow">▲</span><span><span class="legend-rowname">Pain point</span><span class="legend-sub">needs attention · yellow box</span></span></div>
+          <div class="legend-row"><span class="legend-icon green">✓</span><span><span class="legend-rowname">Confirmed / working</span><span class="legend-sub">green box or tag</span></span></div>
+          <div class="legend-row"><span class="legend-icon orange">◈</span><span><span class="legend-rowname" style="color:var(--orange)">SIDE·BOT</span><span class="legend-sub">proposed automation — the solution</span></span></div>
+          <div class="legend-row"><span class="legend-icon blue">▣</span><span><span class="legend-rowname" style="color:var(--blue)">Existing system</span><span class="legend-sub">Quantum · Four51 · ShipStation</span></span></div>
+          <div class="legend-row"><span class="legend-icon purple circled">?</span><span><span class="legend-rowname" style="color:var(--purple)">Open question</span><span class="legend-sub">unconfirmed — verify with team</span></span></div>
+          <div class="legend-row"><span class="legend-icon" style="color:var(--dim)">⌐</span><span><span class="legend-rowname"><span class="tbc-flag">T·B·C</span></span><span class="legend-sub">assumed, not yet verified</span></span></div>
+        </div>
+      </div>
+      <span class="theme-toggle" data-theme-toggle>🌙</span>
     </div>
   </div>
 </div>
 
+<!-- ══ PAGE HEADER ══ -->
 <div class="page-header">
-  <div class="page-title">Full Supply Chain — Current State + Proposed Solutions</div>
-  <div class="page-sub">Merchant inbound → product setup → storefront → buyer order → fulfillment → delivery · pain points and fixes side by side</div>
-  <div class="col-headers">
-    <div class="col-header">Current State Flow</div>
-    <div class="col-header solution-col">💡 Proposed Solutions</div>
+  <div class="page-title">Full Supply Chain Map · Pain Points + Proposed Solutions (SIDE·BOTS)</div>
+  <div class="page-sub">Phase 1 (<span class="tbc-flag">T·B·C</span>) + Phase 2 (mostly confirmed) · bots prioritized by migration risk + cash impact</div>
+</div>
+
+<!-- ══ COLUMN HEADERS ══ -->
+<div class="col-headers">
+  <div class="col-hdr left-hdr">⚡ Current Supply Chain Workflow + Pain Points</div>
+  <div class="col-hdr right-hdr">💡 Proposed Solutions (SIDE·BOTS)</div>
+</div>
+
+<!-- ══ FLOW ══ -->
+<div class="flow" id="flow-canvas">
+<svg id="flow-arrow-svg" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="m-dim"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(100,100,100,0.8)"/></marker>
+    <marker id="m-warn" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,214,10,0.75)"/></marker>
+    <marker id="m-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(74,143,255,0.85)"/></marker>
+    <marker id="m-ghost" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(74,143,255,0.3)"/></marker>
+    <marker id="m-bot" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,153,0,0.85)"/></marker>
+    <marker id="m-bot-ghost" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,153,0,0.6)"/></marker>
+  </defs>
+</svg>
+
+<!-- ══ PHASE 1 ══ -->
+<div class="flow-row phase-row no-right">
+  <div class="flow-left">
+    <div class="phase-divider first">
+      <div class="phase-label">Phase 1 · Inbound Supply Chain</div>
+      <div class="phase-sub"><span class="tbc-flag">T·B·C</span> — process below assumed from industry standard · confirm with Brandi June 22+</div>
+    </div>
   </div>
 </div>
 
-<div class="flow" id="flow-canvas">
-
-  <!-- SVG arrow overlay — drawn by JS -->
-  <svg id="flow-arrow-svg" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <marker id="fah-dim"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(85,85,85,0.85)"/></marker>
-      <marker id="fah-warn" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,214,10,0.6)"/></marker>
-      <marker id="fah-auto" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(74,143,255,0.6)"/></marker>
-    </defs>
-  </svg>
-
-  <!-- ══ PHASE 1: INBOUND SUPPLY CHAIN ══ -->
-  <div class="phase-divider">
-    <div class="phase-label">Phase 1 · Inbound Supply Chain</div>
-    <div class="phase-sub">Merchant ships raw goods → Sidebar receives, enters product data → Quantum catalog → Four51 storefront goes live</div>
-  </div>
-
-  <!-- ══ A. MERCHANT / SUPPLIER ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node external">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="7" width="20" height="14" rx="1"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="10" y1="14" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
-          <div>
-            <div class="node-type">External · Raw Goods Vendor</div>
-            <div class="node-title">Merchant / Supplier</div>
-            <div class="node-role">Blank apparel, promo items, undecorated goods — sourced by Sidebar on behalf of clients</div>
-          </div>
+<!-- ══ A. MERCHANT / SUPPLIER ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node external tbc">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="7" width="20" height="14" rx="1"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+          <div class="node-cat">EXTERNAL</div>
         </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Receives purchase order (PO) from Sidebar account manager</li>
-            <li>Produces or sources raw / blank goods — undecorated apparel, promo items, headwear, etc.</li>
-            <li>Ships raw goods to Sidebar warehouse on agreed lead time</li>
-            <li>Invoices Sidebar per PO terms — net 30 or net 60</li>
-            <li>Provides product specs: SKU, colorways, size run, unit cost at each tier</li>
-          </ul>
+        <div class="node-info">
+          <div class="node-type">Raw Goods Merchant/Vendor · <span class="tbc-flag">T·B·C</span></div>
+          <div class="node-title">Merchant / Supplier</div>
+          <div class="node-role">Blank apparel, promo items — sourced by Sidebar on behalf of clients</div>
         </div>
       </div>
-    </div>
-    <div class="flow-right"><!-- External partner — no automation target --></div>
-  </div>
-
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label">raw goods shipped to Sidebar warehouse</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <!-- ══ B. SIDEBAR ACCOUNT MANAGER — SOURCING ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node human">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
-          <div>
-            <div class="node-type">Human · Sidebar Account Manager</div>
-            <div class="node-title">Sourcing + PO Management</div>
-            <div class="node-role">Angela / Nicole — managing vendor relationships, pricing, and product onboarding</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Receives client brief: product type, quantity, decoration specs, timeline, budget</li>
-            <li>Sources appropriate vendor(s) — checks existing vendor catalog first</li>
-            <li>Negotiates unit pricing with merchant based on quantity tier</li>
-            <li>Issues PO to merchant — tracked by email thread or spreadsheet (no formal PO system)</li>
-            <li>Confirms shipment ETA from vendor — manages lead time expectations</li>
-            <li>Sets contracted sell price per client in Four51 catalog</li>
-          </ul>
-          <div class="step-warn">
-            <div class="step-warn-icon">⚠</div>
-            <div class="step-warn-content">
-              <div class="step-warn-label">Pain Point · Pricing at Reorder</div>
-              <div class="step-warn-text">Pricing negotiated at initial contract time. When the same item is reordered months later at a new vendor cost, the Four51 sell price is often not updated — client sees old (lower) price while Sidebar absorbs the margin difference.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flow-right">
-      <div class="solution">
-        <div class="sol-header"><div class="sol-icon">💡</div><div class="sol-title">Pricing Staleness Scanner (Bot-05)</div></div>
-        <ul class="sol-list">
-          <li>Weekly automated scan: pulls all active Four51 items via SOAP API</li>
-          <li>Compares last price update date against most recent reorder / PO date</li>
-          <li>Flags items where reorder date is newer than last price change</li>
-          <li>Monday morning digest emailed to Angela + Nicole — review queue with current vs. expected price</li>
-          <li>Prevents the $4→$7 confrontation before it reaches the client</li>
+      <div class="node-body">
+        <ul class="step-list">
+          <li class="q">Receives PO from Sidebar — process <span class="tbc-flag">TBC</span></li>
+          <li class="q">Produces or sources blank goods — undecorated apparel, headwear, promo items</li>
+          <li class="q">Ships raw goods to Sidebar warehouse on agreed lead time</li>
+          <li class="q">Invoices Sidebar — payment terms <span class="tbc-flag">TBC</span> (net 30? net 60?)</li>
         </ul>
-        <div class="sol-tag">Bot-05 · Weekly cron · ~$3,500–$5,500</div>
+        <div class="step-question">
+          <div class="step-question-icon">❓</div>
+          <div class="step-question-content">
+            <div class="step-question-label">Confirm with Brandi</div>
+            <div class="step-question-text">Who are the primary suppliers? Preferred vendor list or ad-hoc per client? Do they send product specs proactively or does Sidebar request them?</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label">goods arrive at loading dock</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label tbc">╌ raw goods shipped to Sidebar warehouse — assumed ╌</div></div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <!-- ══ C. SIDEBAR WAREHOUSE — INBOUND RECEIVING ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node human">
-        <div class="node-header">
+<!-- ══ B. SOURCING + PO ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node human tbc">
+      <div class="node-header">
+        <div class="node-icon-col">
           <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
-          <div>
-            <div class="node-type">Human · Sidebar Warehouse</div>
-            <div class="node-title">Inbound Receiving</div>
-            <div class="node-role">Accepts raw goods from merchant — inspects, counts, and stores inventory</div>
-          </div>
+          <div class="node-cat">HUMAN</div>
         </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Receives merchant shipment at loading dock — confirms carrier and package count</li>
-            <li>Breaks down shipment — inspects for damage or shortage vs. PO</li>
-            <li>Counts and verifies units: SKU, size, color, decoration status (blank vs. printed)</li>
-            <li>Flags discrepancies back to account manager if quantities don't match PO</li>
-            <li>Stores raw goods in designated warehouse bin location</li>
-            <li>Verbally or manually communicates receipt to account manager for catalog entry</li>
-          </ul>
+        <div class="node-info">
+          <div class="node-type">Sidebar Account Manager · <span class="tbc-flag">T·B·C</span></div>
+          <div class="node-title">Sourcing + PO Management</div>
+          <div class="node-role">Angela / Nicole — pricing negotiations, PO tracking — exact process <span class="tbc-flag">TBC</span></div>
         </div>
       </div>
-    </div>
-    <div class="flow-right"><!-- Physical receiving — no AI automation target here --></div>
-  </div>
-
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label manual">⚠ Manual — warehouse notifies account manager; product setup begins</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <!-- ══ D. SIDEBAR — PRODUCT SETUP ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node human">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
-          <div>
-            <div class="node-type">Human · Sidebar Employee</div>
-            <div class="node-title">Product Setup &amp; Data Entry</div>
-            <div class="node-role">Creates product records in Quantum — the catalog that powers Four51 and order validation</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Creates new product record in Quantum ERP: item name, SKU, sizes, colors, unit cost</li>
-            <li>Sets sell price per contracted client tier in Four51 catalog</li>
-            <li>Assigns the item to the correct client account / buyer group</li>
-            <li>Uploads product photo(s) to Four51 for the storefront (if merchant provides them)</li>
-            <li>Assigns interop ID to the item — the identifier Zoho requires to route orders</li>
-            <li>Marks item as active in Four51 — it is now visible and purchasable by buyers</li>
-          </ul>
-          <div class="step-warn">
-            <div class="step-warn-icon">⚠</div>
-            <div class="step-warn-content">
-              <div class="step-warn-label">Root Cause · Interop ID Gaps</div>
-              <div class="step-warn-text">Interop ID assignment is manual and easily skipped at product creation. There is no required field or validation check. An item missing its interop ID works fine in Quantum and Four51 today — but silently fails in Zoho on August 1. ~30K items need to be audited.</div>
-            </div>
-          </div>
-          <div class="step-err">
-            <div class="step-err-icon">✕</div>
-            <div class="step-err-content">
-              <div class="step-err-label">Known Gap · Missing Photos + Stale Data</div>
-              <div class="step-err-text">Product photos are frequently missing — merchants don't always provide them; uploading is an extra manual step. Stale descriptions, wrong size runs, and outdated pricing go undetected because there is no recurring audit of catalog data quality.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flow-right">
-      <div class="solution">
-        <div class="sol-header"><div class="sol-icon">💡</div><div class="sol-title">Interop ID Audit + Bulk Fill (Bot-02)</div></div>
-        <ul class="sol-list">
-          <li>Jesse confirmed Four51 SOAP 1.1 API pulls all ~30K products in a single call</li>
-          <li>Script (audit.py, 30% built) flags every item with a missing or blank interop ID</li>
-          <li>Cross-references Quantum catalog export — auto-fills high-confidence SKU matches</li>
-          <li>Exports remaining gaps to Angela + Nicole for human approval</li>
-          <li>Batch writes filled IDs back to Four51 via Write API — validated before August 1</li>
-          <li>Can also surface photo-missing items as a secondary output</li>
+      <div class="node-body">
+        <ul class="step-list">
+          <li class="q">Receives client brief: product type, quantity, decoration specs, timeline, budget</li>
+          <li class="q">Sources merchant/vendor — checks existing relationships first</li>
+          <li class="q">Negotiates unit pricing based on quantity tier</li>
+          <li class="q">Issues PO — tracked by email thread or spreadsheet? (no formal PO system confirmed)</li>
+          <li>Sets contracted sell price per client in Four51 catalog</li>
         </ul>
-        <div class="sol-tag green">Bot-02 · In progress · audit.py built · ~$5,000–$8,000</div>
+        <div class="step-warn" id="pain-pricing">
+          <div class="step-warn-icon">⚠</div>
+          <div class="step-warn-content">
+            <div class="step-warn-label">Pain Point · Pricing at Reorder — Confirmed (Brandi, June 12)</div>
+            <div class="step-warn-text">Pricing negotiated at contract time. When the same item is reordered months later at a higher cost, the Four51 sell price is often not updated — Sidebar absorbs the margin difference. Brandi's example: $4 displayed, actual cost $7.</div>
+          </div>
+        </div>
+        <div class="step-question">
+          <div class="step-question-icon">❓</div>
+          <div class="step-question-content">
+            <div class="step-question-label">Confirm with Brandi</div>
+            <div class="step-question-text">PO tracking via email/spreadsheet, or formal system? Who specifically — Angela, Nicole, or both? How often does a reorder happen without a price update?</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+  <div class="flow-right">
+    <!-- BOT-05: Pricing Staleness Scanner — ghost -->
+    <div class="sidebot ghost" id="sidebot-05" data-arms="pain-pricing">
+      <div class="sidebot-head-wrap">
+        <div class="sidebot-head">
+          <div class="sidebot-head-icon">💡</div>
+          <div class="sidebot-num">SIDE·BOT 5</div>
+          <div class="sidebot-pri">PRIORITY 5</div>
+          <div class="sidebot-head-title">Pricing Staleness Scanner</div>
+        </div>
+      </div>
+      <div class="sidebot-body">
+        <ul class="sidebot-list">
+          <li>Scheduled scan of active Four51 items via SOAP API</li>
+          <li>Compares last price update vs. most recent reorder date</li>
+          <li>Flags items where reorder is newer than last price change</li>
+          <li class="q">Digest emailed to Angela + Nicole — cadence <span class="tbc-flag">TBD</span> (weekly? on-demand?)</li>
+          <li>Prevents $4→$7 margin hit before it reaches the client</li>
+        </ul>
+        <div class="sidebot-approach">
+          <div class="sidebot-approach-label">Proposed Approach</div>
+          <div class="approach-option rec">
+            <span class="approach-tag">Option A (recommended)</span>
+            Four51 SOAP `ListProducts` → compare price-last-updated vs. Quantum reorder date → flag delta
+          </div>
+          <div class="approach-option">
+            <span class="approach-tag">Option B</span>
+            Quantum scheduled export → Python cross-ref → alert. Depends on Quantum API (<span class="tbc-flag">TBD</span>).
+          </div>
+        </div>
+        <div class="sidebot-build">
+          <div class="sidebot-build-label">Build Estimate — Ballpark</div>
+          <div class="build-row"><span class="build-phase">Build</span><span class="build-val q">~30–60 hrs (ballpark)</span></div>
+          <div class="build-row"><span class="build-phase">Test / Break</span><span class="build-val q">~15 hrs</span></div>
+          <div class="build-row"><span class="build-phase">Ops</span><span class="build-val">Weekly cron — low maintenance</span></div>
+        </div>
+        <div class="sidebot-risks">
+          <div class="sidebot-risks-label">Risks / Why It Might Not Work</div>
+          <ul class="risk-list">
+            <li>Four51 may not store a reliable "last price update" date field</li>
+            <li>If PO dates aren't in a queryable system, no comparison is possible</li>
+          </ul>
+        </div>
+        <div class="sidebot-hours">
+          <div class="hours-row"><span class="hours-label">Labor saved:</span><span class="hours-val q">~? hrs/month of pricing corrections — confirm w/ Angela/Nicole</span></div>
+        </div>
+        <div class="bot-tag">Bot-05 · Scope after Bots 01–04</div>
+      </div>
+      <div class="sidebot-legs"><span>↓</span><span>↓</span></div>
+    </div>
+  </div>
+</div>
 
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label">product data pushed to Quantum master catalog</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label tbc">╌ goods arrive at loading dock — assumed ╌</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ C. INBOUND RECEIVING ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node human tbc">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
+          <div class="node-cat">HUMAN</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">Sidebar Warehouse · <span class="tbc-flag">T·B·C</span></div>
+          <div class="node-title">Inbound Receiving</div>
+          <div class="node-role">Accepts raw goods from merchant/vendor — entire process <span class="tbc-flag">TBC</span></div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li class="q">Receives merchant/vendor shipment at loading dock — how tracked?</li>
+          <li class="q">Inspects for damage or shortage vs. PO — formal check process?</li>
+          <li class="q">Counts and verifies units: SKU, size, color — what system?</li>
+          <li class="q">Flags discrepancies to account manager — how?</li>
+          <li class="q">Stores raw goods in warehouse — bin location system?</li>
+        </ul>
+        <div class="step-question">
+          <div class="step-question-icon">❓</div>
+          <div class="step-question-content">
+            <div class="step-question-label">Entire node unconfirmed — Verify with Brandi</div>
+            <div class="step-question-text">Assumed from standard warehouse workflow. Walk us through exactly what happens when goods arrive: who is on dock, what system (if any) is used, how does the handoff to product setup happen?</div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="flow-right"></div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <!-- ══ E. QUANTUM ERP — CATALOG ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node system-quantum">
-        <div class="node-header">
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label warn">⚠ Manual handoff — assumed — warehouse notifies account manager</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ D. PRODUCT SETUP ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node human tbc">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
+          <div class="node-cat">HUMAN</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">Sidebar Employee · <span class="tbc-flag">T·B·C</span></div>
+          <div class="node-title">Product Setup + Data Entry</div>
+          <div class="node-role">Creates product records in Quantum — who does this? Angela, Nicole, or separate role?</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li class="q">Creates new product record in Quantum: item name, SKU, sizes, colors, unit cost</li>
+          <li>Sets sell price per contracted client tier in Four51 catalog</li>
+          <li class="q">Assigns item to correct client account / buyer group</li>
+          <li>Uploads product photo(s) to Four51 if merchant/vendor provides them</li>
+          <li>Assigns interop ID to item — the identifier Zoho requires to route orders</li>
+          <li class="q">Marks item active in Four51 — now purchasable by buyers</li>
+        </ul>
+        <div class="step-warn" id="pain-interop">
+          <div class="step-warn-icon">⚠</div>
+          <div class="step-warn-content">
+            <div class="step-warn-label">Root Cause · Interop ID Gaps — Confirmed (Brandi, June 12)</div>
+            <div class="step-warn-text">Interop ID assignment is manual and easily skipped. Brandi confirmed: "There's not a single report that shows us the interop IDs and variants to identify if they're missing." Item works in current systems — fails when Zoho tries to route orders. ~26–30K items need auditing before August 1.</div>
+          </div>
+        </div>
+        <div class="step-err" id="fail-photos">
+          <div class="step-err-icon">✕</div>
+          <div class="step-err-content">
+            <div class="step-err-label">Known Gap · Missing Product Photos</div>
+            <div class="step-err-text">Photos often missing — vendors don't always provide them, uploading is an extra step that gets skipped. Secondary output candidate for Bot-01.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flow-right">
+    <!-- ══ BOT-01: INTEROP ID AUDIT — PRIMARY / SOLID ══ -->
+    <div class="sidebot" id="sidebot-01" data-arms="pain-interop,fail-photos">
+      <div class="sidebot-head-wrap">
+        <div class="sidebot-head">
+          <div class="sidebot-head-icon">💡</div>
+          <div class="sidebot-num">SIDE·BOT 1</div>
+          <div class="sidebot-pri">PRIORITY 1</div>
+          <div class="sidebot-head-title">Interop ID Audit + Bulk Fill</div>
+        </div>
+      </div>
+      <div class="sidebot-body">
+        <ul class="sidebot-list">
+          <li>Four51 SOAP 1.1 API confirmed by Jesse — API docs + Python samples from Four51 support</li>
+          <li>Script lists all products + variants, flags any with blank interop ID field</li>
+          <li>Cross-references Quantum catalog export — auto-fills high-confidence matches</li>
+          <li>Exports remaining gaps to Angela + Nicole review queue</li>
+          <li>Batch writes confirmed IDs back to Four51 via SOAP Write API</li>
+          <li>Can surface photo-missing items as secondary output</li>
+          <li>Final validation pass: zero blank interop IDs before August 1</li>
+        </ul>
+        <div class="step-question" style="margin-top:10px; border-radius:4px; padding:8px 11px;">
+          <div class="step-question-icon">❓</div>
+          <div class="step-question-content">
+            <div class="step-question-label">Action — Test API Tonight</div>
+            <div class="step-question-text">Run a test `ListProducts` SOAP call to confirm API access, auth, and response format. Also: do `GenerateMissingInteropIDs` auto-fill IDs that Zoho accepts, or must they match Quantum item IDs exactly? That answer determines if this is ~10 hrs or ~80 hrs.</div>
+          </div>
+        </div>
+        <div class="sidebot-approach">
+          <div class="sidebot-approach-label">Proposed Approach</div>
+          <div class="approach-option rec">
+            <span class="approach-tag">Option A — Fast (if auto-IDs work)</span>
+            Call `GenerateMissingInteropIDs` + `GenerateMissingVariantInteropIDs` → verify via `ListProducts`. May be just 2 API calls.
+          </div>
+          <div class="approach-option">
+            <span class="approach-tag">Option B — Full Control (if Zoho needs Quantum IDs)</span>
+            `ListProducts` pull → Python cross-ref Quantum export → auto-fill high-confidence → human review queue → `SaveProducts` write-back.
+          </div>
+        </div>
+        <div class="sidebot-build">
+          <div class="sidebot-build-label">Build Estimate — Scope <span class="tbc-flag">TBD</span> After API Test</div>
+          <div class="build-row"><span class="build-phase">Build</span><span class="build-val q">~10–80 hrs (Option A vs B)</span></div>
+          <div class="build-row"><span class="build-phase">Test / Break</span><span class="build-val q">~10–20 hrs on real Four51 data</span></div>
+          <div class="build-row"><span class="build-phase">Ship</span><span class="build-val q">~5 hrs validation + sign-off</span></div>
+          <div class="build-row"><span class="build-phase">Ops</span><span class="build-val">One-shot — re-run at Zoho migration only</span></div>
+        </div>
+        <div class="sidebot-risks">
+          <div class="sidebot-risks-label">Risks / Why It Might Not Work</div>
+          <ul class="risk-list">
+            <li>Auto-generated IDs may not match what Zoho expects from Quantum — CRITICAL open question</li>
+            <li>Four51 SharedSecret not yet in hand — blocks all API work (get from Jesse via Dashlane)</li>
+            <li>`ListProducts` pagination behavior unknown — may not return all items in one call</li>
+          </ul>
+        </div>
+        <div class="sidebot-hours">
+          <div class="hours-row"><span class="hours-label">Risk avoided:</span><span class="hours-val">Aug 1 go-live failure — prevents weeks of manual audit at 30K items</span></div>
+        </div>
+        <div class="bot-tag green">Bot-01 · Current top priority · SharedSecret needed to start</div>
+      </div>
+      <div class="sidebot-legs"><span>↓</span><span>↓</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label tbc">╌ product data pushed to Quantum master catalog — assumed ╌</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ E. QUANTUM ERP — CATALOG ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node system-quantum">
+      <div class="node-header">
+        <div class="node-icon-col">
           <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="8" rx="1"/><rect x="2" y="13" width="20" height="8" rx="1"/><circle cx="19" cy="6" r="1.5"/><circle cx="19" cy="17" r="1.5"/></svg></div>
-          <div>
-            <div class="node-type">ERP · Product Catalog · Retiring August 1</div>
-            <div class="node-title">Quantum — Catalog</div>
-            <div class="node-role">Master product record: SKUs, pricing, interop IDs, inventory levels — the source of truth that feeds Four51</div>
-          </div>
+          <div class="node-cat">ERP</div>
         </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Holds master product catalog: all active items, variants, pricing tiers, and inventory positions</li>
-            <li>Acts as the authoritative source for what appears in each client's Four51 storefront</li>
-            <li>Syncs product data to Four51 (cadence and mechanism currently unclear — verify with Jesse)</li>
-            <li>Stores interop IDs — critical field for Zoho migration; currently often blank</li>
-            <li>Also manages pricing per buyer tier and per client account group</li>
-          </ul>
-          <div class="step-warn">
-            <div class="step-warn-icon">⚠</div>
-            <div class="step-warn-content">
-              <div class="step-warn-label">Migration Risk — Dual Role System</div>
-              <div class="step-warn-text">Quantum is simultaneously the catalog source AND the order processor. When it retires August 1, both roles transfer to Zoho. Catalog data quality issues (missing IDs, stale pricing) that are invisible in Quantum will cause immediate order failures in Zoho's stricter validation.</div>
-            </div>
-          </div>
+        <div class="node-info">
+          <div class="node-type">Product Catalog · Retiring August 1</div>
+          <div class="node-title">Quantum — Catalog</div>
+          <div class="node-role">Master product record: SKUs, pricing, interop IDs, inventory levels</div>
         </div>
       </div>
-    </div>
-    <div class="flow-right"><!-- solution shown at Product Setup node above --></div>
-  </div>
-
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label auto">catalog sync → Four51 storefront</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <!-- ══ F. FOUR51 — CATALOG (STOREFRONT READY) ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node system-four51">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="20" height="14" rx="1"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
-          <div>
-            <div class="node-type">Platform · B2B Storefront — Catalog Populated</div>
-            <div class="node-title">Four51 — Storefront</div>
-            <div class="node-role">Client-facing catalog live and ready for buyers to browse — Phase 1 complete</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Products visible to buyers in their contracted catalog — filtered by account group</li>
-            <li>Pricing, variants, and quantities reflect what was entered during product setup</li>
-            <li>Buyers can browse, search, and select items for ordering</li>
-            <li>SOAP 1.1 API exposes full product data: interop IDs, photos, pricing — confirmed by Jesse</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="flow-right"><!-- No pain point here — catalog in place --></div>
-  </div>
-
-  <!-- ══ PHASE 2: ORDER FULFILLMENT ══ -->
-  <div class="phase-divider p2">
-    <div class="phase-label">Phase 2 · Order Fulfillment</div>
-    <div class="phase-sub">Buyer places order → Four51 → Sidebar manual entry → Quantum / ERP → ShipStation → Warehouse → Courier → Customer</div>
-  </div>
-
-  <!-- ══ 1. BUYER ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node human">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
-          <div>
-            <div class="node-type">Human · External</div>
-            <div class="node-title">Buyer</div>
-            <div class="node-role">Client employee placing a B2B order — purchasing team, office manager</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Needs branded merchandise — e.g., hoodies, uniforms, promo items</li>
-            <li>Navigates to their company's Four51 B2B portal URL (set up by Sidebar)</li>
-            <li>Logs in with company account credentials</li>
-            <li>Browses catalog filtered to their contracted SKUs and pricing</li>
-            <li>Selects product, chooses variant (size, color, quantity)</li>
-            <li>Enters internal purchase order number</li>
-            <li>Reviews cart and submits order</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="flow-right"><!-- no pain point at this stage --></div>
-  </div>
-
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label auto">order submitted → Four51</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <!-- ══ 2. FOUR51 ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node system-four51">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="20" height="14" rx="1"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
-          <div>
-            <div class="node-type">Platform · B2B Storefront</div>
-            <div class="node-title">Four51</div>
-            <div class="node-role">Storefront, catalog, buyer account management — managed by Sidebar</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Authenticates buyer against their account record</li>
-            <li>Serves catalog filtered to buyer's contracted items and pricing tier</li>
-            <li>Validates item is active and present in catalog with a complete SKU</li>
-            <li>Captures full order: buyer info, SKUs, quantities, PO number, timestamp</li>
-            <li>Assigns an order number — stores order in Four51 admin queue</li>
-            <li>Sends buyer an automated order confirmation email</li>
-          </ul>
-          <div class="step-warn">
-            <div class="step-warn-icon">⚠</div>
-            <div class="step-warn-content">
-              <div class="step-warn-label">Pain Point</div>
-              <div class="step-warn-text">Order sits in the Four51 admin queue with no automatic push downstream. A Sidebar employee must manually check and act — there is no notification, no SLA, no timer.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flow-right">
-      <div class="solution">
-        <div class="sol-header"><div class="sol-icon">💡</div><div class="sol-title">Automated Order Detection</div></div>
-        <ul class="sol-list">
-          <li>Build a polling integration (n8n or similar) that checks Four51 for new orders every 5–15 minutes</li>
-          <li>New order detected → auto-triggers downstream push to ERP immediately</li>
-          <li>No human needed to check the admin panel — orders flow through automatically</li>
-          <li>Anomaly alert: if no orders processed by end of business, ping Slack/Teams to confirm</li>
-          <li>Uses Four51 SOAP 1.1 API (Jesse confirmed available) or REST — no new credentials required</li>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Holds master catalog: all active items, variants, pricing, inventory</li>
+          <li>Acts as authoritative source for what appears in each client's Four51 storefront</li>
+          <li class="q">Syncs product data to Four51 — cadence and mechanism unclear</li>
+          <li>Stores interop IDs — currently often blank — critical for Zoho migration</li>
         </ul>
-        <div class="sol-tag">Automatable · Medium complexity</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label manual">⚠ Manual — Sidebar checks Four51 admin for new orders</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <!-- ══ 3. SIDEBAR ORDER ENTRY ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node human">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
-          <div>
-            <div class="node-type">Human · Sidebar Employee</div>
-            <div class="node-title">Order Entry</div>
-            <div class="node-role">Routing orders from Four51 into Quantum ERP manually</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Periodically opens Four51 admin panel to check for new orders (no push notification)</li>
-            <li>Reviews incoming order for completeness — SKUs, quantities, buyer account</li>
-            <li>Manually transcribes or copies order details from Four51</li>
-            <li>Opens Quantum ERP in a separate system (different login, different interface)</li>
-            <li>Manually keys the order into Quantum — line by line</li>
-            <li>Confirms order is received before closing Four51</li>
-          </ul>
-          <div class="step-warn">
-            <div class="step-warn-icon">⚠</div>
-            <div class="step-warn-content">
-              <div class="step-warn-label">Pain Point</div>
-              <div class="step-warn-text">Timing gap — if this person is busy, at lunch, or out, the order waits. No SLA, no escalation, no visibility into the delay.</div>
-            </div>
-          </div>
-          <div class="step-err">
-            <div class="step-err-icon">✕</div>
-            <div class="step-err-content">
-              <div class="step-err-label">Known Failure</div>
-              <div class="step-err-text">No audit trail of when a Four51 order was seen vs. when it was entered into Quantum. Delays are completely invisible to the buyer.</div>
-            </div>
+        <div class="step-warn" id="pain-migration-catalog">
+          <div class="step-warn-icon">⚠</div>
+          <div class="step-warn-content">
+            <div class="step-warn-label">Migration Risk — August 1 Deadline (Confirmed)</div>
+            <div class="step-warn-text">Quantum retiring — replaced by Zoho. Brandi doing weekly manual Quantum → Zoho Books exports. Items with missing interop IDs will cause order failures at go-live. No batch report currently exists to identify gaps. No one knows the full state of the catalog data.</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="flow-right">
-      <div class="solution">
-        <div class="sol-header"><div class="sol-icon">💡</div><div class="sol-title">Four51 → ERP Auto-Bridge</div></div>
-        <ul class="sol-list">
-          <li>API integration: new order in Four51 → auto-format payload → push to Quantum (or Zoho post-Aug 1) in under 60 seconds</li>
-          <li>Full timestamp log at every step — order received, push attempted, push confirmed</li>
-          <li>Failed pushes trigger immediate Slack/Teams alert to on-call employee</li>
-          <li>Humans review exceptions only — not every order</li>
-          <li>Buyer-facing: optional auto-reply with order confirmation + expected timeline</li>
+  </div>
+  <div class="flow-right">
+    <!-- BOT-02: QUANTUM FULL DATA SCRAPE — ghost -->
+    <div class="sidebot ghost" id="sidebot-02" data-arms="pain-migration-catalog">
+      <div class="sidebot-head-wrap">
+        <div class="sidebot-head">
+          <div class="sidebot-head-icon">💡</div>
+          <div class="sidebot-num">SIDE·BOT 2</div>
+          <div class="sidebot-pri">PRIORITY 2</div>
+          <div class="sidebot-head-title">Quantum Full Data Scrape</div>
+        </div>
+      </div>
+      <div class="sidebot-body">
+        <ul class="sidebot-list">
+          <li>Exports complete Quantum catalog: all items, variants, SKUs, pricing, IDs, images, descriptions</li>
+          <li>Creates a full snapshot / audit file — know exactly what you have before migration</li>
+          <li>Identifies completeness gaps: missing photos, missing interop IDs, missing descriptions</li>
+          <li>Output: comprehensive spreadsheet for Adam + Jesse to review</li>
+          <li class="q">Does Quantum have an API, or is this export-only? Confirm with Jesse</li>
         </ul>
-        <div class="sol-tag">Automatable · High impact · Phase 2</div>
+        <div class="sidebot-approach">
+          <div class="sidebot-approach-label">Proposed Approach</div>
+          <div class="approach-option rec">
+            <span class="approach-tag">Option A</span>
+            Quantum export (CSV/Excel) + Python parsing → structured audit report → cross-ref with Four51 SOAP pull
+          </div>
+          <div class="approach-option">
+            <span class="approach-tag">Option B</span>
+            If Quantum has an API → direct programmatic pull → same output. Faster at scale.
+          </div>
+        </div>
+        <div class="sidebot-build">
+          <div class="sidebot-build-label">Build Estimate</div>
+          <div class="build-row"><span class="build-phase">Build</span><span class="build-val q">~20–40 hrs (depends on API vs export)</span></div>
+          <div class="build-row"><span class="build-phase">Test / Break</span><span class="build-val q">~10 hrs</span></div>
+          <div class="build-row"><span class="build-phase">Ops</span><span class="build-val">One-shot for migration; re-run as needed</span></div>
+        </div>
+        <div class="sidebot-risks">
+          <div class="sidebot-risks-label">Risks</div>
+          <ul class="risk-list">
+            <li>If Quantum is export-only and the export is incomplete, the audit will have gaps</li>
+            <li>Large data volumes (~30K items × variants) may require batching</li>
+          </ul>
+        </div>
+        <div class="sidebot-hours">
+          <div class="hours-row"><span class="hours-label">Value:</span><span class="hours-val">Foundation for Bot-03 and migration confidence — no point cleaning data you haven't mapped</span></div>
+        </div>
+        <div class="bot-tag">Bot-02 · Unlocks Bot-03 · Run before migration planning</div>
+      </div>
+      <div class="sidebot-legs"><span>↓</span><span>↓</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ QUANTUM → FOUR51 SYNC ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label auto">catalog sync → Four51 storefront</div></div>
+  </div>
+  <div class="flow-right">
+    <!-- BOT-03 appears here between the two Quantum nodes -->
+    <div class="sidebot ghost" id="sidebot-03" data-arms="pain-migration-catalog">
+      <div class="sidebot-head-wrap">
+        <div class="sidebot-head">
+          <div class="sidebot-head-icon">💡</div>
+          <div class="sidebot-num">SIDE·BOT 3</div>
+          <div class="sidebot-pri">PRIORITY 3</div>
+          <div class="sidebot-head-title">Pre-Migration Data Cleaner</div>
+        </div>
+      </div>
+      <div class="sidebot-body">
+        <ul class="sidebot-list">
+          <li>Takes Bot-02 scrape output as input</li>
+          <li>Auto-corrects: format inconsistencies, duplicate SKUs, naming mismatches</li>
+          <li class="q">Fills missing interop IDs where Quantum item ID can be mapped with high confidence</li>
+          <li>Flags remaining gaps for human review — Angela + Nicole queue</li>
+          <li>Prepares clean export file ready for Zoho import</li>
+          <li>Final validation: zero critical gaps before August 1 cutover</li>
+        </ul>
+        <div class="sidebot-approach">
+          <div class="sidebot-approach-label">Proposed Approach</div>
+          <div class="approach-option rec">
+            <span class="approach-tag">Option A</span>
+            Python Pandas script → ingest Bot-02 export → apply rules → output cleaned CSV + flagged exceptions report
+          </div>
+        </div>
+        <div class="sidebot-build">
+          <div class="sidebot-build-label">Build Estimate</div>
+          <div class="build-row"><span class="build-phase">Build</span><span class="build-val q">~20–40 hrs (complexity depends on data quality from Bot-02)</span></div>
+          <div class="build-row"><span class="build-phase">Test / Break</span><span class="build-val q">~15 hrs (edge cases in real data)</span></div>
+          <div class="build-row"><span class="build-phase">Ops</span><span class="build-val">Run once pre-migration; archive after</span></div>
+        </div>
+        <div class="sidebot-risks">
+          <div class="sidebot-risks-label">Risks</div>
+          <ul class="risk-list">
+            <li>Data quality in Quantum may be worse than expected — cleaning rules multiply fast</li>
+            <li>Requires Bot-02 to be complete first — sequential dependency</li>
+          </ul>
+        </div>
+        <div class="bot-tag">Bot-03 · Requires Bot-02 · Run before August 1</div>
+      </div>
+      <div class="sidebot-legs"><span>↓</span><span>↓</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ F. FOUR51 — CATALOG / STOREFRONT ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node system-four51">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="20" height="14" rx="1"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="node-cat">PLATFORM</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">B2B Storefront · Catalog Populated</div>
+          <div class="node-title">Four51 — Storefront</div>
+          <div class="node-role">Client-facing catalog live and ready for buyers to browse</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Products visible to buyers in their contracted catalog — filtered by account group</li>
+          <li>Pricing, variants, quantities reflect what was entered during product setup</li>
+          <li>SOAP 1.1 API confirmed by Jesse — ListProducts, GenerateMissingInteropIDs, SaveProducts, SavePriceSchedules</li>
+        </ul>
       </div>
     </div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label">order entered into ERP</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
+<!-- ══ PHASE 2 ══ -->
+<div class="flow-row phase-row no-right">
+  <div class="flow-left">
+    <div class="phase-divider p2">
+      <div class="phase-label">Phase 2 · Order Fulfillment</div>
+      <div class="phase-sub">Buyer places order → Four51 → Sidebar manual entry → Quantum / ERP → ShipStation → Warehouse → Courier → Customer</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 1. BUYER ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node human">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
+          <div class="node-cat">HUMAN</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">External · Client Employee</div>
+          <div class="node-title">Buyer</div>
+          <div class="node-role">Purchasing team, office manager — placing B2B order on behalf of their company</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Needs branded merchandise — hoodies, uniforms, promo items</li>
+          <li>Navigates to their company's Four51 B2B portal URL</li>
+          <li>Logs in with company account credentials</li>
+          <li>Browses catalog filtered to their contracted SKUs and pricing</li>
+          <li>Selects product, chooses variant (size, color, quantity)</li>
+          <li>Reviews cart and submits order</li>
+        </ul>
       </div>
     </div>
-    <div class="flow-right"></div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <!-- ══ 4. QUANTUM ERP ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node system-quantum">
-        <div class="node-header">
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label auto">order submitted → Four51</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ 2. FOUR51 — ORDER ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node system-four51">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="20" height="14" rx="1"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+          <div class="node-cat">PLATFORM</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">B2B Storefront · Order Capture</div>
+          <div class="node-title">Four51</div>
+          <div class="node-role">Storefront, catalog, buyer account management — managed by Sidebar</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Authenticates buyer against their account record</li>
+          <li>Serves catalog filtered to buyer's contracted items and pricing tier</li>
+          <li class="q">Captures order: buyer info, SKUs, quantities, timestamp</li>
+          <li class="q">Assigns order number — stores in Four51 admin queue</li>
+          <li class="q">Sends buyer an automated order confirmation email? — unconfirmed</li>
+        </ul>
+        <div class="step-warn" id="pain-noqueue">
+          <div class="step-warn-icon">⚠</div>
+          <div class="step-warn-content">
+            <div class="step-warn-label">Pain Point — No Automatic Downstream Push (Confirmed)</div>
+            <div class="step-warn-text">Order sits in the Four51 admin queue with no automatic push to ERP. A Sidebar employee must manually check and act. No notification, no SLA visibility.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flow-right">
+    <!-- BOT-06: ORDER DETECTION — ghost -->
+    <div class="sidebot ghost" id="sidebot-06a" data-arms="pain-noqueue">
+      <div class="sidebot-head-wrap">
+        <div class="sidebot-head">
+          <div class="sidebot-head-icon">💡</div>
+          <div class="sidebot-num">SIDE·BOT 6</div>
+          <div class="sidebot-pri">PRIORITY 6</div>
+          <div class="sidebot-head-title">Order Detection + Auto-Bridge</div>
+        </div>
+      </div>
+      <div class="sidebot-body">
+        <ul class="sidebot-list">
+          <li>Polls Four51 for new orders at regular interval</li>
+          <li class="q">Polling frequency <span class="tbc-flag">TBD</span> — every 5 min? 15 min?</li>
+          <li>New order detected → triggers downstream ERP push automatically</li>
+          <li>No human needed to check admin panel</li>
+          <li>Full timestamp log: order received, push attempted, confirmed</li>
+          <li class="q">Failed pushes → alert — Slack/Teams/email <span class="tbc-flag">TBD</span></li>
+        </ul>
+        <div class="sidebot-approach">
+          <div class="sidebot-approach-label">Proposed Approach</div>
+          <div class="approach-option rec">
+            <span class="approach-tag">Option A</span>
+            Four51 SOAP polling → n8n or Python cron → push to ERP (Quantum now, Zoho post-Aug 1)
+          </div>
+          <div class="approach-option">
+            <span class="approach-tag">Option B</span>
+            Four51 webhook if available — push vs. pull. Check if Four51 supports outbound webhooks.
+          </div>
+        </div>
+        <div class="sidebot-build">
+          <div class="sidebot-build-label">Build Estimate</div>
+          <div class="build-row"><span class="build-phase">Build</span><span class="build-val q">~40–80 hrs (ballpark)</span></div>
+          <div class="build-row"><span class="build-phase">Test / Break</span><span class="build-val q">~20 hrs</span></div>
+          <div class="build-row"><span class="build-phase">Ops</span><span class="build-val">Medium — monitor for API changes</span></div>
+        </div>
+        <div class="sidebot-risks">
+          <div class="sidebot-risks-label">Risks</div>
+          <ul class="risk-list">
+            <li>ERP push target changes Aug 1 — bot must handle Quantum and Zoho transition</li>
+            <li>Quantum API write access not confirmed</li>
+          </ul>
+        </div>
+        <div class="bot-tag">Bot-06 · Scope after Bots 01–04</div>
+      </div>
+      <div class="sidebot-legs"><span>↓</span><span>↓</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label warn">⚠ Manual — Sidebar periodically checks Four51 admin for new orders</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ 3. ORDER ENTRY ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node human">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
+          <div class="node-cat">HUMAN</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">Sidebar Employee · Manual Bottleneck</div>
+          <div class="node-title">Order Entry</div>
+          <div class="node-role">Routing orders from Four51 into Quantum ERP manually</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Periodically opens Four51 admin panel to check for new orders</li>
+          <li class="q">Reviews and transcribes order details from Four51 — exact method <span class="tbc-flag">TBC</span></li>
+          <li class="q">Opens Quantum ERP in a separate system and keys the order in — line by line?</li>
+          <li class="q">Confirms order received before closing Four51 — any formal confirmation step?</li>
+        </ul>
+        <div class="step-warn" id="pain-timing">
+          <div class="step-warn-icon">⚠</div>
+          <div class="step-warn-content">
+            <div class="step-warn-label">Pain Point — Timing Gap (Confirmed)</div>
+            <div class="step-warn-text">If the person doing order entry is busy, at lunch, or out, the order waits. No SLA, no escalation, no visibility to the buyer about the delay.</div>
+          </div>
+        </div>
+        <div class="step-question">
+          <div class="step-question-icon">❓</div>
+          <div class="step-question-content">
+            <div class="step-question-label">Unconfirmed — Assumed Risk</div>
+            <div class="step-question-text">Is there an audit trail of when a Four51 order was seen vs. when it was entered into Quantum? Or are delays invisible? Confirm with team — this affects the case for Bot-06.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label auto">order entered into ERP</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ 4. QUANTUM ERP — ORDER ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node system-quantum">
+      <div class="node-header">
+        <div class="node-icon-col">
           <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="8" rx="1"/><rect x="2" y="13" width="20" height="8" rx="1"/><circle cx="19" cy="6" r="1.5"/><circle cx="19" cy="17" r="1.5"/></svg></div>
-          <div>
-            <div class="node-type">ERP · Retiring August 1</div>
-            <div class="node-title">Quantum</div>
-            <div class="node-role">Inventory management, item IDs, order processing — current system of record</div>
-          </div>
+          <div class="node-cat">ERP</div>
         </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Receives manually entered order from Sidebar employee</li>
-            <li>Validates item IDs against master catalog — confirms each SKU exists</li>
-            <li>Checks available inventory — confirms stock can fill the order</li>
-            <li>Assigns items to warehouse pick queue, reduces on-hand count</li>
-            <li>Routes fulfillment request to ShipStation (automated push)</li>
-            <li>Records order status as "in fulfillment"</li>
-          </ul>
-          <div class="step-warn">
-            <div class="step-warn-icon">⚠</div>
-            <div class="step-warn-content">
-              <div class="step-warn-label">Migration Risk — August 1 Deadline</div>
-              <div class="step-warn-text">Quantum is retiring and being replaced by Zoho. Zoho validates every item by interop ID before accepting an order. Any item missing its interop ID = silent order failure at go-live. Estimated ~30K items need to be audited and filled before the cutover.</div>
-            </div>
-          </div>
+        <div class="node-info">
+          <div class="node-type">Order Processing · Retiring August 1</div>
+          <div class="node-title">Quantum</div>
+          <div class="node-role">Inventory management, item IDs, order processing — current system of record</div>
         </div>
       </div>
-    </div>
-    <div class="flow-right">
-      <div class="solution">
-        <div class="sol-header"><div class="sol-icon">💡</div><div class="sol-title">Interop ID Audit + Bulk Fill</div></div>
-        <ul class="sol-list">
-          <li>Use Jesse's Four51 SOAP 1.1 integration to pull all ~30K products in a single API call</li>
-          <li>Script flags every item with a missing or blank interop ID</li>
-          <li>Cross-reference Quantum catalog export — auto-fill high-confidence SKU matches</li>
-          <li>Export remaining gaps into a review queue for Angela + Nicole to approve</li>
-          <li>Batch update filled IDs back to Four51 via Write API</li>
-          <li>Final validation pass: zero blank interop IDs before August 1 cutover</li>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Receives manually entered order from Sidebar employee</li>
+          <li class="q">Validates item IDs against master catalog — exact behavior <span class="tbc-flag">TBC</span></li>
+          <li class="q">Checks available inventory before committing order — confirm</li>
+          <li class="q">Assigns items to warehouse pick queue, reduces on-hand count</li>
+          <li class="q">Routes fulfillment request to ShipStation — automated push? confirm</li>
         </ul>
-        <div class="sol-tag green">✓ In progress — audit.py built</div>
       </div>
     </div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label auto">fulfillment request → ShipStation (automated)</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label q">╌ fulfillment request → ShipStation — automated? confirm with Jesse ╌</div></div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <!-- ══ 5. SHIPSTATION ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node system-ship">
-        <div class="node-header">
+<!-- ══ 5. SHIPSTATION ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node system-ship">
+      <div class="node-header">
+        <div class="node-icon-col">
           <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17l3-10h12l3 10H3z"/><path d="M1 17h22v2a2 2 0 01-2 2H3a2 2 0 01-2-2v-2z"/><path d="M8 17V9M16 17V9" stroke="currentColor" stroke-width="1" fill="none"/></svg></div>
-          <div>
-            <div class="node-type">Platform · Shipping & Fulfillment</div>
-            <div class="node-title">ShipStation</div>
-            <div class="node-role">Label generation, warehouse pick list, carrier tracking, EOD reporting</div>
-          </div>
+          <div class="node-cat">PLATFORM</div>
         </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Receives fulfillment request from Quantum ERP</li>
-            <li>Selects carrier (FedEx, UPS, USPS) based on weight, destination, and service level</li>
-            <li>Generates shipping label — assigns tracking number</li>
-            <li>Creates pick list for warehouse staff</li>
-            <li>Monitors real-time carrier tracking — updates order status as package moves</li>
-            <li>End of each business day: generates EOD shipping report — all packages dispatched</li>
-          </ul>
+        <div class="node-info">
+          <div class="node-type">Shipping + Fulfillment</div>
+          <div class="node-title">ShipStation</div>
+          <div class="node-role">Label generation, pick list, carrier tracking, EOD reporting</div>
         </div>
       </div>
-    </div>
-    <div class="flow-right"><!-- No pain point at ShipStation itself --></div>
-  </div>
-
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label">pick list dispatched to warehouse</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <!-- ══ 6. WAREHOUSE STAFF ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node human">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
-          <div>
-            <div class="node-type">Human · Sidebar Warehouse</div>
-            <div class="node-title">Warehouse Staff</div>
-            <div class="node-role">Pick, pack, label, and hand off — physical fulfillment of the order</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Receives pick list from ShipStation (printed sheet or mobile screen)</li>
-            <li>Locates items on warehouse shelving using item number and bin location</li>
-            <li>Picks correct item, variant, and quantity — verifies against pick list</li>
-            <li>Performs quality check — item matches order, no damage, correct decoration</li>
-            <li>Packs item into appropriate box with protective materials</li>
-            <li>Attaches ShipStation-printed label to outside of box</li>
-            <li>Brings sealed package to loading dock for courier pickup</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="flow-right"><!-- Physical fulfillment — no AI automation target here --></div>
-  </div>
-
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label">package handed off at loading dock</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <!-- ══ 7. COURIER ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node system-courier">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="8" width="15" height="10" rx="1"/><path d="M16 10h4l3 4v4h-7V10z"/><circle cx="5.5" cy="20" r="2"/><circle cx="18.5" cy="20" r="2"/></svg></div>
-          <div>
-            <div class="node-type">External · Carrier</div>
-            <div class="node-title">Courier / Carrier</div>
-            <div class="node-role">FedEx, UPS, or USPS — physical transport to the customer</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Scans package into carrier tracking system at dock pickup</li>
-            <li>Routes package through carrier network to destination</li>
-            <li>Pushes real-time tracking updates back to ShipStation</li>
-            <li>Marks as "delivered" upon confirmed handoff at destination</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label manual">⚠ Manual — Sidebar reads ShipStation EOD report next morning</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
-  </div>
-
-  <!-- ══ 8. SIDEBAR COMMUNICATIONS ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node human">
-        <div class="node-header">
-          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
-          <div>
-            <div class="node-type">Human · Sidebar Employee</div>
-            <div class="node-title">Customer Communications</div>
-            <div class="node-role">Daily shipping confirmation workflow — ~1 hour every morning</div>
-          </div>
-        </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Each morning: opens ShipStation and pulls the previous day's EOD shipping report</li>
-            <li>Cross-references shipped packages against open customer orders</li>
-            <li>Pulls customer contact information and branding assets</li>
-            <li>Manually drafts an individual shipping confirmation email per customer</li>
-            <li>Includes tracking number, item summary, and expected delivery window</li>
-            <li>Reviews draft and sends — repeats for every customer with a shipment that day</li>
-          </ul>
-          <div class="step-warn">
-            <div class="step-warn-icon">⚠</div>
-            <div class="step-warn-content">
-              <div class="step-warn-label">⭐ Automation Target #1 — Jesse's Recommended First Project</div>
-              <div class="step-warn-text">~1 hour of manual work every single morning. 100% repeatable, data-driven, and zero judgment required. Estimated savings: 240+ hours per year.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flow-right">
-      <div class="solution">
-        <div class="sol-header"><div class="sol-icon">💡</div><div class="sol-title">ShipStation EOD Email Automation</div></div>
-        <ul class="sol-list">
-          <li>Connect ShipStation API/webhook to n8n workflow — trigger fires when EOD report is generated</li>
-          <li>Script pulls all shipment data from the report automatically</li>
-          <li>Matches shipped items to customer records — groups by customer account</li>
-          <li>Generates a personalized confirmation email per customer with tracking number and item summary</li>
-          <li>Emails queue for a 5-minute human review before sending — or send fully automatically</li>
-          <li>Frees ~1 hour daily; builds customer trust with faster, more consistent communication</li>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Receives fulfillment request from Quantum ERP</li>
+          <li class="q">Selects carrier: FedEx / UPS / USPS / ? — carriers used <span class="tbc-flag">TBC</span>, confirm with team</li>
+          <li>Generates shipping label — assigns tracking number</li>
+          <li class="q">Creates pick list for warehouse staff — format <span class="tbc-flag">TBC</span> (printed / mobile?)</li>
+          <li>Monitors real-time carrier tracking</li>
+          <li>End of each business day: generates EOD shipping report — confirmed pain point source</li>
         </ul>
-        <div class="sol-tag green">⭐ First project · Est. 2–4 weeks · $2,500–$5,000</div>
       </div>
     </div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <div class="flow-row connector-row">
-    <div class="flow-left">
-      <div class="connector">
-        <div class="conn-line"></div>
-        <div class="conn-label">shipping confirmation email sent to customer</div>
-        <div class="conn-line"></div>
-        <div class="conn-arrow"></div>
-      </div>
-    </div>
-    <div class="flow-right"></div>
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label q">╌ pick list dispatched to warehouse — confirm handoff method ╌</div></div>
   </div>
+  <div class="flow-right"></div>
+</div>
 
-  <!-- ══ 9. CUSTOMER ══ -->
-  <div class="flow-row">
-    <div class="flow-left">
-      <div class="node end">
-        <div class="node-header">
+<!-- ══ 6. WAREHOUSE STAFF ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node human tbc">
+      <div class="node-header">
+        <div class="node-icon-col">
           <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
-          <div>
-            <div class="node-type">Human · Customer — End of Chain</div>
-            <div class="node-title">Buyer's Receiving Team</div>
-            <div class="node-role">Customer warehouse or office staff — receives and confirms delivery</div>
+          <div class="node-cat">HUMAN</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">Sidebar Warehouse · <span class="tbc-flag">T·B·C</span></div>
+          <div class="node-title">Warehouse Staff</div>
+          <div class="node-role">Pick, pack, label, hand off — physical fulfillment — process <span class="tbc-flag">TBC</span></div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li class="q">Receives pick list from ShipStation — format <span class="tbc-flag">TBC</span></li>
+          <li class="q">Locates items on warehouse shelving — bin location system?</li>
+          <li class="q">Picks item, variant, quantity — verifies against pick list</li>
+          <li class="q">Packs and labels — any special packaging per client?</li>
+          <li class="q">Brings to loading dock for courier pickup — schedule <span class="tbc-flag">TBC</span></li>
+        </ul>
+        <div class="step-question">
+          <div class="step-question-icon">❓</div>
+          <div class="step-question-content">
+            <div class="step-question-label">Entire warehouse process <span class="tbc-flag">TBC</span> — Verify with Brandi</div>
+            <div class="step-question-text">How many people on the warehouse floor? Inventory stored/located how? Any existing scan or barcode system?</div>
           </div>
         </div>
-        <div class="node-body">
-          <ul class="step-list">
-            <li>Receives shipping confirmation email from Sidebar with tracking number</li>
-            <li>Tracks package via carrier link — knows expected arrival window</li>
-            <li>Receives physical delivery at their warehouse or office dock</li>
-            <li>Unpacks and spot-checks contents against packing slip / original order</li>
-            <li>Confirms receipt — order cycle complete</li>
-          </ul>
+      </div>
+    </div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label q">╌ package handed off at loading dock — pickup schedule <span class="tbc-flag">TBC</span> ╌</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ 7. CARRIER ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node system-courier">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="8" width="15" height="10" rx="1"/><path d="M16 10h4l3 4v4h-7V10z"/><circle cx="5.5" cy="20" r="2"/><circle cx="18.5" cy="20" r="2"/></svg></div>
+          <div class="node-cat">EXTERNAL</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">Carrier · Physical Transport</div>
+          <div class="node-title">Courier / Carrier</div>
+          <div class="node-role">FedEx / UPS / USPS / ? — confirm which carriers Sidebar actually uses</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Scans package into carrier tracking at dock pickup</li>
+          <li>Routes package through carrier network to destination</li>
+          <li>Pushes real-time tracking updates back to ShipStation</li>
+          <li>Marks as "delivered" upon confirmed handoff</li>
+        </ul>
+        <div class="step-question">
+          <div class="step-question-icon">❓</div>
+          <div class="step-question-content">
+            <div class="step-question-label">Confirm Carriers Used</div>
+            <div class="step-question-text">Which carriers does Sidebar actually use? FedEx, UPS, USPS — or others? Different per shipment type or client contract? Matters for Bot-04 EOD email content.</div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="flow-right"></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label warn">⚠ Manual — Sidebar reads ShipStation EOD report next morning</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ 8. CUSTOMER COMMUNICATIONS ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node human">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
+          <div class="node-cat">HUMAN</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">Sidebar Employee · Daily Manual Workflow</div>
+          <div class="node-title">Customer Communications</div>
+          <div class="node-role">1–3 hrs every morning — confirmed — sends shipping confirmations from ShipStation EOD report</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Each morning: opens ShipStation and pulls previous day's EOD shipping report</li>
+          <li class="q">Cross-references shipped packages against open customer orders — process <span class="tbc-flag">TBC</span></li>
+          <li class="q">Pulls customer contact info and branding assets — where stored?</li>
+          <li>Manually drafts shipping confirmation email per customer</li>
+          <li class="q">Includes tracking number, item summary, expected delivery window — confirm format</li>
+          <li>Reviews draft and sends — repeats for every customer with a shipment that day</li>
+        </ul>
+        <div class="step-warn" id="pain-eod">
+          <div class="step-warn-icon">⚠</div>
+          <div class="step-warn-content">
+            <div class="step-warn-label">⭐ Jesse's Recommended First Demo — Confirmed June 14, 2026</div>
+            <div class="step-warn-text">1–3 hours of manual work every morning. 100% repeatable and data-driven. Jesse specifically called this the best first project — fast to demo, immediate visible value, no migration risk. Est. savings: ~240–720 hrs/year (1–3 hrs/day × ~240 working days — confirm range).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flow-right">
+    <!-- BOT-04: EOD EMAIL — ghost -->
+    <div class="sidebot ghost" id="sidebot-04" data-arms="pain-eod">
+      <div class="sidebot-head-wrap">
+        <div class="sidebot-head">
+          <div class="sidebot-head-icon">💡</div>
+          <div class="sidebot-num">SIDE·BOT 4</div>
+          <div class="sidebot-pri">PRIORITY 4</div>
+          <div class="sidebot-head-title">ShipStation EOD Email Auto</div>
+        </div>
+      </div>
+      <div class="sidebot-body">
+        <ul class="sidebot-list">
+          <li>Pulls ShipStation EOD report → matches to customer records → auto-drafts branded email</li>
+          <li>Personalized per customer: tracking number, items shipped, expected arrival</li>
+          <li>Human review queue before sending — or full auto (team to decide)</li>
+          <li class="q">Each client may need custom email template — how many clients? Branding assets stored where?</li>
+          <li>Jesse called this the recommended first demo — high visible value, low risk</li>
+        </ul>
+        <div class="sidebot-approach">
+          <div class="sidebot-approach-label">Proposed Approach</div>
+          <div class="approach-option rec">
+            <span class="approach-tag">Option A</span>
+            ShipStation API → Python/n8n → email template per client → SendGrid or SMTP → optional human review step
+          </div>
+          <div class="approach-option">
+            <span class="approach-tag">Option B</span>
+            ShipStation webhook (if available) → trigger on EOD report → same pipeline
+          </div>
+        </div>
+        <div class="sidebot-build">
+          <div class="sidebot-build-label">Build Estimate</div>
+          <div class="build-row"><span class="build-phase">Build</span><span class="build-val q">~30–60 hrs (depends on client count + template complexity)</span></div>
+          <div class="build-row"><span class="build-phase">Test / Break</span><span class="build-val q">~20 hrs (delivery, edge cases, bounces)</span></div>
+          <div class="build-row"><span class="build-phase">Ship</span><span class="build-val q">~10 hrs (template setup per client)</span></div>
+          <div class="build-row"><span class="build-phase">Ops</span><span class="build-val">Medium — update templates when client branding changes</span></div>
+        </div>
+        <div class="sidebot-risks">
+          <div class="sidebot-risks-label">Risks / Why It Might Not Work</div>
+          <ul class="risk-list">
+            <li>Each client's email branding may be unique — template count multiplies scope</li>
+            <li>ShipStation API access and EOD report format not yet confirmed</li>
+            <li>Customer contact records location unknown — CRM? Spreadsheet? Four51?</li>
+            <li>Email deliverability: SPF/DKIM must be set up on Sidebar's sending domain</li>
+          </ul>
+        </div>
+        <div class="sidebot-hours">
+          <div class="hours-row"><span class="hours-label">Labor saved:</span><span class="hours-val">~240–720 hrs/year (1–3 hrs/day × ~240 days)</span></div>
+          <div class="hours-row"><span class="hours-label">Confidence:</span><span class="hours-val q">Range is wide — confirm actual daily time w/ Angela/Nicole</span></div>
+        </div>
+        <div class="bot-tag">Bot-04 · ⭐ Best first demo per Jesse · ~30–60 hrs build</div>
+      </div>
+      <div class="sidebot-legs"><span>↓</span><span>↓</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="conn-row"><div class="conn-label auto">shipping confirmation email sent to customer</div></div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+<!-- ══ 9. CUSTOMER / END ══ -->
+<div class="flow-row">
+  <div class="flow-left">
+    <div class="node end">
+      <div class="node-header">
+        <div class="node-icon-col">
+          <div class="node-icon"><svg viewBox="0 0 24 28" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="6" r="5.5"/><path d="M12 14C5.5 14 1 17 1 20v4h22v-4c0-3-4.5-6-11-6z"/></svg></div>
+          <div class="node-cat">HUMAN</div>
+        </div>
+        <div class="node-info">
+          <div class="node-type">Customer · End of Chain</div>
+          <div class="node-title">Buyer's Receiving Team</div>
+          <div class="node-role">Receives and confirms delivery — order cycle complete</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <ul class="step-list">
+          <li>Receives shipping confirmation email with tracking number</li>
+          <li>Tracks package via carrier link</li>
+          <li>Receives physical delivery</li>
+          <li>Unpacks and spot-checks contents against order</li>
+          <li>Confirms receipt — cycle complete ✓</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="flow-right"></div>
+</div>
+
+</div><!-- /flow-canvas -->
+
+<!-- ══ QUESTIONS MASTER LIST ══ -->
+<div class="questions-section">
+  <div class="questions-header">
+    <div class="q-sec-title">❓ Open Questions — Master List</div>
+    <div class="q-sec-sub">Check off as resolved · session-only (no server yet)</div>
   </div>
 
-</div><!-- /flow -->
+  <div class="q-category">
+    <div class="q-cat-label">⚡ Immediate — Can Act Before Brandi Returns</div>
+    <label class="q-item urgent">
+      <input type="checkbox">
+      Can we run a test `ListProducts` SOAP call against Four51 tonight? Need: API auth works, response format, pagination behavior, whether it returns all items or requires batching.
+    </label>
+    <label class="q-item urgent">
+      <input type="checkbox">
+      Do `GenerateMissingInteropIDs` + `GenerateMissingVariantInteropIDs` produce IDs that Zoho will accept? Or must interop IDs match specific Quantum item IDs? This single answer determines Bot-01 scope — ~10 hrs vs ~80 hrs.
+    </label>
+    <label class="q-item urgent">
+      <input type="checkbox">
+      Do you have (or can you get) the Four51 SharedSecret? Only auth needed for the SOAP API. Store in Dashlane only.
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      How many active items does Four51 currently have? (~26–30K estimated — confirm actual number once API access is live.)
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      What tool do we use for the automation layer? n8n, Python scripts, or something else? Weigh in before scoping Bots 2+.
+    </label>
+  </div>
+
+  <div class="q-category">
+    <div class="q-cat-label">Phase 1 — Inbound Supply Chain (Confirm with Brandi, June 22+)</div>
+    <label class="q-item">
+      <input type="checkbox">
+      Who does sourcing and PO management? What are their exact day-to-day roles?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Is PO tracking done by email thread / spreadsheet, or is there a formal PO system?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      What does the inbound receiving process actually look like? Who is on dock, what tools are used, how does handoff to product setup happen?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Who does product data entry in Quantum? Same person as account manager or separate role?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      When a new product is set up in Quantum, does it automatically appear in Four51, or is there a separate publish step?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Who are the primary suppliers Sidebar uses? Preferred vendor list or ad-hoc per client?
+    </label>
+  </div>
+
+  <div class="q-category">
+    <div class="q-cat-label">Phase 2 — Order Fulfillment</div>
+    <label class="q-item">
+      <input type="checkbox">
+      Does Four51 send an automated order confirmation email to the buyer when an order is placed, or is that a manual Sidebar step?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Is the Quantum → ShipStation push automated, or does someone trigger it? What does that connection look like technically?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Who does order entry from Four51 into Quantum? Same person as account manager or a separate ops role?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      What carriers does Sidebar actually use? FedEx / UPS / USPS — or others? Different per client?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      For the EOD email workflow — does the person pull ShipStation manually each morning, or does ShipStation send the report automatically?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Where are customer contact records stored? CRM? Spreadsheet? Four51? This affects Bot-04 architecture significantly.
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      How many active clients are there? Does each receive shipping confirmation emails? Does each have custom email branding?
+    </label>
+  </div>
+
+  <div class="q-category">
+    <div class="q-cat-label">Migration + Tech Stack</div>
+    <label class="q-item">
+      <input type="checkbox">
+      Where does pricing live post-migration — InfoPlus or Zoho? Context doc mentions InfoPlus for sell prices after migration.
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Walk us through the current Quantum → Zoho Books weekly export process. What does Brandi export, clean, and reimport?
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Is there a Quantum API, or is it export-only? Affects whether Bot-06 can write orders into Quantum at all.
+    </label>
+    <label class="q-item">
+      <input type="checkbox">
+      Fred's security requirement: all automation must be local/private or data-isolated. Which bots touch customer PII, and how do we isolate it?
+    </label>
+  </div>
+</div>
 
 <script>
+/* ── DRAW FLOW ARROWS (vertical, node-to-node) ── */
 function drawFlowArrows() {
   const svg = document.getElementById('flow-arrow-svg');
   const canvas = document.getElementById('flow-canvas');
   if (!svg || !canvas) return;
-
-  // Remove previously drawn paths/lines
-  svg.querySelectorAll('path.flow-arrow-path').forEach(e => e.remove());
-
-  // Set SVG height to match full flow div
+  svg.querySelectorAll('path.fap').forEach(e => e.remove());
   const h = canvas.scrollHeight;
-  svg.setAttribute('height', h);
-  svg.style.height = h + 'px';
-
-  const canvasRect = canvas.getBoundingClientRect();
-
-  // All nodes inside .flow-left columns (in DOM order)
+  svg.setAttribute('height', h); svg.style.height = h + 'px';
+  const cr = canvas.getBoundingClientRect();
   const nodes = [...canvas.querySelectorAll('.flow-left .node')];
-  // All connectors inside .flow-left columns (in DOM order)
-  const connectors = [...canvas.querySelectorAll('.flow-row.connector-row .flow-left .connector')];
-
+  const conns = [...canvas.querySelectorAll('.flow-left .conn-row .conn-label')];
   nodes.forEach((node, i) => {
     if (i >= nodes.length - 1) return;
     const next = nodes[i + 1];
-    const conn = connectors[i];
-
+    const conn = conns[i];
     const r1 = node.getBoundingClientRect();
     const r2 = next.getBoundingClientRect();
-
-    const x  = r1.left - canvasRect.left + r1.width / 2;
-    const y1 = r1.bottom - canvasRect.top;
-    const y2 = r2.top - canvasRect.top;
+    const x  = r1.left - cr.left + r1.width * 0.18;
+    const y1 = r1.bottom - cr.top;
+    const y2 = r2.top - cr.top;
     const midY = (y1 + y2) / 2;
-
-    // Determine style from connector label class
-    let stroke = 'rgba(85,85,85,0.7)', marker = 'fah-dim', dashed = false;
+    let stroke = 'rgba(80,80,80,0.6)', marker = 'm-dim', dash = false;
     if (conn) {
-      const lbl = conn.querySelector('.conn-label');
-      if (lbl && lbl.classList.contains('manual')) {
-        stroke = 'rgba(255,214,10,0.45)'; marker = 'fah-warn'; dashed = true;
-      } else if (lbl && lbl.classList.contains('auto')) {
-        stroke = 'rgba(74,143,255,0.45)'; marker = 'fah-auto';
-      }
+      if (conn.classList.contains('warn') || conn.classList.contains('manual')) { stroke = 'rgba(255,214,10,0.55)'; marker = 'm-warn'; dash = true; }
+      else if (conn.classList.contains('auto'))  { stroke = 'rgba(74,143,255,0.55)'; marker = 'm-blue'; }
+      else if (conn.classList.contains('tbc') || conn.classList.contains('q')) { stroke = 'rgba(80,80,80,0.35)'; dash = true; }
     }
-
     const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    p.setAttribute('class', 'flow-arrow-path');
+    p.setAttribute('class', 'fap');
     p.setAttribute('d', `M${x},${y1} C${x},${midY} ${x},${midY} ${x},${y2}`);
     p.setAttribute('fill', 'none');
     p.setAttribute('stroke', stroke);
     p.setAttribute('stroke-width', '1.5');
-    if (dashed) p.setAttribute('stroke-dasharray', '5 4');
+    if (dash) p.setAttribute('stroke-dasharray', '5 4');
     p.setAttribute('marker-end', `url(#${marker})`);
     svg.appendChild(p);
+    if (conn) {
+      const lc = conn.getBoundingClientRect();
+      const lx = lc.left - cr.left;
+      const ly = lc.top - cr.top + lc.height / 2;
+      const lead = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      lead.setAttribute('class', 'fap');
+      lead.setAttribute('d', `M${x},${ly} L${lx - 4},${ly}`);
+      lead.setAttribute('fill', 'none');
+      lead.setAttribute('stroke', stroke);
+      lead.setAttribute('stroke-width', '1');
+      if (dash) lead.setAttribute('stroke-dasharray', '4 3');
+      svg.appendChild(lead);
+    }
   });
 }
 
-function styleNodeTypes() {
-  document.querySelectorAll('.node-type').forEach(el => {
-    const text = el.textContent.trim();
-    const dotIdx = text.indexOf(' · ');
-    const category = dotIdx > -1 ? text.substring(0, dotIdx) : text;
-    const rest     = dotIdx > -1 ? text.substring(dotIdx + 3) : '';
-
-    // Category color: "Human" → #999, everything else → #bbb
-    const catColor = category === 'Human' ? '#999' : '#bbb';
-
-    // In the rest, highlight every occurrence of "Sidebar" in orange
-    const restHtml = rest
-      ? rest.replace(/\bSidebar\b/g, '<span style="color:var(--orange)">Sidebar</span>')
-      : '';
-
-    el.innerHTML = `<span style="color:${catColor};letter-spacing:.18em">${category}</span>`
-      + (restHtml
-          ? ` <span style="color:#555">·</span> <span style="color:#777">${restHtml}</span>`
-          : '');
+/* ── DRAW BOT ARM ARROWS (horizontal: pain → bot) ── */
+function drawBotArms() {
+  const svg = document.getElementById('flow-arrow-svg');
+  const canvas = document.getElementById('flow-canvas');
+  if (!svg || !canvas) return;
+  svg.querySelectorAll('.arm-path').forEach(e => e.remove());
+  const cr = canvas.getBoundingClientRect();
+  document.querySelectorAll('.sidebot[data-arms]').forEach(bot => {
+    const armIds = bot.dataset.arms.split(',').map(s => s.trim()).filter(Boolean);
+    const body = bot.querySelector('.sidebot-body');
+    if (!body) return;
+    const isGhost = bot.classList.contains('ghost');
+    const bodyR = body.getBoundingClientRect();
+    const botLeft = bodyR.left - cr.left;
+    const botMidY = bodyR.top - cr.top + bodyR.height * 0.35;
+    armIds.forEach((id, idx) => {
+      const target = document.getElementById(id);
+      if (!target) return;
+      const tr = target.getBoundingClientRect();
+      const x1 = tr.right - cr.left + 3;
+      const y1 = tr.top - cr.top + tr.height / 2;
+      const x2 = botLeft - 3;
+      const spread = armIds.length > 1 ? (idx - (armIds.length - 1) / 2) * 26 : 0;
+      const y2 = botMidY + spread;
+      const midX = x1 + (x2 - x1) * 0.6;
+      const strokeColor = isGhost ? 'rgba(255,153,0,0.6)' : 'rgba(255,153,0,0.85)';
+      const markerRef = isGhost ? 'm-bot-ghost' : 'm-bot';
+      const sw = isGhost ? '2' : '2.5';
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('class', 'arm-path');
+      p.setAttribute('d', `M${x1},${y1} C${midX},${y1} ${midX},${y2} ${x2},${y2}`);
+      p.setAttribute('fill', 'none');
+      p.setAttribute('stroke', strokeColor);
+      p.setAttribute('stroke-width', sw);
+      p.setAttribute('marker-end', `url(#${markerRef})`);
+      svg.appendChild(p);
+    });
   });
 }
 
-window.addEventListener('load',   () => { setTimeout(drawFlowArrows, 150); styleNodeTypes(); });
-window.addEventListener('resize', () => setTimeout(drawFlowArrows, 80));
+function redraw() { drawFlowArrows(); drawBotArms(); }
+window.addEventListener('load', () => setTimeout(redraw, 200));
+window.addEventListener('resize', () => setTimeout(redraw, 80));
 </script>
+
+<script src="../../LifeOS/design-system/header.js" defer></script>
+
 </body>
 </html>
