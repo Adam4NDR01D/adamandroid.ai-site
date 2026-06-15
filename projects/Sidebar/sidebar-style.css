@@ -13,8 +13,8 @@
    so CSS is linked, never inlined.
    ============================================================ */
 
-@import url('/Users/adamandroid/Ai/LifeOS/design-system/variables.css');
-@import url('/Users/adamandroid/Ai/LifeOS/design-system/components.css');
+@import url('design-system/variables.css');
+@import url('design-system/components.css');
 
 /* ── Project identity ───────────────────────────────────── */
 /* Sidebar corporate red (#cc3333, from their logo). Overrides
