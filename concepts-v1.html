@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdamAndroid — Visual Concepts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --orange: #FF9900; --red: #FF6600;
+      --bg: #0f0f0f; --surface: #161616;
+      --border: #1e1e1e; --muted: #777;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg); color: #fff;
+      padding: 80px 60px; max-width: 1100px; margin: 0 auto;
+    }
+
+    .page-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--orange);
+      display: block; margin-bottom: 14px;
+    }
+    h1 {
+      font-size: 36px; font-weight: 800; letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+    .intro { font-size: 15px; color: var(--muted); max-width: 540px; line-height: 1.7; margin-bottom: 80px; }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 100px; }
+    .section-head {
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--orange);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── CONCEPT GRID ── */
+    .concept-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .concept-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 48px 28px 32px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .concept-card.featured { border-color: rgba(255,153,0,0.25); background: #130f08; }
+    .concept-display { margin-bottom: 28px; min-height: 140px; display: flex; align-items: center; justify-content: center; }
+    .concept-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; text-align: center; }
+    .concept-name { font-size: 15px; font-weight: 700; margin-bottom: 10px; text-align: center; letter-spacing: -0.3px; }
+    .concept-desc { font-size: 12px; color: var(--muted); line-height: 1.65; text-align: center; max-width: 180px; }
+
+    /* ── ORBIT ANIMATION ── */
+    @keyframes orbit {
+      from { transform: rotate(0deg) translate(20px) rotate(0deg); }
+      to   { transform: rotate(360deg) translate(20px) rotate(-360deg); }
+    }
+    .orbiting-asterisk {
+      transform-origin: 0 0;
+      animation: orbit 6s linear infinite;
+    }
+
+    /* ── NOTES PANEL ── */
+    .notes {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      border-radius: 12px; padding: 28px 32px; margin-top: 20px;
+    }
+    .notes h4 { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; }
+    .notes ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .notes li { font-size: 13px; color: var(--muted); line-height: 1.65; padding-left: 18px; position: relative; }
+    .notes li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-size: 11px; }
+
+    /* ── SUBSTACK PANEL ── */
+    .substack-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 48px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    .substack-panel h2 { font-size: 32px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; }
+    .substack-panel h2 span { color: var(--orange); }
+    .substack-panel p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 12px; }
+    .substack-panel p:last-child { margin-bottom: 0; }
+    .substack-mark { display: flex; align-items: center; justify-content: center; }
+
+    @media (max-width: 800px) {
+      body { padding: 40px 24px; }
+      .concept-grid { grid-template-columns: 1fr; }
+      .substack-panel { grid-template-columns: 1fr; gap: 32px; }
+      .substack-mark { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header style="margin-bottom:80px">
+  <span class="page-tag">AdamAndroid.ai — Visual Concepts · Working File</span>
+  <h1>Brand Explorations</h1>
+  <p class="intro">Two new visual concepts: the traffic cone mark (crossing guard symbol, site/brand use) and the pale blue dot head (Substack/writing persona). Neither is finished — this is the sketch stage.</p>
+</header>
+
+
+<!-- ── CONCEPT 1: TRAFFIC CONE ── -->
+<section class="section">
+  <p class="section-head">01 — The Cone Mark</p>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:32px;max-width:520px;line-height:1.65;">
+    Key fixes from v1: flat/rounded top (not a sharp wizard-hat point), squatter proportions, and a wider, heavier base plate that reads immediately as CONE not hat. The base is now visually dominant.
+  </p>
+
+  <div class="concept-grid">
+
+    <!-- Cone A: Classic two-stripe, tight proportions -->
+    <div class="concept-card">
+      <div class="concept-display">
+        <svg width="90" height="120" viewBox="0 0 120 148" fill="none">
+          <defs>
+            <linearGradient id="cone-a2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FFA820"/>
+              <stop offset="100%" stop-color="#EE5500"/>
+            </linearGradient>
+          </defs>
+          <!-- Base plate — wide, below everything, clearly distinct -->
+          <rect x="2" y="124" width="116" height="20" rx="3" fill="#BB3300"/>
+          <!-- Slightly lighter top edge of base for 3D -->
+          <rect x="2" y="124" width="116" height="4" rx="2" fill="#DD4400"/>
+          <!-- Cone body: flat-top trapezoid, squatter than v1 -->
+          <!-- Top: 48–72 (24px flat). Bottom: 8–112 (104px). Height: 112px. ratio ≈1.08:1 — classic cone -->
+          <path d="M 48 14 L 72 14 L 110 124 L 10 124 Z" fill="url(#cone-a2)"/>
+          <!-- Rounded flat cap at top -->
+          <ellipse cx="60" cy="15" rx="13" ry="6" fill="#FFA820"/>
+          <!-- Upper white stripe -->
+          <path d="M 31 62 L 89 62 L 93 74 L 27 74 Z" fill="white" opacity="0.93"/>
+          <!-- Lower white stripe -->
+          <path d="M 21 90 L 99 90 L 102 102 L 18 102 Z" fill="white" opacity="0.88"/>
+          <!-- Small asterisk above upper stripe -->
+          <g stroke="white" stroke-width="2.2" stroke-linecap="round" transform="translate(60, 41)">
+            <line x1="0" y1="-9" x2="0" y2="9"/>
+            <line x1="-7.8" y1="-4.5" x2="7.8" y2="4.5"/>
+            <line x1="-7.8" y1="4.5" x2="7.8" y2="-4.5"/>
+          </g>
+        </svg>
+      </div>
+      <p class="concept-label">Variant A</p>
+      <p class="concept-name">Classic Two-Stripe</p>
+      <p class="concept-desc">Flat top, wide base, two reflective stripes. Reads as traffic cone immediately.</p>
+    </div>
+
+    <!-- Cone B: Bold single-stripe, large asterisk as hero -->
+    <div class="concept-card featured">
+      <div class="concept-display">
+        <svg width="90" height="120" viewBox="0 0 120 148" fill="none">
+          <defs>
+            <linearGradient id="cone-b2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FFB030"/>
+              <stop offset="100%" stop-color="#EE5500"/>
+            </linearGradient>
+          </defs>
+          <!-- Base plate -->
+          <rect x="2" y="124" width="116" height="20" rx="3" fill="#BB3300"/>
+          <rect x="2" y="124" width="116" height="4" rx="2" fill="#DD4400"/>
+          <!-- Cone body — same proportions -->
+          <path d="M 48 14 L 72 14 L 110 124 L 10 124 Z" fill="url(#cone-b2)"/>
+          <!-- Rounded flat cap -->
+          <ellipse cx="60" cy="15" rx="13" ry="6" fill="#FFB030"/>
+          <!-- Single stripe, lower third -->
+          <path d="M 20 96 L 100 96 L 103 108 L 17 108 Z" fill="white" opacity="0.90"/>
+          <!-- Large bold asterisk — the hero element, centered in cone body -->
+          <g stroke="white" stroke-width="4" stroke-linecap="round" transform="translate(60, 62)">
+            <line x1="0" y1="-18" x2="0" y2="18"/>
+            <line x1="-15.6" y1="-9" x2="15.6" y2="9"/>
+            <line x1="-15.6" y1="9" x2="15.6" y2="-9"/>
+          </g>
+        </svg>
+      </div>
+      <p class="concept-label">Variant B · Recommended</p>
+      <p class="concept-name">Asterisk as Identity</p>
+      <p class="concept-desc">The * IS the cone. Bold, centered, ownable. One stripe anchors the base.</p>
+    </div>
+
+    <!-- Cone C: Outline / minimal — flat top fixes wizard hat problem -->
+    <div class="concept-card">
+      <div class="concept-display">
+        <svg width="90" height="120" viewBox="0 0 120 148" fill="none">
+          <defs>
+            <linearGradient id="cone-c2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+          </defs>
+          <!-- Base outline — wide and present -->
+          <rect x="2" y="124" width="116" height="20" rx="3" fill="none" stroke="url(#cone-c2)" stroke-width="3"/>
+          <!-- Cone outline — flat top makes it clearly a cone, not hat -->
+          <path d="M 48 14 L 72 14 L 110 124 L 10 124 Z" fill="none" stroke="url(#cone-c2)" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Flat top cap line (makes truncated top visible in outline) -->
+          <line x1="48" y1="14" x2="72" y2="14" stroke="#FF9900" stroke-width="5" stroke-linecap="round"/>
+          <!-- Single stripe outline -->
+          <path d="M 20 96 L 100 96 L 103 108 L 17 108 Z" fill="none" stroke="#FF9900" stroke-width="1.5" opacity="0.5"/>
+          <!-- Asterisk in orange -->
+          <g stroke="#FF9900" stroke-width="2.8" stroke-linecap="round" transform="translate(60, 62)">
+            <line x1="0" y1="-16" x2="0" y2="16"/>
+            <line x1="-13.9" y1="-8" x2="13.9" y2="8"/>
+            <line x1="-13.9" y1="8" x2="13.9" y2="-8"/>
+          </g>
+        </svg>
+      </div>
+      <p class="concept-label">Variant C</p>
+      <p class="concept-name">Outline / Minimal</p>
+      <p class="concept-desc">Flat top cap + wide base outline removes the hat reading. Works on any background.</p>
+    </div>
+
+  </div>
+
+  <div class="notes">
+    <h4>Cone Notes</h4>
+    <ul>
+      <li>v1 problem: sharp triangular point + tall narrow ratio = wizard hat. Fixed with: flat truncated top, squat 1.1:1 body ratio, and a heavy base plate that reads as cone base, not hat brim.</li>
+      <li>The cone + head mark relationship: head = who we are, cone = what we carry (signal, caution, guidance). Two marks, one brand.</li>
+      <li>The asterisk embedded in the cone is the same * from "Help Humans, Ride Robots*" — it's becoming a brand device throughout.</li>
+      <li>The head-wearing-a-cone variant (hat as joke/play) is a separate concept for later — noted.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ── CONCEPT 2: PALE BLUE DOT HEAD ── -->
+<section class="section">
+  <p class="section-head">02 — The Pale Blue Dot · Substack Persona</p>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:32px;max-width:520px;line-height:1.65;">
+    The head mark ends at y=215 in its 180×220 viewBox. The dot sits <em>below</em> the chin — where the throat is, where a bowtie knots — in clear space. Not overlapping. Not the mouth. Below.
+  </p>
+
+  <div class="concept-grid">
+
+    <!-- Variant A: dot below chin, close — bowtie tight -->
+    <div class="concept-card">
+      <div class="concept-display">
+        <!-- viewBox extends to 290 so head (0–220) + gap + dot + space fits -->
+        <svg width="90" height="145" viewBox="0 0 180 290" fill="none">
+          <defs>
+            <linearGradient id="og-pbd-a" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+            <radialGradient id="earth-a" cx="35%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#C8E4F5"/>
+              <stop offset="50%" stop-color="#7BAFD4"/>
+              <stop offset="100%" stop-color="#3A7AAF"/>
+            </radialGradient>
+          </defs>
+          <!-- Head mark — bottom of outer ellipse = cy110 + ry105 = y215 -->
+          <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og-pbd-a)" stroke-width="11"/>
+          <circle cx="62" cy="95" r="32" stroke="url(#og-pbd-a)" stroke-width="11"/>
+          <circle cx="114" cy="89" r="43" stroke="url(#og-pbd-a)" stroke-width="11"/>
+          <!-- Gap: chin ends at ~215. Dot sits at 248 — clear below-chin space -->
+          <circle cx="90" cy="248" r="10" fill="url(#earth-a)" opacity="0.95"/>
+          <circle cx="90" cy="248" r="15" fill="#7BAFD4" opacity="0.07"/>
+          <!-- Static asterisk beside dot -->
+          <text x="108" y="242" fill="white" font-size="10" font-weight="800" opacity="0.75" font-family="Inter, sans-serif">✱</text>
+        </svg>
+      </div>
+      <p class="concept-label">Variant A</p>
+      <p class="concept-name">Bowtie — Close</p>
+      <p class="concept-desc">Dot sits tight below the chin, like a bowtie knot just below the collar. Clear separation from head.</p>
+    </div>
+
+    <!-- Variant B: dot below, animated orbit -->
+    <div class="concept-card featured">
+      <div class="concept-display">
+        <svg width="90" height="145" viewBox="0 0 180 290" fill="none" style="overflow:visible">
+          <defs>
+            <linearGradient id="og-pbd-b" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+            <radialGradient id="earth-b" cx="35%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#C8E4F5"/>
+              <stop offset="45%" stop-color="#7BAFD4"/>
+              <stop offset="100%" stop-color="#3A7AAF"/>
+            </radialGradient>
+            <radialGradient id="sun-glow-b" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FF9900" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#FF9900" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="earth-glow-b" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#7BAFD4" stop-opacity="0.22"/>
+              <stop offset="100%" stop-color="#7BAFD4" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Warm glow behind head -->
+          <circle cx="90" cy="110" r="96" fill="url(#sun-glow-b)"/>
+
+          <!-- Head mark — bottom of outer ellipse = y215 -->
+          <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og-pbd-b)" stroke-width="12"/>
+          <circle cx="62" cy="95" r="32" stroke="url(#og-pbd-b)" stroke-width="12"/>
+          <circle cx="114" cy="89" r="43" stroke="url(#og-pbd-b)" stroke-width="12"/>
+
+          <!-- Faint orbit ring around dot -->
+          <circle cx="90" cy="252" r="22" stroke="rgba(255,255,255,0.05)" stroke-width="1" fill="none" stroke-dasharray="2 5"/>
+
+          <!-- Earth glow -->
+          <circle cx="90" cy="252" r="20" fill="url(#earth-glow-b)"/>
+
+          <!-- BACK asterisk — JS drives font-size each frame -->
+          <text id="ast-varb-back" x="90" y="252" fill="white" font-size="9.5" font-weight="700"
+            font-family="Inter,sans-serif" opacity="0" text-anchor="middle" dominant-baseline="middle">✱</text>
+
+          <!-- Pale blue dot — in the middle of the SVG stack -->
+          <circle cx="90" cy="252" r="10" fill="url(#earth-b)"/>
+          <circle cx="90" cy="252" r="11.5" fill="none" stroke="#C8E4F5" stroke-width="0.7" opacity="0.35"/>
+
+          <!-- FRONT asterisk — JS drives font-size each frame -->
+          <text id="ast-varb-front" x="90" y="252" fill="white" font-size="9.5" font-weight="700"
+            font-family="Inter,sans-serif" opacity="0.85" text-anchor="middle" dominant-baseline="middle">✱</text>
+        </svg>
+      </div>
+      <p class="concept-label">Variant B · Recommended</p>
+      <p class="concept-name">Throat Chakra · Animated</p>
+      <p class="concept-desc">Head ends at y=215. Dot at y=252 — distinct space below the chin, like a bowtie. Asterisk orbits. Voice, presence, Earth.</p>
+    </div>
+
+    <!-- Variant C: more breathing room, tagline -->
+    <div class="concept-card">
+      <div class="concept-display">
+        <svg width="90" height="145" viewBox="0 0 180 310" fill="none">
+          <defs>
+            <linearGradient id="og-pbd-c" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#FF9900"/>
+              <stop offset="100%" stop-color="#FF6600"/>
+            </linearGradient>
+            <radialGradient id="earth-c" cx="35%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#C8E4F5"/>
+              <stop offset="50%" stop-color="#7BAFD4"/>
+              <stop offset="100%" stop-color="#3A7AAF"/>
+            </radialGradient>
+          </defs>
+          <!-- Faint stars -->
+          <circle cx="22" cy="18" r="1" fill="white" opacity="0.18"/>
+          <circle cx="158" cy="30" r="0.8" fill="white" opacity="0.12"/>
+          <circle cx="168" cy="195" r="1" fill="white" opacity="0.1"/>
+          <circle cx="12" cy="240" r="0.7" fill="white" opacity="0.13"/>
+
+          <!-- Head mark -->
+          <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og-pbd-c)" stroke-width="11"/>
+          <circle cx="62" cy="95" r="32" stroke="url(#og-pbd-c)" stroke-width="11"/>
+          <circle cx="114" cy="89" r="43" stroke="url(#og-pbd-c)" stroke-width="11"/>
+
+          <!-- More breathing room — dot at 262 -->
+          <circle cx="90" cy="262" r="9" fill="url(#earth-c)" opacity="0.92"/>
+          <circle cx="90" cy="262" r="14" fill="#7BAFD4" opacity="0.07"/>
+
+          <!-- Asterisk -->
+          <text x="107" y="257" fill="white" font-size="9" font-weight="700" opacity="0.7" font-family="Inter">✱</text>
+
+          <!-- Tagline below -->
+          <text x="90" y="286" fill="#2A3D50" font-size="6.5" text-anchor="middle" font-family="Inter" letter-spacing="2.5" font-weight="600">WE SPEAK FOR EARTHLINGS</text>
+        </svg>
+      </div>
+      <p class="concept-label">Variant C</p>
+      <p class="concept-name">With Tagline</p>
+      <p class="concept-desc">More air between chin and dot. Tagline sits quietly beneath. Substack header format.</p>
+    </div>
+
+  </div>
+
+  <div class="notes">
+    <h4>Pale Blue Dot Notes</h4>
+    <ul>
+      <li>The outer ellipse of the head mark bottoms out at y=215 (cy=110 + ry=105). The dot sits at y=248–262 — well below, in its own space. Never overlapping.</li>
+      <li>The throat chakra in yogic tradition governs voice, truth, and authentic expression — exactly what the Substack is. The dot at the throat says: <em>this is where we speak from.</em></li>
+      <li>Visually it reads like a bowtie knot — dressed, grounded, present. Not floating. Not flying away.</li>
+      <li>The orbiting white asterisk traces a path around the Earth. Slow, quiet attention to what's small and here.</li>
+      <li>This mark lives on Substack, not the homepage. It's the writing persona — a different register than the consulting brand.</li>
+      <li>"We speak for earthlings" — presence-forward, not opposition-forward. Here & now.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ── SUBSTACK DIRECTION ── -->
+<section class="section">
+  <p class="section-head">03 — Substack · The Writing Persona</p>
+
+  <div class="substack-panel">
+    <div>
+      <h2>Be Here.<br><span>Build Now.</span></h2>
+      <p>
+        The future gets all the attention. The present does all the work. This Substack is about showing up — for the humans who are here, the problems that are real, the tools that already exist and mostly go unused.
+      </p>
+      <p>
+        Not a critique of what's being built elsewhere. An invitation to notice what's needed right here. Lunch. Connection. A clear path through the noise.
+      </p>
+      <p style="color: #FF9900; font-size: 13px; font-weight: 600; margin-top: 20px;">
+        "Let's build tools for humans." — the throughline.
+      </p>
+    </div>
+    <div class="substack-mark">
+      <!-- Head mark (sun) + pale blue dot below chin — viewBox extends to 320 -->
+      <!-- Head translate(20,10): ellipse bottom = 10+110+105 = 225. Dot at 278 = 53px clear below chin. -->
+      <svg width="155" height="230" viewBox="0 0 220 320" fill="none" style="overflow:visible">
+        <defs>
+          <linearGradient id="og-sub" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FF9900"/>
+            <stop offset="100%" stop-color="#FF6600"/>
+          </linearGradient>
+          <radialGradient id="earth-sub" cx="35%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#C8E4F5"/>
+            <stop offset="50%" stop-color="#7BAFD4"/>
+            <stop offset="100%" stop-color="#3A7AAF"/>
+          </radialGradient>
+          <radialGradient id="sun-sub" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FF9900" stop-opacity="0.08"/>
+            <stop offset="100%" stop-color="#FF9900" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="earth-glow-sub" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#7BAFD4" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#7BAFD4" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Stars -->
+        <circle cx="20" cy="28" r="1" fill="white" opacity="0.18"/>
+        <circle cx="198" cy="18" r="0.8" fill="white" opacity="0.13"/>
+        <circle cx="208" cy="190" r="1" fill="white" opacity="0.09"/>
+        <circle cx="8" cy="250" r="0.8" fill="white" opacity="0.11"/>
+        <circle cx="200" cy="290" r="0.7" fill="white" opacity="0.08"/>
+
+        <!-- Sun glow behind head -->
+        <circle cx="110" cy="125" r="110" fill="url(#sun-sub)"/>
+
+        <!-- Head mark — translate(20,10) so ellipse bottom = 10+110+105 = 225 -->
+        <g transform="translate(20, 10)">
+          <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og-sub)" stroke-width="11"/>
+          <circle cx="62" cy="95" r="32" stroke="url(#og-sub)" stroke-width="11"/>
+          <circle cx="114" cy="89" r="43" stroke="url(#og-sub)" stroke-width="11"/>
+        </g>
+
+        <!-- Clear space below chin: 225 to 278 = 53px gap -->
+        <!-- Orbit ring around dot -->
+        <circle cx="110" cy="278" r="26" stroke="rgba(255,255,255,0.05)" stroke-width="1" fill="none" stroke-dasharray="2 6"/>
+
+        <!-- Earth glow -->
+        <circle cx="110" cy="278" r="24" fill="url(#earth-glow-sub)"/>
+
+        <!-- BACK asterisk — JS drives font-size each frame -->
+        <text id="ast-sub-back" x="110" y="278" fill="white" font-size="11" font-weight="700"
+          font-family="Inter,sans-serif" opacity="0" text-anchor="middle" dominant-baseline="middle">✱</text>
+
+        <!-- Pale blue dot -->
+        <circle cx="110" cy="278" r="11" fill="url(#earth-sub)"/>
+        <circle cx="110" cy="278" r="12.5" fill="none" stroke="#C8E4F5" stroke-width="0.7" opacity="0.3"/>
+
+        <!-- FRONT asterisk — JS drives font-size each frame -->
+        <text id="ast-sub-front" x="110" y="278" fill="white" font-size="11" font-weight="700"
+          font-family="Inter,sans-serif" opacity="0.85" text-anchor="middle" dominant-baseline="middle">✱</text>
+
+        <!-- Tagline -->
+        <text x="110" y="308" fill="#1E3040" font-size="7" text-anchor="middle" font-family="Inter" letter-spacing="3" font-weight="600">WE SPEAK FOR EARTHLINGS</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<script>
+// Orbit engine with perspective scaling.
+// size = minSize + (maxSize - minSize) * (z + 1) / 2
+// At z=-1 (fully behind): minSize. At z=0 (side, switch point): midpoint. At z=+1 (fully front): maxSize.
+// Both elements share the same computed size at every frame — no jump at the switch.
+
+function startOrbit(backId, frontId, cx, cy, rx, ry, speed, minSize, maxSize) {
+  var back  = document.getElementById(backId);
+  var front = document.getElementById(frontId);
+  if (!back || !front) return;
+
+  var angle = Math.random() * Math.PI * 2;
+
+  function tick() {
+    angle += speed;
+    var x = cx + rx * Math.cos(angle);
+    var y = cy + ry * Math.sin(angle);
+    var z = Math.sin(angle); // -1 = behind, +1 = in front
+
+    // Continuous size — identical for both elements at every moment
+    var size = (minSize + (maxSize - minSize) * (z + 1) / 2).toFixed(2);
+
+    back.setAttribute('x', x);  back.setAttribute('y', y);  back.setAttribute('font-size', size);
+    front.setAttribute('x', x); front.setAttribute('y', y); front.setAttribute('font-size', size);
+
+    // Hard switch at z=0, no fade
+    front.setAttribute('opacity', z >= 0 ? '0.85' : '0');
+    back.setAttribute('opacity',  z <  0 ? '0.85' : '0');
+
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+startOrbit('ast-varb-back', 'ast-varb-front', 90,  252, 22, 9,  0.022, 7, 12);
+startOrbit('ast-sub-back',  'ast-sub-front',  110, 278, 26, 11, 0.018, 8, 14);
+</script>
+
+</body>
+</html>
