@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdamOS · SIDEBAR Project Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── AdamAndroid Design System Variables ───────────── */
+    :root {
+      --bg:       #080808;
+      --surface:  #0f0f0f;
+      --surface2: #151515;
+      --border:   #1e1e1e;
+      --border2:  #2a2a2a;
+      --border3:  #3a3a3a;
+      --text:     #e2e2e2;
+      --dim:      #555;
+      --dim-mid:  #777;
+      --dim2:     #333;
+      --red:        #ff3b3b;
+      --red-bg:     #ff3b3b12;
+      --red-border: #ff3b3b30;
+      --yellow:        #ffd60a;
+      --yellow-bg:     #ffd60a10;
+      --yellow-border: #ffd60a30;
+      --green:        #00e87a;
+      --green-bg:     #00e87a10;
+      --green-border: #00e87a30;
+      --orange:        #FF9900;
+      --orange-bg:     #FF990010;
+      --orange-border: #FF990030;
+      --blue:        #4a8fff;
+      --blue-bg:     #4a8fff10;
+      --blue-border: #4a8fff30;
+      --purple:        #9b6dff;
+      --purple-bg:     #9b6dff10;
+      --purple-border: #9b6dff30;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Syne', sans-serif;
+      --display: 'Comfortaa', cursive;
+    }
+
+    /* ── Reset ──────────────────────────────────────────── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* ── Topbar ─────────────────────────────────────────── */
+    .topbar { position: sticky; top: 0; z-index: 100; background: #080808ee; backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .topbar-inner { max-width: 1240px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .logo { font-family: var(--mono); font-size: 13px; color: var(--orange); letter-spacing: 0.15em; text-transform: uppercase; flex-shrink: 0; }
+    .date-pill { font-family: var(--mono); font-size: 10px; color: var(--dim); padding: 4px 10px; border: 1px solid var(--border2); letter-spacing: 0.1em; flex-shrink: 0; }
+    .topbar-project { font-family: var(--mono); font-size: 13px; color: var(--red); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; flex-shrink: 0; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .status-label { font-family: var(--mono); font-size: 9px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; }
+    .topbar-badge { font-family: var(--mono); font-size: 9px; color: var(--orange); border: 1px solid var(--orange-border); padding: 3px 9px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--orange-bg); }
+    .topbar-badge.yellow { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+
+    /* ── Nav tabs ───────────────────────────────────────── */
+    .nav-tabs { border-bottom: 1px solid var(--border); }
+    .nav-tabs-inner { max-width: 1240px; margin: 0 auto; padding: 0 24px; display: flex; overflow-x: auto; scrollbar-width: none; }
+    .nav-tabs-inner::-webkit-scrollbar { display: none; }
+    .nav-tab { font-family: var(--mono); font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; padding: 10px 18px; color: #777; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; margin-bottom: -1px; user-select: none; display: flex; align-items: center; gap: 7px; }
+    .nav-tab:hover { color: var(--text); }
+    .nav-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+    .tab-icon { font-size: 11px; opacity: 0.6; }
+    .nav-tab.active .tab-icon { opacity: 1; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── Layout ─────────────────────────────────────────── */
+    .layout { max-width: 1240px; margin: 0 auto; padding: 24px; }
+
+    /* ── Panel ──────────────────────────────────────────── */
+    .panel { border: 1px solid var(--border); background: var(--surface); margin-bottom: 16px; }
+    .panel-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .panel-title { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); display: flex; align-items: center; gap: 8px; }
+    .panel-title .accent { color: var(--text); font-size: 9px; }
+    .panel-body { padding: 18px; }
+
+    /* ── Grid helpers ───────────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    @media (max-width: 960px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } }
+
+    /* ── Section label ──────────────────────────────────── */
+    .section-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── Priority badges ────────────────────────────────── */
+    .priority { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border: 1px solid; margin-bottom: 6px; }
+    .priority.red    { color: var(--red);    border-color: var(--red-border);    background: var(--red-bg); }
+    .priority.yellow { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .priority.green  { color: var(--green);  border-color: var(--green-border);  background: var(--green-bg); }
+    .priority.orange { color: var(--orange); border-color: var(--orange-border); background: var(--orange-bg); }
+    .priority.blue   { color: var(--blue);   border-color: var(--blue-border);   background: var(--blue-bg); }
+    .priority-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ── Alerts ─────────────────────────────────────────── */
+    .alert { padding: 12px 14px; border: 1px solid; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+    .alert.yellow { border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .alert.red    { border-color: var(--red-border);    background: var(--red-bg); }
+    .alert.green  { border-color: var(--green-border);  background: var(--green-bg); }
+    .alert.orange { border-color: var(--orange-border); background: var(--orange-bg); }
+    .alert-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .alert-text { font-family: var(--mono); font-size: 10px; line-height: 1.65; }
+    .alert.yellow .alert-text { color: var(--yellow); }
+    .alert.red    .alert-text { color: var(--red); }
+    .alert.green  .alert-text { color: var(--green); }
+    .alert.orange .alert-text { color: var(--orange); }
+
+    /* ── Stats row ──────────────────────────────────────── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+    .stat-card { background: var(--surface2); border: 1px solid var(--border); padding: 14px 16px; }
+    .stat-value { font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .stat-value.orange { color: var(--orange); }
+    .stat-value.red    { color: var(--red); }
+    .stat-value.yellow { color: var(--yellow); }
+    .stat-value.green  { color: var(--green); }
+    .stat-label { font-family: var(--mono); font-size: 9px; color: var(--dim); letter-spacing: 0.12em; text-transform: uppercase; }
+    .stat-desc  { font-family: var(--mono); font-size: 9px; color: #777; margin-top: 5px; line-height: 1.5; }
+
+    /* ── Flowchart ──────────────────────────────────────── */
+    .flowchart { padding: 4px 0 8px; }
+    .flow-section-label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+    .flow-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0; margin-bottom: 4px; }
+    .flow-node { background: var(--surface2); border: 1px solid var(--border2); padding: 9px 12px; font-family: var(--mono); text-align: center; min-width: 110px; }
+    .flow-node.orange { border-color: var(--orange-border); background: var(--orange-bg); }
+    .flow-node.red    { border-color: var(--red-border);    background: var(--red-bg); }
+    .flow-node.yellow { border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .flow-node.green  { border-color: var(--green-border);  background: var(--green-bg); }
+    .flow-node.blue   { border-color: var(--blue-border);   background: var(--blue-bg); }
+    .flow-node-cat  { font-size: 7px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2px; }
+    .flow-node-name { font-family: var(--display); font-size: 11px; font-weight: 700; letter-spacing: 0.03em; }
+    .flow-node.orange .flow-node-name { color: var(--orange); }
+    .flow-node.red    .flow-node-name { color: var(--red); }
+    .flow-node.yellow .flow-node-name { color: var(--yellow); }
+    .flow-node.green  .flow-node-name { color: var(--green); }
+    .flow-node.blue   .flow-node-name { color: var(--blue); }
+    .flow-node-sub  { font-size: 8px; color: #777; margin-top: 2px; line-height: 1.4; }
+    .flow-arrow { font-family: var(--mono); color: var(--dim); padding: 0 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 56px; }
+    .flow-arrow > span:not(.flow-arrow-label) { font-size: 0; display: block; width: 100%; height: 12px; position: relative; }
+    .flow-arrow > span:not(.flow-arrow-label)::before { content: ''; position: absolute; top: 50%; left: 0; right: 7px; height: 1px; background: var(--dim); transform: translateY(-50%); }
+    .flow-arrow > span:not(.flow-arrow-label)::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); border-left: 6px solid var(--dim); border-top: 3px solid transparent; border-bottom: 3px solid transparent; }
+    .flow-arrow-label { font-family: var(--mono); font-size: 7px; color: var(--dim); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+    .flow-warn    { font-family: var(--mono); font-size: 8px; color: var(--red);    background: var(--red-bg);    border: 1px solid var(--red-border);    padding: 2px 7px; margin-top: 4px; display: inline-block; }
+    .flow-caution { font-family: var(--mono); font-size: 8px; color: var(--yellow); background: var(--yellow-bg); border: 1px solid var(--yellow-border); padding: 2px 7px; margin-top: 4px; display: inline-block; }
+    .flow-ok      { font-family: var(--mono); font-size: 8px; color: var(--green);  background: var(--green-bg);  border: 1px solid var(--green-border);  padding: 2px 7px; margin-top: 4px; display: inline-block; }
+    .flow-col { display: flex; flex-direction: column; align-items: center; }
+    .flow-down { font-size: 0; color: transparent; width: 12px; height: 36px; position: relative; display: inline-block; }
+    .flow-down::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 7px; width: 1px; background: var(--dim); transform: translateX(-50%); }
+    .flow-down::after { content: ''; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); border-top: 6px solid var(--dim); border-left: 3px solid transparent; border-right: 3px solid transparent; }
+    .flow-divider { border: none; border-top: 1px dashed var(--border2); margin: 14px 0; }
+
+    /* ── Module cards (strategy) ────────────────────────── */
+    .module-card { border: 1px solid; padding: 16px 18px; margin-bottom: 8px; }
+    .module-card.green  { border-color: var(--green-border);  background: var(--green-bg); }
+    .module-card.yellow { border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .module-card.red    { border-color: var(--red-border);    background: var(--red-bg); }
+    .module-card-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .module-card-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+    .module-card-title { font-family: var(--display); font-size: 13px; font-weight: 700; flex: 1; line-height: 1.2; }
+    .module-card-phase { font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; flex-shrink: 0; margin-top: 2px; }
+    .module-card.green  .module-card-phase { color: var(--green); }
+    .module-card.yellow .module-card-phase { color: var(--yellow); }
+    .module-card.red    .module-card-phase { color: var(--red); }
+    .module-card-desc { font-family: var(--mono); font-size: 10px; color: #999; line-height: 1.65; margin-bottom: 10px; }
+    .module-card-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .module-tags-label { font-family: var(--mono); font-size: 8px; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; }
+    .module-tag { font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border: 1px solid var(--border2); color: var(--dim); }
+
+    /* ── @mention ───────────────────────────────────────── */
+    .mention { font-family: var(--mono); font-size: 9.5px; color: var(--orange); background: var(--orange-bg); padding: 1px 4px; white-space: nowrap; }
+    .mention::before { content: '@'; }
+
+    /* ── System module study ────────────────────────────── */
+    .sys-module { padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 8px; }
+    .sys-module-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .sys-badge { font-family: var(--mono); font-size: 8px; padding: 3px 8px; border: 1px solid; letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; }
+    .sys-badge.active    { color: var(--green);  border-color: var(--green-border);  background: var(--green-bg); }
+    .sys-badge.retiring  { color: var(--red);    border-color: var(--red-border);    background: var(--red-bg); }
+    .sys-badge.migrating { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .sys-badge.future    { color: var(--blue);   border-color: var(--blue-border);   background: var(--blue-bg); }
+    .sys-name { font-family: var(--display); font-size: 13px; font-weight: 700; }
+    .sys-role { font-family: var(--mono); font-size: 9px; color: #777; margin-bottom: 6px; }
+    .sys-desc { font-family: var(--mono); font-size: 10px; color: #999; line-height: 1.6; }
+    .sys-risk { font-family: var(--mono); font-size: 9px; color: var(--yellow); margin-top: 4px; }
+    .sys-risk::before { content: '⚠  '; }
+
+    /* ── Promise items ──────────────────────────────────── */
+    .promise-item { padding: 12px 14px; border: 1px solid var(--border); margin-bottom: 6px; display: flex; gap: 12px; align-items: flex-start; background: var(--surface2); }
+    .promise-score { font-size: 17px; flex-shrink: 0; width: 24px; text-align: center; margin-top: 1px; }
+    .promise-content { flex: 1; }
+    .promise-text { font-size: 12px; font-weight: 700; margin-bottom: 4px; line-height: 1.3; }
+    .promise-note { font-family: var(--mono); font-size: 10px; color: #999; line-height: 1.55; }
+    .promise-flag { font-family: var(--mono); font-size: 9px; padding: 2px 8px; border: 1px solid; display: inline-block; margin-top: 5px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .promise-flag.ok     { color: var(--green);  border-color: var(--green-border);  background: var(--green-bg); }
+    .promise-flag.warn   { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .promise-flag.defer  { color: var(--blue);   border-color: var(--blue-border);   background: var(--blue-bg); }
+
+    /* ── Triple-column Pain/Promise/Solution ────────────── */
+    .triple-header { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-bottom: 4px; }
+    .triple-col-label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); padding: 6px 10px; border-bottom: 1px solid var(--border); }
+    .triple-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-bottom: 2px; align-items: stretch; }
+    .comp-cell { padding: 12px 14px; border: 1px solid var(--border); background: var(--surface2); display: flex; gap: 10px; align-items: flex-start; min-height: 100px; }
+    .comp-cell.pain { background: var(--surface); }
+    .comp-cell.solution { border-color: var(--blue-border); background: var(--blue-bg); }
+    .comp-cell.blank { align-items: center; justify-content: center; flex-direction: column; gap: 4px; background: var(--bg); border-style: dashed; }
+    .comp-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+    .comp-body { flex: 1; min-width: 0; }
+    .comp-title { font-family: var(--display); font-size: 11px; font-weight: 700; margin-bottom: 5px; line-height: 1.3; }
+    .comp-note { font-family: var(--mono); font-size: 9px; color: #999; line-height: 1.55; }
+    .comp-quote { font-family: var(--mono); font-size: 9px; color: var(--dim-mid); border-left: 2px solid var(--border2); padding-left: 8px; margin: 5px 0; line-height: 1.6; font-style: italic; }
+    .comp-flag { font-family: var(--mono); font-size: 8px; padding: 2px 7px; border: 1px solid; display: inline-block; margin-top: 5px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .comp-flag.ok   { color: var(--green);  border-color: var(--green-border);  background: var(--green-bg); }
+    .comp-flag.warn { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .comp-flag.blue { color: var(--blue);   border-color: var(--blue-border);   background: var(--blue-bg); }
+    .comp-arrow { font-size: 18px; color: var(--dim); }
+    .comp-blank-label { font-family: var(--mono); font-size: 8px; color: var(--dim2); letter-spacing: 0.1em; text-transform: uppercase; text-align: center; }
+    .row-divider { border: none; border-top: 1px dashed var(--border); margin: 6px 0; grid-column: 1 / -1; }
+
+    /* ── Question items ─────────────────────────────────── */
+    .question-item { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: flex-start; }
+    .question-item:last-child { border-bottom: none; }
+    .q-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+    .question-text { font-family: var(--mono); font-size: 10px; color: #999; line-height: 1.55; flex: 1; }
+    .question-owner { font-size: 9px; color: var(--orange); margin-top: 3px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ── Next step items ────────────────────────────────── */
+    .next-item { padding: 10px 12px; border: 1px solid var(--border); margin-bottom: 6px; display: flex; gap: 10px; align-items: flex-start; transition: opacity 0.2s; cursor: pointer; }
+    .next-item.done { opacity: 0.38; }
+    .next-cb { width: 15px; height: 15px; border: 1px solid var(--border2); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; border-radius: 2px; }
+    .next-item:hover .next-cb { border-color: var(--green); }
+    .next-item.done .next-cb { background: var(--dim2); border-color: var(--dim2); }
+    .next-item.done .next-cb::after { content: '✓'; font-size: 9px; color: var(--dim); }
+    .next-text { font-size: 12px; font-weight: 600; margin-bottom: 2px; line-height: 1.3; }
+    .next-item.done .next-text { text-decoration: line-through; }
+    .next-meta { font-family: var(--mono); font-size: 9px; color: var(--dim); }
+    .next-owner { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <div class="logo">AdamOS</div>
+      <div class="date-pill">JUN 12 · 2026</div>
+      <div class="topbar-project">SIDEBAR</div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-dot"></div>
+      <div class="status-label">ACTIVE</div>
+      <div class="topbar-badge yellow">AUG 1 GO-LIVE · 50 DAYS</div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <div class="nav-tabs-inner">
+    <div class="nav-tab active" onclick="switchTab('architecture', this)"><span class="tab-icon">⬡</span>Architecture</div>
+    <div class="nav-tab" onclick="switchTab('strategy', this)"><span class="tab-icon">◎</span>Strategy</div>
+    <div class="nav-tab" onclick="switchTab('promises', this)"><span class="tab-icon">◑</span>Pain Points &amp; Promises</div>
+    <div class="nav-tab" onclick="switchTab('nextsteps', this)"><span class="tab-icon">→</span>Open Questions</div>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 1 · ARCHITECTURE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-content active" id="tab-architecture">
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value red">~30K</div>
+      <div class="stat-label">Four51 Items (Est.)</div>
+      <div class="stat-desc">Products in the B2B catalog — each may need its own interop ID before Aug 1 go-live</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value yellow">3×</div>
+      <div class="stat-label">Go-Live Delays</div>
+      <div class="stat-desc">Zoho migration slipped: May → June → July → Aug 1. Each delay increases interop ID gap risk</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value orange">50</div>
+      <div class="stat-label">Days to Aug 1</div>
+      <div class="stat-desc">Hard deadline for Zoho cutover. Interop ID audit must complete before this date or orders fail</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value green">5</div>
+      <div class="stat-label">Core Systems</div>
+      <div class="stat-desc">Four51 · Quantum · Zoho · ShipStation · InfoPlus — the systems that must integrate cleanly at go-live</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- Current State -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Current State <span class="accent" style="color:var(--yellow);">— QUANTUM ERA</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="flowchart">
+
+          <div class="flow-section-label">Order Fulfillment Loop</div>
+          <div class="flow-row">
+            <div class="flow-col">
+              <div class="flow-node blue">
+                <div class="flow-node-cat">Client Employee</div>
+                <div class="flow-node-name">BUYER</div>
+                <div class="flow-node-sub">Browses B2B store</div>
+              </div>
+              <div class="flow-ok">✓ experience stable</div>
+            </div>
+            <div class="flow-arrow">
+              <span>→</span>
+              <span class="flow-arrow-label">order</span>
+            </div>
+            <div class="flow-col">
+              <div class="flow-node orange">
+                <div class="flow-node-cat">Platform</div>
+                <div class="flow-node-name">Four51</div>
+                <div class="flow-node-sub">B2B storefront<br>&amp; catalog</div>
+              </div>
+              <div class="flow-ok">✓ REST API available</div>
+            </div>
+            <div class="flow-arrow">
+              <span>→</span>
+              <span class="flow-arrow-label">manual push</span>
+            </div>
+            <div class="flow-col">
+              <div class="flow-node yellow">
+                <div class="flow-node-cat">ERP — Retiring</div>
+                <div class="flow-node-name">QUANTUM</div>
+                <div class="flow-node-sub">Inventory &amp; item IDs</div>
+              </div>
+              <div class="flow-ok">✓ exports weekly</div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;padding-right:10px;">
+            <div class="flow-down">↓</div>
+          </div>
+
+          <div class="flow-row" style="justify-content:flex-end;">
+            <div class="flow-col">
+              <div class="flow-node">
+                <div class="flow-node-cat">Shipping</div>
+                <div class="flow-node-name">SHIPSTATION</div>
+                <div class="flow-node-sub">End-of-day reports</div>
+              </div>
+              <div class="flow-ok">✓ API-ready for automation</div>
+            </div>
+            <div class="flow-arrow">
+              <span>→</span>
+            </div>
+            <div class="flow-col">
+              <div class="flow-node green">
+                <div class="flow-node-cat">End Point</div>
+                <div class="flow-node-name">WAREHOUSE</div>
+                <div class="flow-node-sub">→ Customer</div>
+              </div>
+              <div class="flow-ok">✓ fulfillment functioning</div>
+            </div>
+          </div>
+
+          <hr class="flow-divider">
+
+          <div class="flow-section-label">Pricing Loop</div>
+          <div class="flow-row">
+            <div class="flow-col">
+              <div class="flow-node orange">
+                <div class="flow-node-cat">External</div>
+                <div class="flow-node-name">VENDOR</div>
+                <div class="flow-node-sub">Issues quote</div>
+              </div>
+              <div class="flow-ok">✓ quote process reliable</div>
+            </div>
+            <div class="flow-arrow">
+              <span>→</span>
+              <span class="flow-arrow-label">quote</span>
+            </div>
+            <div class="flow-col">
+              <div class="flow-node">
+                <div class="flow-node-cat">Internal</div>
+                <div class="flow-node-name">ACCT MGR</div>
+                <div class="flow-node-sub">Manually updates<br>Four51 sale price</div>
+              </div>
+              <div class="flow-caution">⚠ Often forgotten / delayed</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Future State -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Future State <span class="accent" style="color:var(--green);">— ZOHO ERA (AUG 1)</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="flowchart">
+
+          <div class="flow-section-label">Order Fulfillment — Post Migration</div>
+          <div class="flow-row">
+            <div class="flow-col">
+              <div class="flow-node blue">
+                <div class="flow-node-cat">Client Employee</div>
+                <div class="flow-node-name">BUYER</div>
+                <div class="flow-node-sub">Browses B2B store</div>
+              </div>
+              <div class="flow-ok">✓ experience unchanged</div>
+            </div>
+            <div class="flow-arrow">
+              <span>→</span>
+              <span class="flow-arrow-label">order</span>
+            </div>
+            <div class="flow-col">
+              <div class="flow-node orange">
+                <div class="flow-node-cat">Platform</div>
+                <div class="flow-node-name">Four51</div>
+                <div class="flow-node-sub">Storefront &amp;<br>Zoho push</div>
+              </div>
+              <div class="flow-ok">✓ Zoho push wired</div>
+            </div>
+            <div class="flow-arrow">
+              <span>→</span>
+              <span class="flow-arrow-label">interop ID match</span>
+            </div>
+            <div class="flow-col">
+              <div class="flow-node green">
+                <div class="flow-node-cat">New ERP</div>
+                <div class="flow-node-name">ZOHO</div>
+                <div class="flow-node-sub">Books + Inventory</div>
+              </div>
+              <div class="flow-warn">✕ Fails if interop ID missing</div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;padding-right:10px;">
+            <div class="flow-down">↓</div>
+          </div>
+
+          <div class="flow-row" style="justify-content:flex-end;">
+            <div class="flow-col">
+              <div class="flow-node blue">
+                <div class="flow-node-cat">Warehouse Mgmt</div>
+                <div class="flow-node-name">INFOPLUS</div>
+                <div class="flow-node-sub">Prices + images<br>(post go-live)</div>
+              </div>
+              <div class="flow-ok">✓ scoped for Q4</div>
+            </div>
+            <div class="flow-arrow" style="font-size:11px;color:var(--dim2);">+</div>
+            <div class="flow-col">
+              <div class="flow-node">
+                <div class="flow-node-cat">Shipping</div>
+                <div class="flow-node-name">SHIPSTATION</div>
+                <div class="flow-node-sub">Tracking &amp; notification</div>
+              </div>
+              <div class="flow-ok">✓ tracking + notify ready</div>
+            </div>
+            <div class="flow-arrow"><span>→</span></div>
+            <div class="flow-col">
+              <div class="flow-node green">
+                <div class="flow-node-cat">End Point</div>
+                <div class="flow-node-name">WAREHOUSE</div>
+                <div class="flow-node-sub">→ Customer</div>
+              </div>
+              <div class="flow-ok">✓ fulfillment unchanged</div>
+            </div>
+          </div>
+
+          <hr class="flow-divider">
+
+          <div class="flow-section-label" style="color:var(--red);">Zoho Order Validation — Sequential Checks</div>
+          <div class="flow-row">
+            <div class="flow-col">
+              <div class="flow-node">
+                <div class="flow-node-cat">Check 1</div>
+                <div class="flow-node-name">BUYER NAME</div>
+                <div class="flow-node-sub">Company name exact match<br>"Salons" ≠ "Salon" = fail</div>
+              </div>
+              <div class="flow-caution">⚠ Live failure already hit</div>
+            </div>
+            <div class="flow-arrow">
+              <span>→</span>
+              <span class="flow-arrow-label">if pass</span>
+            </div>
+            <div class="flow-col">
+              <div class="flow-node">
+                <div class="flow-node-cat">Check 2</div>
+                <div class="flow-node-name">INTEROP ID</div>
+                <div class="flow-node-sub">SKU match per item<br>One fail = whole order stops</div>
+              </div>
+              <div class="flow-warn">✕ No batch error report</div>
+            </div>
+            <div class="flow-arrow">
+              <span>→</span>
+              <span class="flow-arrow-label">if pass</span>
+            </div>
+            <div class="flow-col">
+              <div class="flow-node green">
+                <div class="flow-node-cat">Result</div>
+                <div class="flow-node-name">ORDER ROUTES</div>
+                <div class="flow-node-sub">To fulfillment</div>
+              </div>
+              <div class="flow-ok">✓ clean path to fulfillment</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end grid-2 -->
+
+  <!-- System Module Study -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">System Module Study</div>
+    </div>
+    <div class="panel-body">
+      <div class="grid-2">
+        <div>
+          <div class="sys-module">
+            <div class="sys-module-header">
+              <div class="sys-name">Four51</div>
+              <div class="sys-badge active">Active</div>
+            </div>
+            <div class="sys-role">B2B Commerce Platform — Product catalog, client storefronts, pricing</div>
+            <div class="sys-desc">Cloud-based B2B/B2C ordering platform. Hosts all Sidebar client storefronts. Manages product catalog, sale prices, and per-client ordering rules. Each client's employees see only their company store. Has REST API — key lever for the interop ID audit. ~30K items, no native report for interop ID coverage.</div>
+            <div class="sys-risk">No native interop ID coverage report exists</div>
+            <div class="sys-risk">Sale prices updated manually at account manager discretion</div>
+            <div class="sys-risk">Apparel: each size variant (S/M/L/XL/2XL) needs its own interop ID</div>
+          </div>
+
+          <div class="sys-module">
+            <div class="sys-module-header">
+              <div class="sys-name">Quantum</div>
+              <div class="sys-badge retiring">Retiring Aug 1</div>
+            </div>
+            <div class="sys-role">Current ERP — Inventory tracking, master item IDs</div>
+            <div class="sys-desc">Legacy ERP being replaced by Zoho. Holds the master item ID database — the source of truth for interop IDs. Does NOT enforce interop ID presence on item creation (silently creates items without one). Brandi exports from Quantum weekly to keep Zoho in sync during the transition period.</div>
+            <div class="sys-risk">Does not enforce interop ID on item creation — gaps accumulate silently</div>
+            <div class="sys-risk">Full clean export required before August 1 wipe</div>
+          </div>
+
+          <div class="sys-module">
+            <div class="sys-module-header">
+              <div class="sys-name">ShipStation</div>
+              <div class="sys-badge active">Active</div>
+            </div>
+            <div class="sys-role">Shipping management — End-of-day reports, tracking</div>
+            <div class="sys-desc">Manages all outbound shipping. Generates end-of-day reports which account managers use to manually draft branded customer notification emails each morning. Original pain point identified in early discovery — highest daily time value. ShipStation has an API, making this straightforward to automate.</div>
+            <div class="sys-risk">1–3 hrs/day per account manager of manual, zero-value-add work</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sys-module">
+            <div class="sys-module-header">
+              <div class="sys-name">Zoho Books / Inventory</div>
+              <div class="sys-badge migrating">Go-Live Aug 1</div>
+            </div>
+            <div class="sys-role">New ERP — Order routing, SKU-based item matching, invoicing</div>
+            <div class="sys-desc">Replacement for Quantum. Validates orders sequentially: (1) buyer company name exact match, then (2) item match via SKU/interop ID. Fails on the first mismatch only — no batch error visibility. If interop ID is missing in Four51, the order stops and an account manager must fix it manually before retrying. Slipped 3× (May → June → July → August 1).</div>
+            <div class="sys-risk">One-at-a-time error reporting — no way to pre-screen failures in bulk</div>
+            <div class="sys-risk">"Salons" vs "Salon" caused a live failure — all buyer names need reconciliation</div>
+          </div>
+
+          <div class="sys-module">
+            <div class="sys-module-header">
+              <div class="sys-name">InfoPlus</div>
+              <div class="sys-badge future">Future State</div>
+            </div>
+            <div class="sys-role">Warehouse Management — Post-migration pricing and product images</div>
+            <div class="sys-desc">Will hold sell prices and eventually product images after migration. Not live at August 1 go-live — phased in after. A ~$20/month AI image service was discussed for building a product image pipeline into InfoPlus (2D/3D renders, lifestyle shots). Dependency for the product image module.</div>
+            <div class="sys-risk">Not active at go-live — pricing may still require Four51 manual updates initially</div>
+          </div>
+
+          <div class="sys-module">
+            <div class="sys-module-header">
+              <div class="sys-name">Microsoft Stack</div>
+              <div class="sys-badge active">Active</div>
+            </div>
+            <div class="sys-role">Internal comms — Teams, SharePoint, full Microsoft environment</div>
+            <div class="sys-desc">Full Microsoft stack for internal ops. Fred's hard security requirement: customer and competitor data cannot be sent to public LLMs. He found his data in public AI outputs. Any solution must be local/private or fully data-isolated. This constrains all AI architecture decisions.</div>
+            <div class="sys-risk">Security hard constraint — no cloud AI without data isolation guarantee</div>
+            <div class="sys-risk">Fred was burned by a $2,500 AI seminar with no results — demos must work</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end tab-architecture -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 2 · STRATEGY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-strategy">
+
+  <div class="alert yellow" style="margin-bottom:16px;">
+    <div class="alert-icon" style="color:var(--yellow);">▲</div>
+    <div class="alert-text">JESSE COMMITMENT: "Come back to something working" by June 22 (<span class="mention" style="font-size:10px;">Brandi</span> returns). Realistic target: full interop ID audit report + working demo on a sample batch. Full fix of ~30K items in 10 days is not achievable — align with <span class="mention" style="font-size:10px;">Jesse</span> before June 22.</div>
+  </div>
+
+  <div class="section-label" style="color:var(--green);font-size:11px;">🟢 NOW — Before June 22</div>
+
+  <div class="module-card green">
+    <div class="module-card-header">
+      <div class="module-card-icon">🔍</div>
+      <div class="module-card-title">Four51 Interop ID Audit</div>
+      <div class="module-card-phase">June 13–20</div>
+    </div>
+    <div class="module-card-desc">Pull all ~30K active items from Four51 via REST API. Identify every item with a missing or empty interop ID. Flag apparel variants (BASE_SKU-S / -M / -L / -XL / -2XL) that are missing individual IDs. Output: total count, % coverage by client, top clients by gap volume, estimated fix effort. Deliver written report to <span class="mention">Brandi</span> and <span class="mention">Jesse</span> before June 22. Login credentials held by <span class="mention">Brandi</span> — awaiting access to begin.</div>
+    <div class="module-card-tags">
+      <span class="module-tags-label">REQUIRES:</span>
+      <div class="module-tag">Four51 API</div>
+      <div class="module-tag">CSV Export</div>
+      <div class="module-tag">Python Script</div>
+      <div class="module-tag">Awaiting Login</div>
+      <div class="module-tag">Quick Win</div>
+    </div>
+  </div>
+
+  <div class="module-card green">
+    <div class="module-card-header">
+      <div class="module-card-icon">🗂</div>
+      <div class="module-card-title">Quantum × Four51 Cross-Reference</div>
+      <div class="module-card-phase">June 16–20</div>
+    </div>
+    <div class="module-card-desc">Export active items from Quantum using <span class="mention">Brandi</span>'s existing weekly export as the template. Cross-reference against the Four51 catalog — where a Quantum item ID matches a Four51 product unambiguously → auto-flag as a safe fill candidate. Produce two outputs: "safe to fill" list (high-confidence matches) and "needs human review" list (ambiguous names or apparel variants). <span class="mention">Angela</span> and <span class="mention">Nicole</span> handle the human review queue in Phase 2.</div>
+    <div class="module-card-tags">
+      <span class="module-tags-label">REQUIRES:</span>
+      <div class="module-tag">Quantum Export</div>
+      <div class="module-tag">Fuzzy Matching</div>
+      <div class="module-tag">Human Review Required</div>
+    </div>
+  </div>
+
+  <div class="section-label" style="color:var(--yellow);font-size:11px;margin-top:24px;">🟡 PRE-MIGRATION — Before August 1</div>
+
+  <div class="grid-2">
+    <div>
+      <div class="module-card yellow">
+        <div class="module-card-header">
+          <div class="module-card-icon">⚡</div>
+          <div class="module-card-title">Batch Interop ID Fill + Validation</div>
+          <div class="module-card-phase">June 22 – July 25</div>
+        </div>
+        <div class="module-card-desc">Using audit + cross-reference outputs: auto-fill high-confidence matches via Four51 Write API. Queue remaining items for <span class="mention">Angela</span> and <span class="mention">Nicole</span> to review and approve. Run a final validation pass — 0 blank interop IDs — before <span class="mention">Brandi</span>'s August 1 clean-slate Zoho wipe. Goal: zero silent order failures on day one.</div>
+        <div class="module-card-tags">
+          <span class="module-tags-label">REQUIRES:</span>
+          <div class="module-tag">Four51 Write API</div>
+          <div class="module-tag">Bulk Operations</div>
+          <div class="module-tag">Pre-Go-Live Gate</div>
+        </div>
+      </div>
+
+      <div class="module-card yellow">
+        <div class="module-card-header">
+          <div class="module-card-icon">👤</div>
+          <div class="module-card-title">Buyer Name Reconciliation</div>
+          <div class="module-card-phase">Pre-Migration</div>
+        </div>
+        <div class="module-card-desc">Zoho validates buyer company name exact match before checking item IDs. "Salons" vs "Salon" hit live during testing — <span class="mention">Brandi</span> caught it manually. Compare all buyer company names in Four51 against Zoho records. Normalize string variations programmatically. Flag outliers for <span class="mention">Brandi</span> to confirm. Low complexity, high impact — prevents silent order failures at August 1.</div>
+        <div class="module-card-tags">
+          <span class="module-tags-label">REQUIRES:</span>
+          <div class="module-tag">String Matching</div>
+          <div class="module-tag">Data Quality</div>
+          <div class="module-tag">Low Complexity</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="module-card yellow">
+        <div class="module-card-header">
+          <div class="module-card-icon">💰</div>
+          <div class="module-card-title">Pricing Staleness Scanner</div>
+          <div class="module-card-phase">July 2026</div>
+        </div>
+        <div class="module-card-desc">Weekly cron checks all active Four51 items. Flags items where sale price hasn't changed since last reorder — the $4 → $7 miss that a client discovered and confronted Sidebar about. Prioritized by delta magnitude and order frequency. Alerts delivered to <span class="mention">Angela</span> and <span class="mention">Nicole</span> each Monday. Handles apparel: base price + per-size upcharges (2X, 3X) tracked separately. Prevents trust crises before they reach <span class="mention">Fred</span>.</div>
+        <div class="module-card-tags">
+          <span class="module-tags-label">REQUIRES:</span>
+          <div class="module-tag">Cron Job</div>
+          <div class="module-tag">Alert System</div>
+          <div class="module-tag">FIFO Workaround</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="color:var(--red);font-size:11px;margin-top:24px;">🔴 POST-MIGRATION — August 1+</div>
+
+  <div class="grid-2">
+    <div class="module-card red">
+      <div class="module-card-header">
+        <div class="module-card-icon">✈</div>
+        <div class="module-card-title">ShipStation Email Automation</div>
+        <div class="module-card-phase">Post Go-Live</div>
+      </div>
+      <div class="module-card-desc">Pull ShipStation end-of-day report → match to client/order records → auto-draft branded notification email → <span class="mention">Angela</span> or <span class="mention">Nicole</span> reviews and sends. Recovers 1–3 hrs/day each. This was the original discovery moment — <span class="mention">Brandi</span> mentioned it first on the June 12 call. Highest daily ROI per dev hour. ShipStation API is fully documented and open.</div>
+      <div class="module-card-tags">
+        <span class="module-tags-label">REQUIRES:</span>
+        <div class="module-tag">ShipStation API</div>
+        <div class="module-tag">Email Templates</div>
+        <div class="module-tag">1–3 hrs/day saved</div>
+      </div>
+    </div>
+
+    <div class="module-card red">
+      <div class="module-card-header">
+        <div class="module-card-icon">❐</div>
+        <div class="module-card-title">Site Cloning Pipeline</div>
+        <div class="module-card-phase">Q4 2026</div>
+      </div>
+      <div class="module-card-desc">~75% of new client site setup in Four51 is structurally identical across all Sidebar clients. Automate the repeatable portions: catalog templating, client store config, user roles. Removes <span class="mention">Fred</span>'s $20K/year revenue floor — unlocks smaller clients and scales headcount independently. <span class="mention">Jesse</span> estimates this alone could double addressable clients.</div>
+      <div class="module-card-tags">
+        <span class="module-tags-label">REQUIRES:</span>
+        <div class="module-tag">Four51 Templating</div>
+        <div class="module-tag">Growth Enabler</div>
+        <div class="module-tag">Needs Scoping</div>
+      </div>
+    </div>
+
+    <div class="module-card red">
+      <div class="module-card-header">
+        <div class="module-card-icon">💎</div>
+        <div class="module-card-title">Reward Point Activation</div>
+        <div class="module-card-phase">Q4 2026</div>
+      </div>
+      <div class="module-card-desc">One insurance client has $400K in board-approved, unspent reward spend. Sidebar doesn't get paid until employees order. Targeted, friction-reducing outreach: curated "top 10" pages, seasonal offers, urgency mechanics. <span class="mention">Fred</span> can't market directly to employees without risking the client relationship — <span class="mention">Jesse</span> must navigate client approval first.</div>
+      <div class="module-card-tags">
+        <span class="module-tags-label">REQUIRES:</span>
+        <div class="module-tag">Revenue Recovery</div>
+        <div class="module-tag">Client Sensitivity</div>
+        <div class="module-tag">$400K Target</div>
+      </div>
+    </div>
+
+    <div class="module-card red">
+      <div class="module-card-header">
+        <div class="module-card-icon">⊕</div>
+        <div class="module-card-title">Product Image Pipeline</div>
+        <div class="module-card-phase">Post-InfoPlus Live</div>
+      </div>
+      <div class="module-card-desc">Photo → AI-generated 2D/3D render → InfoPlus upload. ~$20/month image service. <span class="mention">Jesse</span> demoed the concept live on the June 12 call — the "lookbook robot". Realistic product lifestyle shots at catalog scale: no photographer, no studio. Hard dependency: InfoPlus must be live before this ships. <span class="mention">Fred</span> would see this as a differentiator against competitors still using flat product photos.</div>
+      <div class="module-card-tags">
+        <span class="module-tags-label">REQUIRES:</span>
+        <div class="module-tag">AI Imaging</div>
+        <div class="module-tag">InfoPlus Dependency</div>
+        <div class="module-tag">Differentiator</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end tab-strategy -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 3 · PAIN POINTS + PROMISES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-promises">
+
+  <div class="triple-header">
+    <div class="triple-col-label">🔴🟡 Brandi's Pain Points</div>
+    <div class="triple-col-label">✅⚠️ Jesse's Response</div>
+    <div class="triple-col-label">💡 Suggested Solution</div>
+  </div>
+
+  <!-- ROW 1: Interop IDs -->
+  <div class="triple-grid">
+    <div class="comp-cell pain">
+      <div class="comp-icon">🔴</div>
+      <div class="comp-body">
+        <div class="priority red" style="margin-bottom:6px;"><div class="priority-dot"></div> Critical · Pre-Migration</div>
+        <div class="comp-title">Missing Interop IDs (~30,000 items)</div>
+        <div class="comp-quote">"There's not a single report in here that shows us the interop IDs and variants to identify if they're missing."</div>
+        <div class="comp-note">Zoho fails one item at a time — no batch visibility, no pre-screen. Every missing ID is a failed customer order on Aug 1. Apparel multiplies it: parent + every size variant (S, M, L, XL, 2XL) each need their own ID.</div>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="comp-icon">✅</div>
+      <div class="comp-body">
+        <div class="comp-title">Audit all interop IDs and identify the gaps</div>
+        <div class="comp-note">Four51 login provided by Brandi. Brandi confirmed no native report exists — we build one. Estimated 2–3 days of scripting once access confirmed. Clean, scoped promise.</div>
+        <div class="comp-flag ok">Achievable</div>
+      </div>
+    </div>
+    <div class="comp-cell solution">
+      <div class="comp-icon">🔧</div>
+      <div class="comp-body">
+        <div class="comp-title">Four51 Interop ID Audit Bot</div>
+        <div class="comp-note">Python script via Four51 REST API. Pulls all ~30K active items, flags missing interop IDs, detects apparel variant gaps. Outputs prioritized report sorted by client and risk. Deliverable to Brandi before June 22.</div>
+        <div class="comp-flag blue">Our Build</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Stale Prices -->
+  <div class="triple-grid">
+    <div class="comp-cell pain">
+      <div class="comp-icon">🔴</div>
+      <div class="comp-body">
+        <div class="priority red" style="margin-bottom:6px;"><div class="priority-dot"></div> Critical · Ongoing</div>
+        <div class="comp-title">Stale Sale Prices in Four51</div>
+        <div class="comp-quote">Client discovered their product still showed $4 online when actual cost had risen to $7 over years of missed updates — then confronted Sidebar.</div>
+        <div class="comp-note">Account managers forget to update Four51 at each reorder. No staleness alerts, no auditing. Apparel compounds it: base price + per-size upcharges (2X, 3X) both require updates.</div>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="comp-icon">✅</div>
+      <div class="comp-body">
+        <div class="comp-title">Automate pricing updates / staleness detection</div>
+        <div class="comp-note">Achievable with correct framing. True automatic FIFO pricing isn't possible in Four51's architecture — deliverable is a scheduled scanner + proactive alerts. Not "auto-update" — alert-driven human action.</div>
+        <div class="comp-flag warn">Achievable w/ Caveats</div>
+      </div>
+    </div>
+    <div class="comp-cell solution">
+      <div class="comp-icon">⏰</div>
+      <div class="comp-body">
+        <div class="comp-title">Pricing Staleness Scanner</div>
+        <div class="comp-note">Weekly cron across all Four51 active items. Flags items where sale price hasn't changed since last reorder date. Alerts sent to Angela + Nicole each Monday. Apparel tracked per-size. Prevents the $4 → $7 scenario from repeating.</div>
+        <div class="comp-flag blue">Our Build</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Buyer Names -->
+  <div class="triple-grid">
+    <div class="comp-cell pain">
+      <div class="comp-icon">🔴</div>
+      <div class="comp-body">
+        <div class="priority red" style="margin-bottom:6px;"><div class="priority-dot"></div> Critical · Pre-Migration</div>
+        <div class="comp-title">Buyer Name Mismatches</div>
+        <div class="comp-quote">Live during Zoho testing: "Salons" vs "Salon" caused an order failure. Zoho validates company name first — exact string match required.</div>
+        <div class="comp-note">Every client company name discrepancy between Four51 and Zoho = failed order at go-live. Simple to fix but requires systematic review across all current clients before August 1.</div>
+      </div>
+    </div>
+    <div class="comp-cell blank">
+      <div class="comp-arrow">→</div>
+      <div class="comp-blank-label">No direct promise made</div>
+    </div>
+    <div class="comp-cell solution">
+      <div class="comp-icon">🔤</div>
+      <div class="comp-body">
+        <div class="comp-title">Buyer Name Reconciliation</div>
+        <div class="comp-note">Programmatic string matching between Four51 buyer company names and Zoho contact records. Normalize variations, flag outliers for Brandi to confirm. Pre-migration gate — must complete before Aug 1. Low complexity, very high impact.</div>
+        <div class="comp-flag blue">Our Build</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 4: Morning Emails -->
+  <div class="triple-grid">
+    <div class="comp-cell pain">
+      <div class="comp-icon">🟡</div>
+      <div class="comp-body">
+        <div class="priority yellow" style="margin-bottom:6px;"><div class="priority-dot"></div> High · Daily</div>
+        <div class="comp-title">Manual Morning Email Pull (ShipStation)</div>
+        <div class="comp-quote">Account managers cross-reference ShipStation's end-of-day report and manually write branded customer notification emails each morning.</div>
+        <div class="comp-note">1–3 hours per account manager per day. Highest-frequency repetitive task in the building. Pure transcription — no judgment required. Original discovery entry point, still valid.</div>
+      </div>
+    </div>
+    <div class="comp-cell">
+      <div class="comp-icon">✅</div>
+      <div class="comp-body">
+        <div class="comp-title">ShipStation email automation</div>
+        <div class="comp-note">Clean win. ShipStation has an API. Pattern is: pull report → match to order records → draft branded email → human review before send. Highest daily ROI per hour of development. Angela and Nicole are the right SMEs.</div>
+        <div class="comp-flag ok">Achievable</div>
+      </div>
+    </div>
+    <div class="comp-cell solution">
+      <div class="comp-icon">✈</div>
+      <div class="comp-body">
+        <div class="comp-title">ShipStation Email Automation</div>
+        <div class="comp-note">Pull ShipStation end-of-day report → match order records → auto-draft branded notification email → Angela or Nicole reviews and sends in one click. Recovers 1–3 hrs/day each. Fully automatable — ShipStation API is documented and open.</div>
+        <div class="comp-flag blue">Our Build</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 5: Site Setup -->
+  <div class="triple-grid">
+    <div class="comp-cell pain">
+      <div class="comp-icon">🟡</div>
+      <div class="comp-body">
+        <div class="priority yellow" style="margin-bottom:6px;"><div class="priority-dot"></div> High · Growth Ceiling</div>
+        <div class="comp-title">New Client Site Setup — Manual and Expensive</div>
+        <div class="comp-note">Each new client requires a custom B2B/B2C store built from scratch. Labor-intensive enough that Fred won't take on clients under $20K/year. ~75% of the work is identical across all sites. This is Sidebar's growth ceiling — automation could remove it entirely.</div>
+      </div>
+    </div>
+    <div class="comp-cell blank">
+      <div class="comp-arrow">→</div>
+      <div class="comp-blank-label">No direct promise made</div>
+    </div>
+    <div class="comp-cell solution">
+      <div class="comp-icon">❐</div>
+      <div class="comp-body">
+        <div class="comp-title">Site Cloning Pipeline</div>
+        <div class="comp-note">Automate the repeatable 75%: catalog templating, store config, user role setup. Removes Fred's $20K/year minimum — unlocks smaller clients and scales without headcount. Jesse estimates this could double addressable client count. Scope in Q4 after migration settles.</div>
+        <div class="comp-flag blue">Our Build</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 6: Stranded Points -->
+  <div class="triple-grid">
+    <div class="comp-cell pain">
+      <div class="comp-icon">🟡</div>
+      <div class="comp-body">
+        <div class="priority yellow" style="margin-bottom:6px;"><div class="priority-dot"></div> High · Revenue</div>
+        <div class="comp-title">$400K in Stranded Reward Points</div>
+        <div class="comp-note">One insurance client has $400K in board-approved but unspent reward budget. Sidebar doesn't get paid until employees place orders. The client quietly prefers non-redemption. Fred can't market directly to end-users without risking the relationship.</div>
+      </div>
+    </div>
+    <div class="comp-cell blank">
+      <div class="comp-arrow">→</div>
+      <div class="comp-blank-label">No direct promise made</div>
+    </div>
+    <div class="comp-cell solution">
+      <div class="comp-icon">💰</div>
+      <div class="comp-body">
+        <div class="comp-title">Reward Point Activation Campaign</div>
+        <div class="comp-note">Targeted, friction-reducing outreach: curated "top 10" product pages, seasonal offers, urgency mechanics. Must navigate client relationship carefully — Jesse to get Fred's approval on communication approach before any outreach is built or sent.</div>
+        <div class="comp-flag warn">Needs Client Approval</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end tab-promises -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 4 · OPEN QUESTIONS + NEXT STEPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-nextsteps">
+
+  <div class="grid-2">
+
+    <!-- Questions -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Need Before Build <span class="accent" style="color:var(--red);">— URGENT</span></div>
+        </div>
+        <div class="panel-body">
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--red);"></div>
+            <div>
+              <div class="question-text">Does Four51 have a REST API, or only CSV / manual export? What permissions does the jessenewsome login provide?</div>
+              <div class="question-owner">→ Confirm via login / ask Brandi</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--red);"></div>
+            <div>
+              <div class="question-text">Exact active item count in Four51 (working estimate: ~30K — need real number before sizing the audit)?</div>
+              <div class="question-owner">→ Pull via login or ask Brandi</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--red);"></div>
+            <div>
+              <div class="question-text">Is Quantum's item ID always populated for active items? Can we treat Quantum as the reliable source of truth for interop IDs?</div>
+              <div class="question-owner">→ Ask Brandi</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--red);"></div>
+            <div>
+              <div class="question-text">Confirmed apparel interop ID naming convention: {BASE_SKU}-S / -M / -L / -XL / -2XL — or does Sidebar use a different pattern?</div>
+              <div class="question-owner">→ Ask Brandi / Angela / Nicole</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--yellow);"></div>
+            <div>
+              <div class="question-text">August 1 clean-slate approach: does Zoho wipe everything, or is there a rollback / parallel-run window?</div>
+              <div class="question-owner">→ Ask Brandi</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--yellow);"></div>
+            <div>
+              <div class="question-text">There are two "Adams" — one external (us) and one internal Sidebar employee. Confirm Jesse has been differentiating in conversations with the team.</div>
+              <div class="question-owner">→ Clarify with Jesse</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Need Before Go-Live <span class="accent" style="color:var(--yellow);">— JULY</span></div>
+        </div>
+        <div class="panel-body">
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--yellow);"></div>
+            <div>
+              <div class="question-text">Full Zoho → Four51 order flow technical diagram. Who built and owns the integration?</div>
+              <div class="question-owner">→ Ask Brandi / Zoho implementation partner</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--yellow);"></div>
+            <div>
+              <div class="question-text">Post-migration: who updates sell prices in InfoPlus? Same manual problem as Four51, or is the process different?</div>
+              <div class="question-owner">→ Ask Brandi</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--yellow);"></div>
+            <div>
+              <div class="question-text">Full list of all current Sidebar clients and their store URLs (scope for pricing bot + buyer name reconciliation)?</div>
+              <div class="question-owner">→ Ask Brandi / internal</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--dim);"></div>
+            <div>
+              <div class="question-text">Full account manager daily workflow: morning ShipStation pull → order processing → pricing updates → end of day. Map it before building automations.</div>
+              <div class="question-owner">→ Ask Angela + Nicole (account managers)</div>
+            </div>
+          </div>
+
+          <div class="question-item">
+            <div class="q-dot" style="background:var(--dim);"></div>
+            <div>
+              <div class="question-text">What monthly retainer or capex arrangement would Fred accept for ongoing AI maintenance? (Fred prefers capex over retainer.)</div>
+              <div class="question-owner">→ Jesse to gauge with Fred post-audit</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Next Steps -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Next Steps <span class="accent" style="color:var(--orange);">— BY PERSON</span></div>
+        </div>
+        <div class="panel-body">
+
+          <div class="section-label" style="color:var(--orange);">Adam</div>
+
+          <div class="next-item" onclick="toggleNext(this)">
+            <div class="next-cb"></div>
+            <div>
+              <div class="next-text">Explore Four51 once login received — confirm API access, item count, interop ID field structure</div>
+              <div class="next-meta"><span class="next-owner">Adam</span> · June 13–14 · Awaiting login from Brandi</div>
+            </div>
+          </div>
+
+          <div class="next-item" onclick="toggleNext(this)">
+            <div class="next-cb"></div>
+            <div>
+              <div class="next-text">Build interop ID audit script — pull all Four51 active items, flag missing IDs, output prioritized report</div>
+              <div class="next-meta"><span class="next-owner">Adam</span> · Week of June 16 · After login confirmed</div>
+            </div>
+          </div>
+
+          <div class="next-item" onclick="toggleNext(this)">
+            <div class="next-cb"></div>
+            <div>
+              <div class="next-text">Cross-reference Quantum export against Four51 — produce "safe to fill" and "needs review" lists</div>
+              <div class="next-meta"><span class="next-owner">Adam</span> · June 16–20</div>
+            </div>
+          </div>
+
+          <div class="next-item" onclick="toggleNext(this)">
+            <div class="next-cb"></div>
+            <div>
+              <div class="next-text">Align with Jesse on realistic June 22 scope — audit report + sample batch demo, not full fix</div>
+              <div class="next-meta"><span class="next-owner">Adam + Jesse</span> · Before June 22</div>
+            </div>
+          </div>
+
+          <div class="section-label" style="color:var(--orange);margin-top:16px;">Jesse</div>
+
+          <div class="next-item" onclick="toggleNext(this)">
+            <div class="next-cb"></div>
+            <div>
+              <div class="next-text">Debrief Adam, Lee, and Steve — align on Four51 audit approach and sprint priorities</div>
+              <div class="next-meta"><span class="next-owner">Jesse</span> · June 13 · Post-call debrief</div>
+            </div>
+          </div>
+
+          <div class="next-item" onclick="toggleNext(this)">
+            <div class="next-cb"></div>
+            <div>
+              <div class="next-text">Reach out to Angela and Nicole — map daily pricing workflow and ShipStation process in detail</div>
+              <div class="next-meta"><span class="next-owner">Jesse</span> · Week of June 16</div>
+            </div>
+          </div>
+
+          <div class="section-label" style="color:var(--orange);margin-top:16px;">Brandi (Returns June 22)</div>
+
+          <div class="next-item" onclick="toggleNext(this)">
+            <div class="next-cb"></div>
+            <div>
+              <div class="next-text">Review interop ID audit report — confirm methodology, walk through sample batch demo, approve batch fix plan</div>
+              <div class="next-meta"><span class="next-owner">Brandi + Adam + Jesse</span> · June 22</div>
+            </div>
+          </div>
+
+          <div class="next-item" onclick="toggleNext(this)">
+            <div class="next-cb"></div>
+            <div>
+              <div class="next-text">Present findings and modular build plan to Fred — budget approval for Phase 2</div>
+              <div class="next-meta"><span class="next-owner">Jesse + Adam</span> · Late June · After Brandi review</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="alert green">
+        <div class="alert-icon">◉</div>
+        <div class="alert-text">BABY-STEP STRATEGY: Don't pitch the full vision upfront. Show one cheap, fast fix that visibly solves a real problem. Sequence: Interop ID audit → Pricing bot → ShipStation email → Bigger builds. Once Fred sees AI working, he'll want to go big. Jesse is the relationship. Adam is the technical thinker.</div>
+      </div>
+
+      <div class="alert yellow">
+        <div class="alert-icon">⚠</div>
+        <div class="alert-text">SECURITY HARD CONSTRAINT: Fred found his customer and competitor data surfacing in public LLMs after a prior AI engagement. Any solution must be local/private or fully data-isolated. This is non-negotiable with Fred. Do not demo or propose public cloud AI without addressing this architecture question first.</div>
+      </div>
+
+      <div class="alert orange">
+        <div class="alert-icon">◉</div>
+        <div class="alert-text">FRED BUYING PROFILE: Prefers capex over retainer. Burned by a $2,500 AI seminar with zero results — skeptical but motivated. Trusts Jesse implicitly. Wants to step back from day-to-day (golf 3–4 days/week). Revenue threshold for new clients: ≥$20K/year. AI that removes that ceiling is the highest-leverage pitch.</div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end tab-nextsteps -->
+
+</div><!-- end layout -->
+
+<script>
+  function switchTab(id, el) {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    el.classList.add('active');
+  }
+
+  function toggleNext(item) {
+    item.classList.toggle('done');
+  }
+</script>
+
+</body>
+</html>

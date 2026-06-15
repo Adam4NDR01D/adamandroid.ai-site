@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SidebarOS · Bot Specs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#080808; --surface:#0f0f0f; --surface2:#151515;
+      --border:#1e1e1e; --border2:#2a2a2a;
+      --text:#e2e2e2; --dim:#555; --dim-mid:#777;
+      --red:#ff3b3b;    --red-bg:#ff3b3b10;    --red-border:#ff3b3b35;
+      --yellow:#ffd60a; --yellow-bg:#ffd60a0d; --yellow-border:#ffd60a35;
+      --green:#00e87a;  --green-bg:#00e87a0d;  --green-border:#00e87a35;
+      --orange:#FF9900; --orange-bg:#FF99000d; --orange-border:#FF990035;
+      --blue:#4a8fff;   --blue-bg:#4a8fff0d;   --blue-border:#4a8fff35;
+      --purple:#9b6dff; --purple-bg:#9b6dff0d; --purple-border:#9b6dff35;
+      --mono:'Space Mono',monospace; --sans:'Syne',sans-serif; --display:'Comfortaa',cursive;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+    /* Topbar */
+    .topbar{position:sticky;top:0;z-index:100;background:#080808ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    .topbar-inner{max-width:1200px;margin:0 auto;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-family:var(--mono);font-size:12px;color:var(--orange);letter-spacing:.15em;text-transform:uppercase;}
+    .topbar-tags{display:flex;gap:8px;}
+    .tag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border2);color:var(--dim-mid);}
+    .tag.green{border-color:var(--green-border);color:var(--green);background:var(--green-bg);}
+    .tag.yellow{border-color:var(--yellow-border);color:var(--yellow);background:var(--yellow-bg);}
+
+    /* Page header */
+    .page-header{max-width:1200px;margin:0 auto;padding:32px 32px 28px;border-bottom:1px solid var(--border);}
+    .page-title{font-family:var(--display);font-size:26px;font-weight:700;color:var(--text);margin-bottom:5px;}
+    .page-sub{font-family:var(--mono);font-size:10px;color:var(--dim-mid);letter-spacing:.1em;text-transform:uppercase;}
+
+    /* Summary bar */
+    .summary-bar{max-width:1200px;margin:0 auto;padding:20px 32px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;border-bottom:1px solid var(--border);}
+    .sum-stat{background:var(--surface);border:1px solid var(--border2);padding:14px 16px;}
+    .sum-val{font-family:var(--display);font-size:22px;font-weight:700;color:var(--text);margin-bottom:3px;}
+    .sum-val.green{color:var(--green);}
+    .sum-val.orange{color:var(--orange);}
+    .sum-val.yellow{color:var(--yellow);}
+    .sum-val.blue{color:var(--blue);}
+    .sum-label{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;}
+
+    /* Bot grid */
+    .bots{max-width:1200px;margin:0 auto;padding:32px 32px 80px;display:flex;flex-direction:column;gap:32px;}
+
+    /* Bot card */
+    .bot{border:1px solid var(--border2);background:var(--surface);}
+    .bot-header{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border);}
+    .bot-emoji{font-size:40px;line-height:1;filter:grayscale(0.1);}
+    .bot-id{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
+    .bot-name{font-family:var(--display);font-size:20px;font-weight:700;}
+    .bot-pain{font-family:var(--mono);font-size:10px;color:#999;margin-top:3px;}
+    .bot-priority{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+    .priority-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border:1px solid;white-space:nowrap;}
+    .priority-badge.p1{color:var(--red);border-color:var(--red-border);background:var(--red-bg);}
+    .priority-badge.p2{color:var(--yellow);border-color:var(--yellow-border);background:var(--yellow-bg);}
+    .priority-badge.p3{color:var(--blue);border-color:var(--blue-border);background:var(--blue-bg);}
+    .deadline-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--red-border);color:var(--red);}
+
+    /* Bot body - 4 columns */
+    .bot-body{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-top:1px solid var(--border);}
+    .bot-section{padding:18px 20px;border-right:1px solid var(--border);}
+    .bot-section:last-child{border-right:none;}
+    .sec-label{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+    .sec-content{font-family:var(--mono);font-size:10px;color:#999;line-height:1.75;}
+
+    /* Stack chips */
+    .stack-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+    .chip{font-family:var(--mono);font-size:8px;letter-spacing:.06em;padding:3px 7px;border:1px solid var(--border2);color:var(--dim-mid);background:var(--surface2);}
+    .chip.primary{border-color:var(--orange-border);color:var(--orange);background:var(--orange-bg);}
+    .chip.api{border-color:var(--blue-border);color:var(--blue);background:var(--blue-bg);}
+    .chip.ai{border-color:var(--purple-border);color:var(--purple);background:var(--purple-bg);}
+    .chip.built{border-color:var(--green-border);color:var(--green);background:var(--green-bg);}
+
+    /* Hours / cost */
+    .hours-row{display:flex;align-items:baseline;gap:6px;margin-bottom:6px;}
+    .hours-val{font-family:var(--display);font-size:22px;font-weight:700;color:var(--orange);}
+    .hours-unit{font-family:var(--mono);font-size:9px;color:var(--dim);}
+    .cost-val{font-family:var(--display);font-size:16px;font-weight:700;color:var(--text);margin-top:4px;}
+    .cost-label{font-family:var(--mono);font-size:8px;color:var(--dim);margin-top:2px;}
+
+    /* Value */
+    .value-val{font-family:var(--display);font-size:22px;font-weight:700;color:var(--green);margin-bottom:4px;}
+    .value-label{font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:8px;}
+    .value-note{font-family:var(--mono);font-size:9px;color:#777;line-height:1.65;}
+
+    /* Support list */
+    .support-list{list-style:none;margin-top:2px;}
+    .support-list li{font-family:var(--mono);font-size:9px;color:#777;line-height:1.7;padding-left:10px;position:relative;}
+    .support-list li::before{content:'·';position:absolute;left:0;color:var(--dim);}
+
+    /* Divider */
+    .section-divider{font-family:var(--mono);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+    .section-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">SidebarOS · Bot Specs</div>
+    <div class="topbar-tags">
+      <div class="tag">5 Bots</div>
+      <div class="tag yellow">3 Pre-Aug 1</div>
+      <div class="tag green">1 In Progress</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-header">
+  <div class="page-title">Automation Bots — Scoped & Priced</div>
+  <div class="page-sub">One bot per pain point · stack · hours · support · value</div>
+</div>
+
+<div class="summary-bar">
+  <div class="sum-stat">
+    <div class="sum-val orange">5</div>
+    <div class="sum-label">Bots Identified</div>
+  </div>
+  <div class="sum-stat">
+    <div class="sum-val yellow">150–220</div>
+    <div class="sum-label">Total Build Hours</div>
+  </div>
+  <div class="sum-stat">
+    <div class="sum-val blue">$22K–$33K</div>
+    <div class="sum-label">Total Build Cost (Est.)</div>
+  </div>
+  <div class="sum-stat">
+    <div class="sum-val green">$30K–$55K</div>
+    <div class="sum-label">Annual Value Add (Est.)</div>
+  </div>
+</div>
+
+<div class="bots">
+
+  <!-- ══ BOT 01 ══ -->
+  <div>
+    <div class="section-divider">Priority 1 · Immediate</div>
+    <div class="bot">
+      <div class="bot-header">
+        <div class="bot-emoji">📬</div>
+        <div>
+          <div class="bot-id">Bot-01</div>
+          <div class="bot-name" style="color:var(--green)">ShipStation EOD Email Bot</div>
+          <div class="bot-pain">Pain point: ~1 hr/day manually drafting shipping confirmation emails from ShipStation EOD report</div>
+        </div>
+        <div class="bot-priority">
+          <div class="priority-badge p1">Priority 1 · First Project</div>
+        </div>
+      </div>
+      <div class="bot-body">
+        <div class="bot-section">
+          <div class="sec-label">Stack Inside the Bot</div>
+          <div class="stack-chips">
+            <div class="chip api">ShipStation REST API</div>
+            <div class="chip primary">n8n Workflow</div>
+            <div class="chip api">Microsoft 365 / Outlook API</div>
+            <div class="chip ai">Claude API (email copy)</div>
+            <div class="chip">Customer record lookup</div>
+            <div class="chip">Cron trigger (end of day)</div>
+          </div>
+          <div class="sec-content" style="margin-top:10px;">ShipStation has a solid REST API. Trigger fires when EOD report is ready. n8n fetches the data, matches orders to customers, Claude generates the email body, Outlook sends it. Human reviews before send or fully auto — configurable.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Build Hours</div>
+          <div class="hours-row"><div class="hours-val">24–36</div><div class="hours-unit">hrs</div></div>
+          <div class="cost-val">$3,000–$5,000</div>
+          <div class="cost-label">Estimated project cost</div>
+          <div class="sec-content" style="margin-top:10px;">
+            ShipStation API + EOD pull: 4–6 hrs<br>
+            Customer record matching: 4–8 hrs<br>
+            Email generation (Claude): 4–6 hrs<br>
+            Review queue / send logic: 4–6 hrs<br>
+            Testing + QA: 8–10 hrs
+          </div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Support Risk (First 90 Days)</div>
+          <ul class="support-list">
+            <li>Customer records mismatch — wrong email or name variations across systems</li>
+            <li>Edge cases: partial shipments, multi-day orders, international addresses</li>
+            <li>ShipStation report format changes on their end</li>
+            <li>Email rendering differences across client mail clients</li>
+          </ul>
+          <div class="sec-content" style="margin-top:8px;color:var(--dim-mid);">Est. 2–4 hrs/month support for first 3 months, then near-zero.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Value Add</div>
+          <div class="value-val">250 hrs/yr</div>
+          <div class="value-label">Reclaimed at ~1 hr/day</div>
+          <div class="value-note">At $30/hr labor cost → $7,500/yr saved. ROI positive in 5–8 months. Faster customer communication improves NPS. Foundation for all future communication automation. Jesse's recommended first project — lowest risk, highest visibility win.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BOT 02 ══ -->
+  <div>
+    <div class="section-divider">Priority 1 · Pre-Aug 1 Deadline</div>
+    <div class="bot">
+      <div class="bot-header">
+        <div class="bot-emoji">🔍</div>
+        <div>
+          <div class="bot-id">Bot-02</div>
+          <div class="bot-name" style="color:var(--yellow)">Interop ID Audit Bot</div>
+          <div class="bot-pain">Pain point: ~30K Four51 products may have missing interop IDs — Zoho rejects orders without them on Aug 1</div>
+        </div>
+        <div class="bot-priority">
+          <div class="priority-badge p1">Priority 1 · Deadline Risk</div>
+          <div class="deadline-badge">⚠ Must complete before Aug 1</div>
+        </div>
+      </div>
+      <div class="bot-body">
+        <div class="bot-section">
+          <div class="sec-label">Stack Inside the Bot</div>
+          <div class="stack-chips">
+            <div class="chip built">audit.py (30% built)</div>
+            <div class="chip api">Four51 SOAP 1.1 API (Jesse)</div>
+            <div class="chip api">Four51 Write API (batch fill)</div>
+            <div class="chip">Python · xml.etree · csv</div>
+            <div class="chip">Quantum CSV export</div>
+            <div class="chip">Fuzzy SKU matching</div>
+          </div>
+          <div class="sec-content" style="margin-top:10px;">Jesse confirmed SOAP 1.1 pulls all product data in one call. Script reads → audits → cross-references Quantum → auto-fills confident matches → exports review queue for Angela/Nicole → writes back via Four51 API.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Build Hours</div>
+          <div class="hours-row"><div class="hours-val">40–60</div><div class="hours-unit">hrs</div></div>
+          <div class="cost-val">$5,000–$8,000</div>
+          <div class="cost-label">Estimated project cost</div>
+          <div class="sec-content" style="margin-top:10px;">
+            SOAP connection + product pull: 6–10 hrs<br>
+            Gap analysis + audit logic: 8–12 hrs<br>
+            Quantum cross-reference: 6–10 hrs<br>
+            Auto-fill + write-back API: 8–12 hrs<br>
+            Testing with real data: 12–16 hrs
+          </div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Support Risk (First 90 Days)</div>
+          <ul class="support-list">
+            <li>SOAP XML parsing quirks — namespaces, auth token expiry</li>
+            <li>Items with multiple variants needing separate interop IDs (apparel)</li>
+            <li>SKU matching confidence threshold tuning (too loose = wrong fills)</li>
+            <li>Quantum export format inconsistencies</li>
+          </ul>
+          <div class="sec-content" style="margin-top:8px;color:var(--dim-mid);">Primarily a one-time run. Est. 4–8 hrs debugging upfront, then minimal. Run again monthly as new products added.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Value Add</div>
+          <div class="value-val">Risk Shield</div>
+          <div class="value-label">Prevents go-live order failure</div>
+          <div class="value-note">Even 1% of 30K orders failing = 300 failed orders on Aug 1. Each requires manual intervention, customer call, and re-entry. That's days of crisis work. This bot eliminates that risk entirely. Potentially prevents $15K–$50K in operational damage on cutover day.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BOT 03 ══ -->
+  <div>
+    <div class="bot">
+      <div class="bot-header">
+        <div class="bot-emoji">🔤</div>
+        <div>
+          <div class="bot-id">Bot-03</div>
+          <div class="bot-name" style="color:var(--yellow)">Buyer Name Reconciliation Bot</div>
+          <div class="bot-pain">Pain point: "Salons" vs "Salon" — Zoho requires exact company name match or the entire order fails silently</div>
+        </div>
+        <div class="bot-priority">
+          <div class="priority-badge p1">Priority 1 · Pre-Migration</div>
+          <div class="deadline-badge">⚠ Must complete before Aug 1</div>
+        </div>
+      </div>
+      <div class="bot-body">
+        <div class="bot-section">
+          <div class="sec-label">Stack Inside the Bot</div>
+          <div class="stack-chips">
+            <div class="chip api">Four51 SOAP API (buyer accounts)</div>
+            <div class="chip api">Zoho CRM / Books API</div>
+            <div class="chip">Python · rapidfuzz</div>
+            <div class="chip">Confidence scoring (0–100%)</div>
+            <div class="chip">Excel / CSV output for Brandi</div>
+          </div>
+          <div class="sec-content" style="margin-top:10px;">Pulls buyer company names from Four51 and contact names from Zoho. Runs fuzzy string matching with confidence scores. Outputs a report: exact matches (safe), likely matches (review), no match (flag). Brandi approves before migration.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Build Hours</div>
+          <div class="hours-row"><div class="hours-val">18–28</div><div class="hours-unit">hrs</div></div>
+          <div class="cost-val">$2,500–$4,000</div>
+          <div class="cost-label">Estimated project cost</div>
+          <div class="sec-content" style="margin-top:10px;">
+            Four51 buyer list pull: 3–5 hrs<br>
+            Zoho contact pull: 4–6 hrs<br>
+            Fuzzy match + scoring: 4–6 hrs<br>
+            Report generation: 3–4 hrs<br>
+            Testing + threshold tuning: 4–7 hrs
+          </div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Support Risk (First 90 Days)</div>
+          <ul class="support-list">
+            <li>Confidence threshold calibration — finding the right cut-off between auto-approve and flag</li>
+            <li>Company names with abbreviations, DBA names, or special characters</li>
+            <li>Zoho API auth — their OAuth flow can be finicky on first setup</li>
+          </ul>
+          <div class="sec-content" style="margin-top:8px;color:var(--dim-mid);">One-time pre-migration bot. 1–2 hrs threshold tuning, then hand the report to Brandi. Essentially no ongoing support needed.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Value Add</div>
+          <div class="value-val">Go-Live Safety</div>
+          <div class="value-label">Prevents Aug 1 order failures</div>
+          <div class="value-note">Brandi already caught one manually ("Salons" vs "Salon"). There are likely dozens more across the full client list. Each unresolved mismatch = a failed order the moment Zoho goes live. This bot catches them all in a 3-day window instead of discovering them during production outage.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BOT 04 ══ -->
+  <div>
+    <div class="section-divider">Priority 2 · Phase 2</div>
+    <div class="bot">
+      <div class="bot-header">
+        <div class="bot-emoji">⚡</div>
+        <div>
+          <div class="bot-id">Bot-04</div>
+          <div class="bot-name" style="color:var(--orange)">Order Detection & Routing Bot</div>
+          <div class="bot-pain">Pain point: Sidebar employee manually checks Four51 admin for new orders — no notification, no SLA, no audit trail</div>
+        </div>
+        <div class="bot-priority">
+          <div class="priority-badge p2">Priority 2 · Phase 2</div>
+        </div>
+      </div>
+      <div class="bot-body">
+        <div class="bot-section">
+          <div class="sec-label">Stack Inside the Bot</div>
+          <div class="stack-chips">
+            <div class="chip api">Four51 SOAP API (order poll)</div>
+            <div class="chip primary">n8n or Python cron (5–15 min)</div>
+            <div class="chip api">Zoho Books API (order push)</div>
+            <div class="chip">Slack / Teams webhook (alerts)</div>
+            <div class="chip">Timestamp + audit log</div>
+            <div class="chip">Retry logic + error queue</div>
+          </div>
+          <div class="sec-content" style="margin-top:10px;">Polls Four51 for new orders every 5–15 minutes. Detects new → formats payload → pushes directly to Zoho (post-Aug 1). Logs timestamp at every step. Failures go to a Slack alert. Human only handles exceptions.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Build Hours</div>
+          <div class="hours-row"><div class="hours-val">28–44</div><div class="hours-unit">hrs</div></div>
+          <div class="cost-val">$3,500–$6,000</div>
+          <div class="cost-label">Estimated project cost</div>
+          <div class="sec-content" style="margin-top:10px;">
+            Four51 order polling: 4–6 hrs<br>
+            Zoho push integration: 8–16 hrs<br>
+            Dedup + idempotency logic: 4–6 hrs<br>
+            Slack/Teams alerts: 2–4 hrs<br>
+            Testing + load test: 10–12 hrs
+          </div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Support Risk (First 90 Days)</div>
+          <ul class="support-list">
+            <li>Duplicate order entry if polling window overlaps with itself</li>
+            <li>Zoho API rate limits during high-volume periods</li>
+            <li>Four51 API downtime — need graceful retry and backlog drain</li>
+            <li>Needs a reliable always-on server (VPS or cloud function)</li>
+            <li>Edge cases: cancelled orders, order edits after submission</li>
+          </ul>
+          <div class="sec-content" style="margin-top:8px;color:var(--dim-mid);">Est. 3–5 hrs/month support for first 3 months as edge cases surface.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Value Add</div>
+          <div class="value-val">125–250 hrs/yr</div>
+          <div class="value-label">Order entry labor reclaimed</div>
+          <div class="value-note">Eliminates 30–60 min/day of manual entry and checking. Reduces transcription errors that cause fulfillment mistakes. Audit trail for every order becomes a customer service asset. Opens the door to real-time order status updates for buyers. $3,750–$7,500/yr in labor alone.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BOT 05 ══ -->
+  <div>
+    <div class="bot">
+      <div class="bot-header">
+        <div class="bot-emoji">💰</div>
+        <div>
+          <div class="bot-id">Bot-05</div>
+          <div class="bot-name" style="color:var(--red)">Pricing Staleness Scanner</div>
+          <div class="bot-pain">Pain point: account managers forget to update sale prices in Four51 at reorder — customers discover wrong prices (the $4 → $7 scenario)</div>
+        </div>
+        <div class="bot-priority">
+          <div class="priority-badge p2">Priority 2 · Ongoing Risk</div>
+        </div>
+      </div>
+      <div class="bot-body">
+        <div class="bot-section">
+          <div class="sec-label">Stack Inside the Bot</div>
+          <div class="stack-chips">
+            <div class="chip api">Four51 SOAP API (products + pricing)</div>
+            <div class="chip">Quantum / reorder date export</div>
+            <div class="chip primary">Weekly cron (Monday AM)</div>
+            <div class="chip api">Outlook API (digest email)</div>
+            <div class="chip">Per-size apparel tracking</div>
+            <div class="chip">Staleness threshold config</div>
+          </div>
+          <div class="sec-content" style="margin-top:10px;">Every Monday: pulls all active Four51 items, compares last price update date against last reorder date. Items where reorder date > price update date get flagged. Digest sent to Angela + Nicole with item list, current price, and last change date.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Build Hours</div>
+          <div class="hours-row"><div class="hours-val">28–42</div><div class="hours-unit">hrs</div></div>
+          <div class="cost-val">$3,500–$5,500</div>
+          <div class="cost-label">Estimated project cost</div>
+          <div class="sec-content" style="margin-top:10px;">
+            Product + price pull (reuse SOAP): 4–6 hrs<br>
+            Reorder date cross-reference: 6–10 hrs<br>
+            Staleness detection logic: 4–6 hrs<br>
+            Digest email + apparel per-size: 6–8 hrs<br>
+            Scheduling + threshold tuning: 4–6 hrs<br>
+            Testing: 4–6 hrs
+          </div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Support Risk (First 90 Days)</div>
+          <ul class="support-list">
+            <li>Reorder dates may not be consistently tracked in Quantum — data quality issue</li>
+            <li>Alert fatigue if threshold is too sensitive (too many items flagged)</li>
+            <li>Apparel: base price + per-size upcharges (2XL, 3XL) tracked separately</li>
+            <li>Tuning what "stale" means — 30 days? 90 days? Depends on product category</li>
+          </ul>
+          <div class="sec-content" style="margin-top:8px;color:var(--dim-mid);">Est. 2–3 hrs tuning in month 1, then near-zero. Weekly digest keeps account managers honest without requiring behavior change.</div>
+        </div>
+        <div class="bot-section">
+          <div class="sec-label">Value Add</div>
+          <div class="value-val">Margin Protection</div>
+          <div class="value-label">Prevents revenue erosion</div>
+          <div class="value-note">The $4 → $7 scenario already happened to a real client. One pricing confrontation = damaged trust, potential account loss. If this happens to 5 clients/year at average order value of $2K, that's $10K+ in margin given away. This bot prevents that indefinitely for under $5K build cost. ROI within months of first incident prevented.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

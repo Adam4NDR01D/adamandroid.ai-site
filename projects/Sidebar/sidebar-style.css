@@ -1,0 +1,56 @@
+/* ============================================================
+   SidebarOS Dashboard — Entry stylesheet  v1.0  2026-06-12
+
+   Imports the shared AdamAndroid design system, then adds
+   any dashboard-specific overrides below.
+
+   To restyle everything: edit
+     ~/Ai/LifeOS/design-system/variables.css   ← tokens / fonts
+     ~/Ai/LifeOS/design-system/components.css  ← component rules
+
+   NOTE: SidebarOS-dashboard.html is self-contained (CSS inlined)
+   for Google Drive / cloud sharing. This file is the modular
+   version for local development use.
+   ============================================================ */
+
+@import url('/Users/adamandroid/Ai/LifeOS/design-system/variables.css');
+@import url('/Users/adamandroid/Ai/LifeOS/design-system/components.css');
+
+/* ── SidebarOS-specific overrides below this line ─────── */
+
+/* Flowchart nodes */
+.flow-node {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  padding: 9px 12px;
+  font-family: var(--mono);
+  text-align: center;
+  min-width: 110px;
+}
+.flow-node.orange { border-color: var(--orange-border); background: var(--orange-bg); }
+.flow-node.red    { border-color: var(--red-border);    background: var(--red-bg); }
+.flow-node.yellow { border-color: var(--yellow-border); background: var(--yellow-bg); }
+.flow-node.green  { border-color: var(--green-border);  background: var(--green-bg); }
+.flow-node.blue   { border-color: var(--blue-border);   background: var(--blue-bg); }
+.flow-node-cat  { font-size: 7px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2px; }
+.flow-node-name { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
+.flow-node.orange .flow-node-name { color: var(--orange); }
+.flow-node.red    .flow-node-name { color: var(--red); }
+.flow-node.yellow .flow-node-name { color: var(--yellow); }
+.flow-node.green  .flow-node-name { color: var(--green); }
+.flow-node.blue   .flow-node-name { color: var(--blue); }
+.flow-node-sub  { font-size: 8px; color: var(--dim); margin-top: 2px; line-height: 1.4; }
+
+/* Stoplight module cards */
+.module-card { border: 1px solid; padding: 16px 18px; margin-bottom: 8px; }
+.module-card.green  { border-color: var(--green-border);  background: var(--green-bg); }
+.module-card.yellow { border-color: var(--yellow-border); background: var(--yellow-bg); }
+.module-card.red    { border-color: var(--red-border);    background: var(--red-bg); }
+
+/* System module study */
+.sys-module { padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 8px; }
+.sys-badge { font-family: var(--mono); font-size: 8px; padding: 3px 8px; border: 1px solid; letter-spacing: 0.1em; text-transform: uppercase; }
+.sys-badge.active    { color: var(--green);  border-color: var(--green-border);  background: var(--green-bg); }
+.sys-badge.retiring  { color: var(--red);    border-color: var(--red-border);    background: var(--red-bg); }
+.sys-badge.migrating { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+.sys-badge.future    { color: var(--blue);   border-color: var(--blue-border);   background: var(--blue-bg); }

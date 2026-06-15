@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>adamandroid.ai — Brand & Document Style Guide</title>
+<style>
+  :root {
+    --orange: #FF6600;
+    --orange-warm: #FF9900;
+    --charcoal: #404040;
+    --grey-mid: #808080;
+    --grey-silver: #C0C0C0;
+    --midnight: #191970;
+    --pale-blue: #6594BC;
+    --sky: #87CEEB;
+    --skin: #C0906A;
+    --skin-shadow: #A06845;
+    --walnut: #4A3525;
+    --espresso: #1C1008;
+    --flesh: #CC9999;
+    --hazel: #6B7C48;
+    --yellow: #FFFF00;
+    --red: #FF0000;
+    --deep-red: #CC0000;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 14px; color: #404040; background: #F8F8F6; line-height: 1.6; }
+  .page { max-width: 960px; margin: 0 auto; padding: 48px 32px; }
+
+  /* Header */
+  .brand-header { border-left: 6px solid var(--orange); padding: 24px 28px; background: #fff; margin-bottom: 40px; border-radius: 0 8px 8px 0; }
+  .brand-header h1 { font-size: 28px; color: var(--charcoal); font-weight: 700; letter-spacing: -0.5px; }
+  .brand-header .sub { font-size: 13px; color: var(--grey-mid); margin-top: 6px; }
+  .brand-header .sun { display: inline-block; width: 20px; height: 20px; background: var(--orange); border-radius: 50%; vertical-align: middle; margin-right: 8px; }
+
+  /* Sections */
+  .section { background: #fff; border-radius: 10px; border: 1px solid #E0E0E0; padding: 28px 32px; margin-bottom: 24px; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--grey-mid); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #EFEFEF; }
+
+  /* Color grid */
+  .palette-group { margin-bottom: 24px; }
+  .palette-group-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--grey-silver); margin-bottom: 10px; }
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+  .swatch { border-radius: 8px; overflow: hidden; min-width: 100px; flex: 1; border: 1px solid rgba(0,0,0,.07); }
+  .swatch-color { height: 80px; width: 100%; }
+  .swatch-info { padding: 8px 10px; background: #FAFAFA; }
+  .swatch-hex { font-family: 'Courier New', monospace; font-size: 11px; font-weight: 700; color: var(--charcoal); }
+  .swatch-name { font-size: 10px; color: var(--grey-mid); margin-top: 2px; }
+  .swatch-role { font-size: 9px; color: #AAA; margin-top: 2px; line-height: 1.35; }
+  .badge { display: inline-block; font-size: 8px; padding: 1px 5px; border-radius: 3px; background: #FF660018; color: #CC4400; margin-top: 3px; }
+
+  /* Typography samples */
+  .type-row { display: flex; align-items: baseline; gap: 24px; padding: 12px 0; border-bottom: 1px solid #F0F0F0; }
+  .type-row:last-child { border-bottom: none; }
+  .type-label { font-size: 10px; color: var(--grey-mid); min-width: 140px; font-family: 'Courier New', monospace; }
+  .type-sample-h1 { font-size: 28px; font-weight: 700; color: var(--charcoal); }
+  .type-sample-h2 { font-size: 18px; font-weight: 700; color: var(--charcoal); }
+  .type-sample-h3 { font-size: 14px; font-weight: 700; color: var(--charcoal); }
+  .type-sample-body { font-size: 14px; font-weight: 400; color: var(--charcoal); }
+  .type-sample-caption { font-size: 11px; font-weight: 400; color: var(--grey-mid); }
+  .type-sample-code { font-family: 'Courier New', monospace; font-size: 12px; color: var(--charcoal); background: #F5F5F5; padding: 2px 6px; border-radius: 3px; }
+  .type-sample-orange { color: var(--orange); font-size: 28px; font-weight: 700; }
+
+  /* Callouts */
+  .callout-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .callout { flex: 1; min-width: 180px; border-radius: 6px; padding: 12px 14px; border: 1px solid rgba(0,0,0,.06); }
+  .callout-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .callout-desc { font-size: 11px; line-height: 1.5; }
+
+  /* Usage hierarchy */
+  .hierarchy { display: flex; flex-direction: column; gap: 8px; }
+  .h-row { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 6px; background: #FAFAFA; border: 1px solid #EFEFEF; }
+  .h-level { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #AAA; min-width: 64px; }
+  .h-dots { display: flex; gap: 6px; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,.08); }
+  .h-desc { font-size: 11px; color: var(--grey-mid); margin-left: 8px; }
+
+  /* Logo section */
+  .logo-demo { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+  .logo-mark { position: relative; width: 120px; height: 160px; }
+  .logo-head { width: 80px; height: 80px; border-radius: 50%; background: var(--skin); margin: 0 auto; position: relative; }
+  .logo-sun { width: 40px; height: 40px; border-radius: 50%; background: var(--orange); margin: 8px auto 0; box-shadow: 0 0 0 3px rgba(255,102,0,.2); }
+  .logo-label { font-size: 10px; color: var(--grey-mid); text-align: center; margin-top: 8px; }
+  .logo-rules { flex: 1; min-width: 200px; }
+  .logo-rule { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .logo-rule-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); margin-top: 4px; flex-shrink: 0; }
+  .logo-rule-text { font-size: 12px; color: var(--charcoal); line-height: 1.5; }
+
+  /* Tone */
+  .tone-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+  .tone-card { flex: 1; min-width: 140px; padding: 14px; border-radius: 8px; background: #FAFAFA; border: 1px solid #EFEFEF; }
+  .tone-word { font-size: 14px; font-weight: 700; color: var(--charcoal); margin-bottom: 4px; }
+  .tone-def { font-size: 11px; color: var(--grey-mid); line-height: 1.4; }
+
+  /* Footer */
+  .guide-footer { text-align: center; padding: 32px 0 0; border-top: 1px solid #E0E0E0; margin-top: 40px; }
+  .guide-footer .mark { width: 32px; height: 32px; background: var(--orange); border-radius: 50%; margin: 0 auto 10px; }
+  .guide-footer p { font-size: 11px; color: var(--grey-mid); }
+
+  @media print {
+    body { background: white; }
+    .section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand-header">
+    <h1><span class="sun"></span>adamandroid.ai</h1>
+    <div class="sub">Brand &amp; Document Style Guide &nbsp;·&nbsp; Version 1.0 &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp; Apply to all Claude-generated documents, decks, and client deliverables</div>
+  </div>
+
+  <!-- PHILOSOPHY -->
+  <div class="section">
+    <div class="section-title">1. Brand Philosophy</div>
+    <div class="tone-grid">
+      <div class="tone-card">
+        <div class="tone-word" style="color:var(--skin)">Human</div>
+        <div class="tone-def">Warm, grounded, personal. Real skin tones and hair colors are identity — not decoration. The person is the brand.</div>
+      </div>
+      <div class="tone-card">
+        <div class="tone-word" style="color:var(--midnight)">Space / Tech</div>
+        <div class="tone-def">Cool, expansive, precise. Blue takes over for infrastructure, AI, and systems thinking. Carl Sagan meets Silicon Valley.</div>
+      </div>
+      <div class="tone-card">
+        <div class="tone-word" style="color:var(--orange)">The Sun</div>
+        <div class="tone-def">The logo is the sun. Orange is used sparingly — always as a focal point, never as wallpaper. The orange glasses are not a coincidence.</div>
+      </div>
+      <div class="tone-card">
+        <div class="tone-word" style="color:var(--charcoal)">Monochrome</div>
+        <div class="tone-def">Design default. Everything sits on charcoal, grey, and white. Color is reserved for meaning, not decoration.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLOR PALETTE -->
+  <div class="section">
+    <div class="section-title">2. Color Palette</div>
+
+    <div class="palette-group">
+      <div class="palette-group-label">Primary Brand</div>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-color" style="background:#FF6600"></div><div class="swatch-info"><div class="swatch-hex">#FF6600</div><div class="swatch-name">Brand Orange</div><div class="swatch-role">Logo · Sun · Primary accent · The glasses</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#FF9900"></div><div class="swatch-info"><div class="swatch-hex">#FF9900</div><div class="swatch-name">Warm Orange</div><div class="swatch-role">Hover · Glow · Secondary brand</div></div></div>
+      </div>
+    </div>
+
+    <div class="palette-group">
+      <div class="palette-group-label">Monochrome Base — the default canvas</div>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-color" style="background:#FFFFFF;border-bottom:1px solid #EEE"></div><div class="swatch-info"><div class="swatch-hex">#FFFFFF</div><div class="swatch-name">White</div><div class="swatch-role">Page bg · Card fills</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#C0C0C0"></div><div class="swatch-info"><div class="swatch-hex">#C0C0C0</div><div class="swatch-name">Silver</div><div class="swatch-role">Borders · Dividers</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#808080"></div><div class="swatch-info"><div class="swatch-hex">#808080</div><div class="swatch-name">Middle Grey</div><div class="swatch-role">Secondary text · Icons</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#404040"></div><div class="swatch-info"><div class="swatch-hex">#404040</div><div class="swatch-name">Dark Charcoal</div><div class="swatch-role">Primary text · Headers</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#000000"></div><div class="swatch-info"><div class="swatch-hex">#000000</div><div class="swatch-name">Black</div><div class="swatch-role">Dark mode · Max contrast</div></div></div>
+      </div>
+    </div>
+
+    <div class="palette-group">
+      <div class="palette-group-label">Warm Accents — stroke &amp; edge use only, never fill</div>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-color" style="background:#FFFF00"></div><div class="swatch-info"><div class="swatch-hex">#FFFF00</div><div class="swatch-name">Yellow</div><div class="swatch-role">Thin edge highlight · Stroke only</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#FF0000"></div><div class="swatch-info"><div class="swatch-hex">#FF0000</div><div class="swatch-name">Pure Red</div><div class="swatch-role">Alert edge · Stroke only</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#CC0000"></div><div class="swatch-info"><div class="swatch-hex">#CC0000</div><div class="swatch-name">Deep Red</div><div class="swatch-role">Error states · Warning</div></div></div>
+      </div>
+    </div>
+
+    <div class="palette-group">
+      <div class="palette-group-label">Cool / Space / Tech</div>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-color" style="background:#191970"></div><div class="swatch-info"><div class="swatch-hex">#191970</div><div class="swatch-name">Midnight Blue</div><div class="swatch-role">Deep space · Dark panels</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#6594BC"></div><div class="swatch-info"><div class="swatch-hex">#6594BC</div><div class="swatch-name">NASA Pale Blue Dot</div><div class="swatch-role">Info states · Mid cool</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#87CEEB"></div><div class="swatch-info"><div class="swatch-hex">#87CEEB</div><div class="swatch-name">Sky Blue</div><div class="swatch-role">Atmosphere · Light info</div></div></div>
+      </div>
+    </div>
+
+    <div class="palette-group">
+      <div class="palette-group-label">Human Warmth — matched from photo reference</div>
+      <div class="swatches">
+        <div class="swatch"><div class="swatch-color" style="background:#C0906A"></div><div class="swatch-info"><div class="swatch-hex">#C0906A</div><div class="swatch-name">Warm Skin</div><div class="swatch-role">Face highlight · Avatar fills</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#A06845"></div><div class="swatch-info"><div class="swatch-hex">#A06845</div><div class="swatch-name">Skin Shadow</div><div class="swatch-role">Contour · Beard shadow</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#4A3525"></div><div class="swatch-info"><div class="swatch-hex">#4A3525</div><div class="swatch-name">Beard Walnut</div><div class="swatch-role">Beard · Salt-and-pepper anchor</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#1C1008"></div><div class="swatch-info"><div class="swatch-hex">#1C1008</div><div class="swatch-name">Espresso</div><div class="swatch-role">Hair · Darkest warm anchor</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#CC9999"></div><div class="swatch-info"><div class="swatch-hex">#CC9999</div><div class="swatch-name">Flesh Web</div><div class="swatch-role">Web-safe · UI avatar placeholder</div></div></div>
+      </div>
+    </div>
+
+    <div class="palette-group">
+      <div class="palette-group-label">Optional Accent</div>
+      <div class="swatches">
+        <div class="swatch" style="max-width:130px"><div class="swatch-color" style="background:#6B7C48"></div><div class="swatch-info"><div class="swatch-hex">#6B7C48</div><div class="swatch-name">Hazel Olive</div><div class="swatch-role">Eye color · Nature accent<br><span class="badge">use sparingly</span></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USAGE HIERARCHY -->
+  <div class="section">
+    <div class="section-title">3. Color Usage Hierarchy</div>
+    <div class="hierarchy">
+      <div class="h-row">
+        <div class="h-level">Always on</div>
+        <div class="h-dots">
+          <div class="dot" style="background:#404040"></div>
+          <div class="dot" style="background:#FFFFFF;border:1px solid #CCC"></div>
+          <div class="dot" style="background:#C0C0C0"></div>
+        </div>
+        <div class="h-desc">Dark Charcoal for body text · White for backgrounds · Silver for borders</div>
+      </div>
+      <div class="h-row">
+        <div class="h-level">Contextual</div>
+        <div class="h-dots">
+          <div class="dot" style="background:#FF6600"></div>
+          <div class="dot" style="background:#191970"></div>
+          <div class="dot" style="background:#1C1008"></div>
+        </div>
+        <div class="h-desc">Brand Orange as single focal accent · Midnight Blue for tech content · Espresso for identity contexts</div>
+      </div>
+      <div class="h-row">
+        <div class="h-level">Selective</div>
+        <div class="h-dots">
+          <div class="dot" style="background:#6594BC"></div>
+          <div class="dot" style="background:#C0906A"></div>
+          <div class="dot" style="background:#4A3525"></div>
+          <div class="dot" style="background:#6B7C48"></div>
+        </div>
+        <div class="h-desc">NASA Blue for data · Warm Skin for human moments · Walnut for warm depth · Hazel as bridge accent</div>
+      </div>
+      <div class="h-row">
+        <div class="h-level">Edge only</div>
+        <div class="h-dots">
+          <div class="dot" style="background:#FFFF00;border:1px solid #CCC"></div>
+          <div class="dot" style="background:#FF0000"></div>
+        </div>
+        <div class="h-desc">Yellow and Red as 1–2px graphic marks only · Never fills · Never backgrounds</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="section">
+    <div class="section-title">4. Typography — Arial throughout</div>
+    <div class="type-row"><div class="type-label">Title / Cover</div><div class="type-sample-h1">Document Title</div></div>
+    <div class="type-row"><div class="type-label">Title / Brand Orange</div><div class="type-sample-orange">adamandroid.ai</div></div>
+    <div class="type-row"><div class="type-label">Heading 1 · 18pt Bold</div><div class="type-sample-h2">Section Heading</div></div>
+    <div class="type-row"><div class="type-label">Heading 2 · 14pt Bold</div><div class="type-sample-h3">Subsection Heading</div></div>
+    <div class="type-row"><div class="type-label">Body · 11pt Regular</div><div class="type-sample-body">This is the standard body text. Direct, specific, warm but not soft. Every sentence earns its place.</div></div>
+    <div class="type-row"><div class="type-label">Caption / Label · 10pt</div><div class="type-sample-caption">Source: Public research · Confirmed in discovery call · June 2026</div></div>
+    <div class="type-row"><div class="type-label">Code / Hex · Mono</div><div class="type-sample-code">#FF6600 · #1C1008 · #6B7C48</div></div>
+  </div>
+
+  <!-- CALLOUT BOXES -->
+  <div class="section">
+    <div class="section-title">5. Callout Box Convention — color encodes meaning</div>
+    <div class="callout-row">
+      <div class="callout" style="background:#FFF3CD;border-color:#F0C040">
+        <div class="callout-label" style="color:#8B6914">Assumption</div>
+        <div class="callout-desc" style="color:#5C4A00">Needs confirmation before treating as fact. Flag for review.</div>
+      </div>
+      <div class="callout" style="background:#E8F4FD;border-color:#B0CCE8">
+        <div class="callout-label" style="color:#1A5080">Note / Info</div>
+        <div class="callout-desc" style="color:#1A3A5C">Informational context or instruction. No action required.</div>
+      </div>
+      <div class="callout" style="background:#FFE0B2;border-color:#FFAA44">
+        <div class="callout-label" style="color:#7A3800">Client Assumption</div>
+        <div class="callout-desc" style="color:#5C2800">Our inference about the client. Review before sharing externally.</div>
+      </div>
+      <div class="callout" style="background:#FFE0E0;border-color:#FFAAAA">
+        <div class="callout-label" style="color:#800000">Risk / Blocker</div>
+        <div class="callout-desc" style="color:#5C0000">Requires immediate attention. Do not proceed without resolution.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO -->
+  <div class="section">
+    <div class="section-title">6. Logo &amp; Mark</div>
+    <div class="logo-demo">
+      <div class="logo-mark">
+        <div class="logo-head"></div>
+        <div class="logo-sun"></div>
+        <div class="logo-label">throat chakra<br>6 o'clock · bowtie</div>
+      </div>
+      <div class="logo-rules">
+        <div class="logo-rule"><div class="logo-rule-dot"></div><div class="logo-rule-text">The logo is the sun. Position: throat chakra / 6 o'clock beneath the head, in a bowtie / halo relationship.</div></div>
+        <div class="logo-rule"><div class="logo-rule-dot"></div><div class="logo-rule-text">Color: Brand Orange #FF6600 only. Never recolor the mark.</div></div>
+        <div class="logo-rule"><div class="logo-rule-dot"></div><div class="logo-rule-text">The Pale Blue Dot (#6594BC) is its complementary counterpart — cool where the sun is warm, distance where the logo is presence.</div></div>
+        <div class="logo-rule"><div class="logo-rule-dot"></div><div class="logo-rule-text">The orange glasses are a live extension of the mark. In portrait-forward design, treat them as brand presence.</div></div>
+        <div class="logo-rule"><div class="logo-rule-dot"></div><div class="logo-rule-text">Clear space: minimum half the logo diameter on all sides.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TONE -->
+  <div class="section">
+    <div class="section-title">7. Tone &amp; Voice</div>
+    <div class="tone-grid">
+      <div class="tone-card"><div class="tone-word">Direct</div><div class="tone-def">No filler. No "as mentioned above." Every sentence earns its place.</div></div>
+      <div class="tone-card"><div class="tone-word">Specific</div><div class="tone-def">Real numbers, real names, real stakes. Not vague generalities.</div></div>
+      <div class="tone-card"><div class="tone-word">Transparent</div><div class="tone-def">Label assumptions explicitly. Distinguish confirmed from inferred.</div></div>
+      <div class="tone-card"><div class="tone-word">Confident</div><div class="tone-def">Don't hedge unnecessarily. Own the recommendation.</div></div>
+      <div class="tone-card"><div class="tone-word">Warm</div><div class="tone-def">Human, not casual. Precision with personality. The brand has a face.</div></div>
+    </div>
+  </div>
+
+  <!-- FOLDER STRUCTURE -->
+  <div class="section">
+    <div class="section-title">8. Project Folder Structure</div>
+    <div style="font-family:'Courier New',monospace;font-size:12px;color:var(--charcoal);line-height:2;background:#F8F8F6;padding:16px 20px;border-radius:6px;border:1px solid #E8E8E8">
+      My Drive / Ai / Claude /<br>
+      &nbsp;&nbsp;<span style="color:var(--orange);font-weight:700">_Style Guide /</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← This file. Cross-project. Never put client work here.<br>
+      &nbsp;&nbsp;<span style="color:var(--midnight)">_Templates /</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Reusable doc shells built to this guide.<br>
+      &nbsp;&nbsp;<span style="color:var(--charcoal)">[Project Name] /</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← One folder per client or initiative.<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--grey-mid)">[Deliverables]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← All final docs saved here.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="guide-footer">
+    <div class="mark"></div>
+    <p>adamandroid.ai Style Guide v1.0 &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp; Colors matched from Photoshop palette + photo reference<br>
+    Espresso #1C1008 · Walnut #4A3525 · Hazel #6B7C48 · Brand Orange #FF6600</p>
+  </div>
+
+</div>
+</body>
+</html>
