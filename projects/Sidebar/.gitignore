@@ -1,0 +1,8 @@
+# Sidebar project: never deploy local planning/scratch docs
+*.md
+*.csv
+*.xlsx
+*.xls
+*.bak
+.DS_Store
+_scratch/

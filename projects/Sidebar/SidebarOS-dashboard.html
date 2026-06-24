@@ -57,6 +57,7 @@
     <div class="nav-tab" onclick="switchTab('strategy', this)"><span class="tab-icon">◎</span>Strategy</div>
     <div class="nav-tab" onclick="switchTab('promises', this)"><span class="tab-icon">◑</span>Pain Points &amp; Promises</div>
     <div class="nav-tab" onclick="switchTab('nextsteps', this)"><span class="tab-icon">→</span>Open Questions</div>
+    <div class="nav-tab" onclick="switchTab('process', this)"><span class="tab-icon">⚙</span>Process</div>
     <a class="nav-tab" href="workflow.html" style="text-decoration:none"><span class="tab-icon">⇄</span>Supply Chain Map</a>
   </div>
 </div>
@@ -951,6 +952,130 @@
   </div>
 
 </div><!-- end tab-nextsteps -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 5 · PROCESS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-process">
+
+  <div class="process-intro">
+    <strong>How we worked the engagement.</strong> We started from the pain points Sidebar described on the discovery calls (captured in <span class="doc-ref">Sidebar_Context.md</span> and <span class="doc-ref">PROBLEM-INVENTORY_2026-06-22.md</span>), then chased each one back to real data instead of trusting the framing. We got read-only access to two systems — the Four51 distributor admin and the <span class="doc-ref">myreports.four51.com</span> SSRS portal — and pulled the reports that could prove or disprove each claim. The discipline throughout: state the boundary of an export before quoting a number, and label every claim. The recurring lesson, logged honestly, was that almost every wrong turn traced to analyzing a <strong>partial export</strong> before checking its limits. The full re-pull and corrected numbers live in <span class="doc-ref">Four51_CrossCompany_Analysis_2026-06-23.xlsx</span> and <span class="doc-ref">Four51_CrossCompany_Note_2026-06-23.md</span>; the migration to-do in <span class="doc-ref">Four51_Pre-Migration_Checklist.md</span>; the open asks in <span class="doc-ref">NEED-SIDEBAR-INPUT_2026-06-22.md</span>.
+    <div class="process-steps">
+      <div class="process-step"><span class="num">1</span>Discovery calls — capture pains as described</div>
+      <div class="process-step"><span class="num">2</span>Read-only access — Four51 admin + myreports</div>
+      <div class="process-step"><span class="num">3</span>Targeted audits — interop, pricing, spend</div>
+      <div class="process-step"><span class="num">4</span>Full re-pull — 29 stores, one uniform window</div>
+      <div class="process-step"><span class="num">5</span>Verify boundaries + correct the revenue method</div>
+      <div class="process-step"><span class="num">6</span>Deliverables + open questions back to Sidebar</div>
+    </div>
+  </div>
+
+  <div class="process-table-wrap">
+  <table class="process-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Pain point (as Sidebar described it)</th>
+        <th>Proposed solution + dependencies / custody chain</th>
+        <th>What we tried</th>
+        <th>Results / what we learned</th>
+        <th>Next questions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="pp-num">1</td>
+        <td class="pp-pain">Empty/incorrect interop IDs make Zoho&rarr;Four51 orders fail; Zoho errors one item at a time, ~30K items.<span class="who">— <span class="mention">Brandi</span></span></td>
+        <td class="pp-sol">Read-only audit bot listing products missing/invalid interop IDs, cross-ref Quantum SKUs, fill before Aug 1.<span class="deps">Deps: Four51 product data; Quantum SKU master; Zoho map rules. Custody: Quantum &rarr; Four51 &rarr; Zoho &rarr; order.</span></td>
+        <td>SOAP <span class="doc-ref">ListProducts</span> (retired/blocked); pulled <span class="doc-ref">Product-Report-ALL-Catalogs</span>; joined to <span class="doc-ref">Order Detail Report</span>.</td>
+        <td><span class="res-flag verified">Verified</span><span class="res-flag reframed">Reframed</span><span class="res-flag open">Open</span> Main Interop ID clean on active products; API Interop ID gappy (NAH 276, Aurora 152, Swift Transp 75, AZ Home Care 6). Missing API ID does <strong>not</strong> block storefront orders. Migration-prep, not a live fire. Which field the integration uses = open.</td>
+        <td class="pp-next">Interop ID or API Interop ID for matching? Send one known failed order. Where do Zoho map errors appear? Get the Quantum SKU master.</td>
+      </tr>
+      <tr>
+        <td class="pp-num">2</td>
+        <td class="pp-pain">Apparel: parent + each size variant each need their own interop ID.<span class="who">— <span class="mention">Brandi</span></span></td>
+        <td class="pp-sol">Variant-level interop audit.<span class="deps">Deps: Four51 variant rows. Custody: same as #1 at variant grain.</span></td>
+        <td><span class="doc-ref">Product-Report-ALL-Catalogs</span> exposes Static Variant ID + both interop fields; reviewed <span class="mention">Jesse</span>'s Knight K-HB03 example.</td>
+        <td><span class="res-flag open">Open</span> At variant level, Interop ID often blank but API Interop ID (a GUID) is populated and required. Behavior differs per catalog.</td>
+        <td class="pp-next">Does the integration map variants on the API GUID or the Interop ID? Why does variant completeness differ across catalogs?</td>
+      </tr>
+      <tr>
+        <td class="pp-num">3</td>
+        <td class="pp-pain">Stale B2B "sale price" — managers forget to update on reorder; customer saw $4 when real price was $7.<span class="who">— <span class="mention">Brandi</span></span></td>
+        <td class="pp-sol">Pricing verification/alert bot: flag where Four51 price differs from Quantum; reminders.<span class="deps">Deps: Four51 price schedules; Quantum master price; reorder triggers. Custody: Quantum &rarr; Four51 (manual) &rarr; customer &rarr; invoice.</span></td>
+        <td>Pulled <span class="doc-ref">Price Break</span> + <span class="doc-ref">Price Schedule</span> reports, then <span class="doc-ref">Order Detail Report</span> (actual charged prices) across 13 stores.</td>
+        <td><span class="res-flag reframed">Reframed</span><span class="res-flag open">Open</span> Price Break report &ne; charged price (misses modifiers). Real orders show pricing mostly correct. Couldn't reproduce the stale-price problem in our data, but we can't see Quantum's master price (the real comparison).</td>
+        <td class="pp-next">Where does the displayed price actually come from, and when is it updated? Get Quantum master price to compare.</td>
+      </tr>
+      <tr>
+        <td class="pp-num">4</td>
+        <td class="pp-pain">Missing apparel size upcharges &rarr; silent margin loss; Fred lost ~$20K once (XL priced same as L).<span class="who">— <span class="mention">Fred</span></span></td>
+        <td class="pp-sol">Detect products where larger sizes lack an upcharge.<span class="deps">Deps: Four51 variant price modifiers. Custody: Four51 variant price &rarr; invoice.</span></td>
+        <td>Flat-detection on <span class="doc-ref">Price Break</span> (wrong source); then per-size pricing from real <span class="doc-ref">Order Detail Report</span>; strict single-size-$0 rule.</td>
+        <td><span class="res-flag reframed">Reframed</span> Upcharges <strong>do</strong> exist on most items (<span class="mention">Jesse</span> confirmed Manager Windbreaker). Only isolated single-size gaps; 1 real candidate (CHIC-1326 Chef Coat XL = $0). Not systemic.</td>
+        <td class="pp-next">Is CHIC-1326 XL=$0 intended or an error? Is there a setup step that sometimes skips the upcharge?</td>
+      </tr>
+      <tr>
+        <td class="pp-num">5</td>
+        <td class="pp-pain">Schema mismatch: Quantum holds whole-item price; Four51 holds base + size modifier &rarr; can't auto-sync.<span class="who">— <span class="mention">Brandi</span></span></td>
+        <td class="pp-sol">A translation/mapping layer between the two price schemas.<span class="deps">Deps: Quantum pricing export; Four51 price model; InfoPlus. Custody: Quantum &rarr; (Coverdale? manual?) &rarr; Four51 &rarr; InfoPlus.</span></td>
+        <td>Noted the mismatch from call notes; have not accessed Quantum.</td>
+        <td><span class="res-flag open">Open</span> Conceptual mismatch stated, not verified against live Quantum.</td>
+        <td class="pp-next">Get a Quantum pricing export. How is price synced today (Coverdale or manual)? What role does InfoPlus play?</td>
+      </tr>
+      <tr>
+        <td class="pp-num">6</td>
+        <td class="pp-pain">ShipStation morning emails — managers manually cross-ref the EOD report to write branded customer emails, 1&ndash;3 hrs/day each.<span class="who">— discovery</span></td>
+        <td class="pp-sol">Automation: pull ShipStation EOD &rarr; match orders &rarr; auto-draft branded email &rarr; human review &rarr; send.<span class="deps">Deps: ShipStation API/report; order records; email templates.</span></td>
+        <td>Not started (out of this phase). Original "quick win" entry point.</td>
+        <td><span class="res-flag open">Open</span> Not attempted yet.</td>
+        <td class="pp-next">ShipStation access? Branding/template rules? Which clients and volumes?</td>
+      </tr>
+      <tr>
+        <td class="pp-num">7</td>
+        <td class="pp-pain">~$400K unspent reward points stranded (insurance client); Sidebar isn't paid until employees order.<span class="who">— discovery</span></td>
+        <td class="pp-sol">Redemption-driving marketing (curated landing pages, urgency, seasonal).<span class="deps">Deps: spend-account balances; redemption mechanics; client permission. Custody: client funds &rarr; Four51 spend accounts &rarr; employee redeems &rarr; order &rarr; Sidebar paid.</span></td>
+        <td><span class="doc-ref">Spending-Account-Status</span> (full 87,135-account export) + <span class="doc-ref">Spending-Account-Transactions</span> (12mo).</td>
+        <td><span class="res-flag disproven">Disproven</span><span class="res-flag verified">Verified</span> The "$400K stranded" is wrong. $1.08M total outstanding, but $1.03M is <strong>active</strong> liability (Swift $661K + USXpress $364K, turns over yearly). Only ~$27.8K genuinely stranded (retired Fox/Camelot). No big dormant-points play.</td>
+        <td class="pp-next">Which spend programs are live vs wound down? Is the "$400K insurance client" among these? Client permission to market redemption?</td>
+      </tr>
+      <tr>
+        <td class="pp-num">8</td>
+        <td class="pp-pain">$20K/yr minimum client — each custom site too labor-intensive below it; ~75% of build is identical; caps growth.<span class="who">— discovery</span></td>
+        <td class="pp-sol">Site-cloning / templated build pipeline.<span class="deps">Deps: Four51 catalog/theme/config; "Git File Deployment" + Themes (both in admin). Custody: new client &rarr; manual Four51 build.</span></td>
+        <td>Not started (longer-term). Noted admin has Git File Deployment + Themes. Cross-referenced size of the "holes" via <span class="doc-ref">Revenue-By-Buyer</span>.</td>
+        <td><span class="res-flag reframed">Reframed</span> Cloning levers exist in the platform. But the data shows several presumed-small accounts are mid-size (API Tire $320K, AAA Cooper $247K, Buffalo Chip $156K) — the true long tail is smaller than assumed.</td>
+        <td class="pp-next">What's the real per-site build checklist? What's reusable vs custom? Can catalogs/themes clone via Git deployment?</td>
+      </tr>
+      <tr>
+        <td class="pp-num">9</td>
+        <td class="pp-pain">Fred wants to step back (golf 3&ndash;4 days/wk) — delegate firefighting.<span class="who">— context</span></td>
+        <td class="pp-sol">Ops dashboard + automation to reduce manual firefighting.<span class="deps">Deps: cross-system data.</span></td>
+        <td>Strategic; not directly attempted. This dashboard is a first step.</td>
+        <td><span class="res-flag open">Open</span></td>
+        <td class="pp-next">What specifically does <span class="mention">Fred</span> want off his plate first?</td>
+      </tr>
+      <tr>
+        <td class="pp-num">10</td>
+        <td class="pp-pain">Security: Fred found his data in public LLMs &rarr; everything must be local/private. Non-negotiable.<span class="who">— <span class="mention">Fred</span></span></td>
+        <td class="pp-sol">Local-only tooling; no cloud LLM on client data; read-only.<span class="deps">Deps: local compute.</span></td>
+        <td>All scripts run locally; all access read-only.</td>
+        <td><span class="res-flag verified">Verified</span> Honored throughout. Surfaced a related risk: the breakthrough endpoint sends live order data + credential keys to an unverified outside server.</td>
+        <td class="pp-next">What is breakthroughapi.com / who runs it? Any other data egress we haven't mapped?</td>
+      </tr>
+      <tr>
+        <td class="pp-num">11</td>
+        <td class="pp-pain">Unclear vendor integrations — breakthrough &amp; Coverdale; a webhook endpoint the vendor doesn't recognize.<span class="who">— call/email</span></td>
+        <td class="pp-sol">Map the integrations and confirm ownership.<span class="deps">Deps: vendor info. Custody: Four51 order &rarr; breakthrough webhook (user/spend/GL); Coverdale &rarr; Zoho (inventory).</span></td>
+        <td>Read the Web Services config; <span class="mention">Jesse</span> emailed Gerardo (Breakthrough Advancement).</td>
+        <td><span class="res-flag open">Open</span> breakthrough = user/spend/GL; Coverdale = Zoho inventory. Gerardo denies recognizing the account. Security flag.</td>
+        <td class="pp-next">Who actually runs breakthroughapi.com? What exactly does Coverdale sync, and on what schedule?</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+</div><!-- end tab-process -->
 
 </div><!-- end layout -->
 
