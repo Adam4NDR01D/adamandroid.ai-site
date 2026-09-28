@@ -102,6 +102,7 @@ function gate(msg) {
   return new Response(`<!DOCTYPE html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AdamAndroid.ai</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <!-- A link preview of a gated page fetches THIS page, not the content, so the
      share tags live here. They are deliberately generic: pasting a link into a
      thread cannot leak a client or project name into a room Adam does not control. -->
