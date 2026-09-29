@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebot-2 · Shape Map</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../sidebar-style.css">
+  <style>
+    /* ── Page-local: Shape Map (scoped under .sm) ───────── */
+    .layout { max-width: 1040px; }
+
+.sm {
+  --green-bg: color-mix(in srgb, var(--green) 10%, transparent); --green-bd: color-mix(in srgb, var(--green) 38%, transparent);
+  --yellow-bg: color-mix(in srgb, var(--yellow) 9%, transparent); --yellow-bd: color-mix(in srgb, var(--yellow) 38%, transparent);
+  --red-bg: color-mix(in srgb, var(--red) 11%, transparent); --red-bd: color-mix(in srgb, var(--red) 38%, transparent);
+  --blue-bg: color-mix(in srgb, var(--blue) 11%, transparent); --blue-bd: color-mix(in srgb, var(--blue) 38%, transparent);
+  --or-bg: color-mix(in srgb, var(--orange) 12%, transparent); --or-bg2: color-mix(in srgb, var(--orange) 22%, transparent);
+  --or-bd: color-mix(in srgb, var(--orange) 40%, transparent);
+  --bd3: color-mix(in srgb, var(--text) 18%, transparent);
+  --r-sm: 3px; --r: 6px; --r-lg: 8px;
+  font-family: var(--sans); color: var(--text);
+}
+.sm *, .sm *::before { box-sizing: border-box; }
+.sm h1 { font-family: var(--display); font-size: clamp(22px, 3vw, 30px); font-weight: 700; margin: 10px 0 6px; text-wrap: balance; color: var(--text); }
+.sm .sub { font-family: var(--mono); font-size: 12px; color: var(--dim-mid); margin: 0 0 2px; }
+.sm .key { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0 22px; font-family: var(--mono); font-size: 11px; color: var(--dim-mid); }
+.sm .key span { display: inline-flex; align-items: center; gap: 6px; }
+.sm .tag { display: inline-block; font-family: var(--display); font-size: 12px; font-weight: 700; letter-spacing: .06em; line-height: 1.3; padding: 3px 8px 2px; border-radius: var(--r-sm); vertical-align: 1px; white-space: nowrap; font-style: normal; }
+.sm .tag.k { color: var(--green); background: var(--green-bg); border: 1px solid var(--green-bd); }
+.sm .tag.s { color: var(--yellow); background: var(--yellow-bg); border: 1px solid var(--yellow-bd); }
+.sm .tag.i { color: var(--red); background: var(--red-bg); border: 1px solid var(--red-bd); }
+.sm .tag.o { color: var(--blue); background: var(--blue-bg); border: 1px solid var(--blue-bd); }
+.sm .sec { display: flex; flex-direction: column; gap: 12px; }
+.sm details.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); }
+.sm details.card[open] { border-color: var(--bd3); }
+.sm details.card > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 6px 14px; align-items: start; padding: 16px 18px; }
+.sm details.card > summary::-webkit-details-marker { display: none; }
+.sm details.card > summary:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: var(--r-lg); }
+.sm .num { grid-row: 1; grid-column: 1; justify-self: center; font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1; color: var(--orange); }
+.sm .ttl { grid-row: 1; grid-column: 2; align-self: center; font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.35; }
+.sm .brief { grid-row: 2; grid-column: 2; font-size: 14px; line-height: 1.5; color: var(--dim-mid); margin: 0; }
+.sm .chev { grid-row: 2; grid-column: 1; justify-self: center; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; font-size: 16px; line-height: 1; color: var(--orange); background: var(--or-bg); border: 1.5px solid var(--or-bd); transition: transform .15s ease, background .15s ease, border-color .15s ease; }
+.sm details.card > summary:hover .chev { background: var(--or-bg2); border-color: var(--orange); }
+.sm details.card[open] .chev { transform: rotate(180deg); background: var(--orange); color: var(--bg); border-color: var(--orange); }
+.sm .body { padding: 4px 18px 18px 88px; border-top: 1px solid var(--border); }
+@media (max-width: 640px) { .sm .body { padding-left: 18px; } }
+.sm .body h4 { font-family: var(--display); font-size: 14px; letter-spacing: .04em; color: var(--dim-mid); margin: 18px 0 8px; font-weight: 700; }
+.sm .body p { font-size: 13.5px; line-height: 1.6; margin: 0 0 8px; }
+.sm .body ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+.sm .body li + li { margin-top: 8px; }
+.sm .body li b, .sm .body td b, .sm .body p b { font-family: var(--display); font-weight: 700; }
+.sm .lead { margin-top: 14px !important; }
+.sm .ts { font-family: var(--mono); font-size: 10px; color: var(--orange); white-space: nowrap; }
+.sm .tbl { overflow-x: auto; margin-top: 10px; }
+.sm table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 12.5px; line-height: 1.5; }
+.sm th, .sm td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--border2); }
+.sm th { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--dim); font-weight: 700; }
+.sm th.p { font-family: var(--display); font-size: 13px; letter-spacing: 0; color: var(--yellow); }
+.sm td:first-child { font-family: var(--mono); font-size: 10.5px; color: var(--dim-mid); letter-spacing: .06em; }
+.sm .note { font-family: var(--mono); font-size: 11px; color: var(--dim-mid); margin-top: 10px; }
+.sm .box { background: var(--surface2); border: 1px solid var(--yellow-bd); border-radius: var(--r); padding: 10px 12px; margin-top: 12px; }
+.sm .box p { margin: 0; }
+.sm .qp { margin-top: 4px; }
+.sm .qp > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 2px 4px 2px 0; font-family: var(--display); font-size: 12px; font-weight: 700; color: var(--orange); }
+.sm .qp > summary::-webkit-details-marker { display: none; }
+.sm .qp > summary::before { content: ""; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 9px solid var(--orange); transition: transform .15s ease; }
+.sm .qp[open] > summary::before { transform: rotate(90deg); }
+.sm .qp > summary:hover { opacity: .8; }
+.sm .qp > summary:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: var(--r-sm); }
+.sm .qp-body { margin: 6px 0 4px; padding: 10px 12px; background: var(--surface2); border-left: 2px solid var(--orange); border-radius: 0 var(--r) var(--r) 0; }
+.sm .qp-body p { margin: 0 0 6px; font-size: 13px; }
+.sm .qp-body p:last-child { margin-bottom: 0; }
+.sm .qp-body .lbl { font-family: var(--display); font-weight: 700; color: var(--orange); margin-right: 4px; }
+.sm .qp-body .src { font-family: var(--sans); font-size: 12px; color: var(--dim-mid); }
+.sm a { color: var(--orange); text-decoration: none; overflow-wrap: anywhere; }
+.sm a:hover { text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) { .sm .chev, .sm .qp > summary::before { transition: none; } }
+
+    /* ── Site footer (from AdamAndroid.ai root) ──────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 30px 56px; margin-top: 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .footer-name { font-size: 13px; font-weight: 600; color: var(--dim); font-family: var(--sans); }
+    .footer-name .ai { color: var(--orange); }
+    footer small { font-size: 12px; color: var(--dim); font-family: var(--sans); }
+    @media (max-width: 800px) {
+      footer { flex-direction: column; gap: 14px; padding: 28px 24px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+  <defs>
+    <linearGradient id="og" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF9900"/>
+      <stop offset="100%" stop-color="#FF6600"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <div class="logo">ADAMOS</div>
+      <div class="date-pill" data-date-box></div>
+      <div class="topbar-project"><span class="project-label">PROJECT:</span> <span class="project-name">SIDEBAR</span></div>
+      <span class="status" data-status data-updated="2026.09.29.15:35">
+        <span class="status-dot"></span><span class="status-label"></span>
+      </span>
+    </div>
+    <div class="topbar-right">
+      <span class="theme-toggle" data-theme-toggle>🌙</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <div class="nav-tabs-inner">
+    <a class="nav-tab" href="../../index.html" style="text-decoration:none"><span class="tab-icon">←</span>Sidebar Dashboard</a>
+    <div class="nav-tab active"><span class="tab-icon">◈</span>Sidebot-2 · Shape Map</div>
+    <a class="nav-tab" href="prelim-Qs.html" style="text-decoration:none"><span class="tab-icon">?</span>Sidebot-2 · Questions</a>
+  </div>
+</div>
+
+<div class="layout">
+<div class="sm">
+  <h1>Shape of the problem(s)</h1>
+  <p class="sub">Based on: Pricing and Inventory Review / Scoping with Brandi, Jesse &amp; Adam, 2026.09.29</p>
+  <p class="sub">Also: Brandi's emails, 06-05 to 09-29 · Adam and Jesse after the recorded call (marked where used)</p>
+
+  <div class="key">
+    <span><i class="tag k">KNOWN</i> seen in a document, screen or file</span>
+    <span><i class="tag s">STATED</i> said on the call or in email</span>
+    <span><i class="tag i">INFERRED</i> our read, untested</span>
+    <span><i class="tag o">OPEN</i> nobody knows yet</span>
+  </div>
+
+  <div class="sec">
+
+    <details class="card">
+      <summary><span class="num">01</span><span class="ttl">The shape of the problem</span><span class="chev">▼</span>
+        <p class="brief">Four51 can't take the per-size stock keeping units (SKUs) and total prices that Infoplus holds, so inventory and price are kept by hand and drift.</p></summary>
+      <div class="body">
+        <h4>WHAT BRANDI IS ASKING FOR</h4>
+        <p>“I would like to build something specifically for Infoplus and Four 51.” (09-28) <i class="tag s">STATED</i></p>
+        <p>On adding inventory: “We'd like it to be automated.” <span class="ts">10:26:16</span> · “needs to be done in Creator which could be instant” (Brandi, relayed 09-29) <i class="tag s">STATED</i></p>
+        <p>For after the migration, not a cleanup of today's setup: “I just don't know how much value there is to that since migration could just be a couple of months around the corner.” <span class="ts">10:03:59</span> “No, it's not crucial for Go Live.” <span class="ts">10:24:19</span> <i class="tag s">STATED</i></p>
+        <p>She isn't sure today's work carries over: “I am not sure we can build something that carries forward into the new environment.” (09-28) <i class="tag s">STATED</i></p>
+        <p>Build in the Infoplus sandbox and the Four51 test site. Going live means a new URL, application programming interface (API) key, warehouse ID and line of business (LOB) ID. (09-28) <i class="tag s">STATED</i></p>
+
+        <h4>HOW SHE HAS IDENTIFIED THE PROBLEM</h4>
+        <ul>
+          <li><b>Four51 can't see sizes.</b> “it only reads this interop ID here. So it's not seeing our size.” <span class="ts">10:32:13</span> <i class="tag s">STATED</i> Zoho sees a unique SKU for each size. <span class="ts">10:12:39</span> <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> Update Four51 inventory by the size SKU, not the parent. Prove it on the Four51 test site first (T1). <i class="tag i">INFERRED</i></p><p><span class="lbl">Question:</span> Is the size SKU the same code in Infoplus and Four51 for every item?</p><p class="src">Based on: Four51's inventory call accepts a variant ID <i class="tag k">KNOWN</i>. The SKU is the variant interop ID <span class="ts">10:31:52</span></p></div></details></li>
+          <li><b>Two price shapes.</b> Books and Infoplus hold one total per SKU. Four51 holds a base plus a size markup. “It doesn't let us set up pricing to where you can associate a full price to each different size.” <span class="ts">10:37:24</span> <i class="tag s">STATED</i> For apparel, markups also differ per buyer, so each buyer gets its own copy of the item. (07-14) <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> Give each size its own full price schedule and drop the markups (option C, test T2). <i class="tag i">INFERRED</i></p><p><span class="lbl">Question:</span> If each size carried its own full price schedule, would you still need a separate copy of the item for each buyer?</p><p class="src">Based on: Four51 can assign a price schedule per variant and per buyer, and has no markup field <i class="tag k">KNOWN</i>. Coverdale says apparel price schedules can be applied per buyer (09-17) <i class="tag s">STATED</i></p></div></details></li>
+          <li><b>Price updates are manual.</b> “no one has been able to figure out how to update the cost for products that have a markup.” <span class="ts">10:40:26</span> <i class="tag s">STATED</i> Jesse's example: the order says $120, the invoice says $132. <span class="ts">10:37:50</span> <i class="tag s">STATED</i> Retail prices are audited monthly, so the errors sit on the business-to-business (B2B) side: “If we have pricing that is off, it's definitely off on the B2B side.” <span class="ts">10:07:19</span> <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> A nightly list of every price that changed and whether Four51 matched it, emailed to you. <i class="tag i">INFERRED</i></p><p><span class="lbl">Question:</span> Roughly how many products carry a markup today?</p><p class="src">Based on: Jesse's nightly job and change email <span class="ts">11:23:30</span> (after the call). The count is not in the source</p></div></details></li>
+          <li><b>Same item, several buyers.</b> Passing on Coverdale's view: Four51 fails when it sees an interop ID more than once. <span class="ts">10:12:16</span> <i class="tag s">STATED</i> Orders still have to reach Zoho with the actual interop ID. (07-14) <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> One lookup table that ties each SKU to every buyer copy in Four51 (test T3). <i class="tag i">INFERRED</i></p><p><span class="lbl">Question:</span> Adam's hyphenated-ID idea would change the ID that orders carry into Zoho. Is it a dead end, since orders need the actual interop ID?</p><p class="src">Based on: Adam's idea <span class="ts">10:14:07</span>. Brandi, 07-14: “orders still need to pass to Zoho with the actual interop ID”</p></div></details></li>
+          <li><b>Store inventory is hand-kept.</b> Account managers update it on receipt, late, or never, and a false out-of-stock is how they find out. <span class="ts">10:06:08</span> <i class="tag s">STATED</i> Price and stock aren't shown for every buyer. <span class="ts">10:05:37</span> <i class="tag s">STATED</i> “we don't inventory for our big clients, like Swift and USX … but we do for a lot of retail clients” <span class="ts">10:06:47</span> <i class="tag s">STATED</i> Impact: “all the above until Sidebar notices inventory is incorrect and manually corrects the issue.” (09-28) <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> Start with the B2B buyers who show stock online. Retail is left out first and the big clients don't show stock, so this first set may be small. <i class="tag i">INFERRED</i></p><p><span class="lbl">Question:</span> Which non-retail buyers show stock or price online today?</p><p class="src">Based on: <span class="ts">10:06:47</span> · retail as the first exclusion <span class="ts">10:48:12</span></p></div></details></li>
+          <li><b>Lot timing.</b> B2B buyers see the newest lot's price but are invoiced at the oldest lot. “we just can't do that in the manual world of quantum.” <span class="ts">10:09:41</span> <i class="tag s">STATED</i> In Infoplus the oldest lot's price shows until that lot runs out, then the new one. <span class="ts">10:09:28</span> <i class="tag s">STATED</i> Invoicing forks: some clients pay the old price until it's gone, some are re-invoiced at receiving. <span class="ts">10:09:49</span> <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> Have Four51 show the price Infoplus holds for the lot in use, so the store matches the invoice. <i class="tag i">INFERRED</i></p><p><span class="lbl">Question:</span> Which B2B clients are invoiced at the old price until it's gone, and which are re-invoiced at receiving?</p><p class="src">Based on: <span class="ts">10:09:28</span> to <span class="ts">10:10:05</span> · “why did my price go up here?” <span class="ts">10:10:31</span></p></div></details></li>
+          <li><b>Retail is its own beast.</b> A third system (the client's point-of-sale), markups that aren't always 1.15, and sizes priced the same by judgment. “a good exclusion right out of the gate.” <span class="ts">10:48:12</span> <i class="tag s">STATED</i> Retail pricing isn't held anywhere in Zoho or Infoplus. <span class="ts">10:47:14</span> <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> Leave retail out of the first build, in Brandi's words: “a good exclusion right out of the gate.” <i class="tag s">STATED</i></p><p><span class="lbl">Question:</span> Which stores or buyers count as retail?</p><p class="src">Based on: <span class="ts">10:48:12</span> · Brandi floated a retail price on the Books item, pushed to Infoplus <span class="ts">10:48:44</span></p></div></details></li>
+          <li><b>Exclusion flags are half built.</b> Books has an “inventory update on 451” true/false box, but “I don't think that custom field has been added to the InfoPlus table.” <span class="ts">10:46:13</span> <i class="tag s">STATED</i> The Infoplus test site shows no matching item field. <i class="tag k">KNOWN</i> Since 06-05 Brandi has asked to name clients to skip, not items: no site on Four51, or inventory not enabled. (06-05) <i class="tag s">STATED</i> Buyers with no pricing online are candidates too. <span class="ts">10:45:36</span> <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> Brandi's own plan: keep the flag in Zoho and map it to an Infoplus custom field when items sync (07-14). Build it on the sandbox. <i class="tag s">STATED</i></p><p><span class="lbl">Question:</span> Who adds the Infoplus custom field, and what exact name should it carry? Our calls have to match it by name.</p><p class="src">Based on: Brandi, 09-28: “verify that your calls reference the "name" field exactly” · Brandi, 07-14: “map this field from Zoho”</p></div></details></li>
+          <li><b>Coverdale's feed is paused.</b> A daily fetch that becomes a comma-separated values (CSV) file sent by file transfer protocol (FTP). <span class="ts">10:26:45</span> <i class="tag s">STATED</i> Only single-interop items marked online worked, and failures didn't stop the run. <span class="ts">10:15:42</span> <i class="tag s">STATED</i> It covered inventory only: “Coverdale wasn't even touching pricing yet.” <span class="ts">10:12:14</span> <i class="tag s">STATED</i> On pricing: “That's a whole custom application.” <span class="ts">10:13:13</span> <i class="tag s">STATED</i> “I just told Coverdale just to pause and table it.” <span class="ts">10:51:12</span> <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> Ours logs every failure and emails the list, instead of skipping quietly. <i class="tag i">INFERRED</i></p><p><span class="lbl">Question:</span> Is the Coverdale feed retired, or could it restart after migration? We don't want two feeds writing to Four51.</p><p class="src">Based on: <span class="ts">10:51:12</span> · failures skipped <span class="ts">10:15:52</span></p></div></details></li>
+          <li><b>Stock adjustments are entered twice.</b> Adjustments are made in Infoplus and, for distributor-owned items, again in Books by hand. <span class="ts">10:19:29</span> <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Question:</span> Is the Books adjustment for distributor-owned items part of this build, or part of the Zoho and Infoplus sync?</p><p class="src">Based on: <span class="ts">10:19:17</span> to <span class="ts">10:19:35</span> · the two systems “sync some but not all information” (09-28). No proposal yet</p></div></details></li>
+          <li><b>Who can build it.</b> Coverdale can't touch Creator, and G doesn't really touch Books. <span class="ts">10:22:56</span> <i class="tag s">STATED</i> Brandi isn't confident in Coverdale for this <span class="ts">10:21:09</span>, and doesn't want a vendor-owned build: “that's not the kind of business model we want” <span class="ts">10:23:44</span> <i class="tag s">STATED</i><details class="qp"><summary>Question / proposal</summary><div class="qp-body"><p><span class="lbl">Proposal:</span> Build it inside Sidebar's own Creator, under Fred's login where Sidebar builds everything, with G checking it doesn't break what's built. <i class="tag i">INFERRED</i></p><p><span class="lbl">Question:</span> Who builds it: us, G, or both?</p><p class="src">Based on: Brandi, 09-29: “Use Fred's login since we build everything under his” · “make sure it doesn't break something that's already built” <span class="ts">10:56:11</span></p></div></details></li>
+        </ul>
+
+        <h4>RESOLVED</h4>
+        <p>SkuVault was the warehouse system Coverdale first pushed. Sidebar dropped it for Infoplus, and the name only survives in Coverdale's paperwork. <span class="ts">10:16:20</span> <i class="tag s">STATED</i></p>
+        <p>Infoplus now writes the actual sale price and ownership back onto the Books sales order. <span class="ts">10:20:10</span> <i class="tag s">STATED</i></p>
+        <h4>TIMING</h4>
+        <p>Target Jan 1. Brandi will know by Nov 15, and dev work has to finish by Dec 1. <span class="ts">10:25:13</span> <i class="tag s">STATED</i> In writing: “January is a target date.” (09-28) <i class="tag s">STATED</i> Brandi is away at least a week for a wedding. <span class="ts">11:00:50</span> <i class="tag s">STATED</i></p>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="num">02</span><span class="ttl">The four platforms</span><span class="chev">▼</span>
+        <p class="brief">Books and Infoplus hold one total price per size SKU, Four51 wants a base plus a markup, and Creator doesn't hold price or size data yet.</p></summary>
+      <div class="body">
+        <p class="lead">Today Quantum holds price and inventory. After migration it's kept “for historical reference” only. Zoho takes accounting, customer relationship management (CRM) and order writing, Infoplus takes the warehouse and shipping, and Four51 stays live for the B2B and business-to-consumer (B2C) stores. (09-28) <i class="tag s">STATED</i></p>
+        <div class="tbl"><table>
+          <thead><tr><th></th><th class="p">Zoho Books</th><th class="p">Infoplus</th><th class="p">Four51</th><th class="p">Zoho Creator</th></tr></thead>
+          <tbody>
+            <tr><td>PRICING</td>
+              <td>The new price comes in on the purchase order (PO) <span class="ts">10:29:43</span> <i class="tag s">STATED</i>. The item is “the master to where all that information lives” <span class="ts">10:49:38</span> <i class="tag s">STATED</i>. Per-customer price lists, included on Sidebar's Elite plan <i class="tag k">KNOWN</i></td>
+              <td>One total “Sell Price” per SKU <i class="tag k">KNOWN</i>. Holds “sell price for all inventory” after migration (09-28) <i class="tag s">STATED</i>. Shows the oldest lot's price until it runs out <span class="ts">10:09:28</span> <i class="tag s">STATED</i></td>
+              <td>A base price schedule plus a markup per size, set in Variable Specs <i class="tag k">KNOWN</i>. Price is hidden for some buyers <span class="ts">10:05:37</span> <i class="tag s">STATED</i></td>
+              <td>Not present in the source</td></tr>
+            <tr><td>INVENTORY</td>
+              <td>Doesn't count client-owned stock <span class="ts">10:18:07</span> <i class="tag s">STATED</i>. Distributor-owned adjustments are re-entered by hand <span class="ts">10:19:29</span> <i class="tag s">STATED</i></td>
+              <td>“the mothership of inventory quantities” <span class="ts">10:17:57</span> <i class="tag s">STATED</i>, and of locations and ownership (09-28) <i class="tag s">STATED</i>. Ownership fields on the advanced shipping notice (ASN), item receipt and order line, with DO (Distributor Owned) or CO (Client Owned) <i class="tag k">KNOWN</i></td>
+              <td>Stock shown for some buyers only, updated by hand <span class="ts">10:06:08</span> <i class="tag s">STATED</i>. Its inventory call accepts a variant ID <i class="tag k">KNOWN</i></td>
+              <td>Item receipts from Infoplus are brought in for forecasting <span class="ts">10:21:41</span> <i class="tag s">STATED</i>. A table pulls client-owned items from Infoplus <span class="ts">10:52:54</span> <i class="tag s">STATED</i></td></tr>
+            <tr><td>VARIANTS AND THEIR PRICING</td>
+              <td>No documented size and color variants. Each size is its own item <i class="tag k">KNOWN</i></td>
+              <td>One SKU per product, size and color, and that SKU is the variant interop ID <span class="ts">10:31:52</span> <i class="tag s">STATED</i></td>
+              <td>Variant DO-1042-2XL carries interop ID DO-1042-2XL <i class="tag k">KNOWN</i>. Won't take a full price per size <span class="ts">10:37:24</span> <i class="tag s">STATED</i>, but a price schedule can be assigned per variant and per buyer in the Simple Object Access Protocol (SOAP) schema <i class="tag k">KNOWN</i>. Apparel is copied per buyer (07-14) <i class="tag s">STATED</i></td>
+              <td>Not present in the source</td></tr>
+            <tr><td>COMPLICATIONS</td>
+              <td>Syncs “some but not all information” with Infoplus (09-28) <i class="tag s">STATED</i>. No retail price <span class="ts">10:47:14</span> <i class="tag s">STATED</i></td>
+              <td>No sync-to-Four51 flag on items. Posts every receipt out through the trigger “Zoho Receiving update” <i class="tag k">KNOWN</i>. Custom fields get recreated in live, so calls must match them by name (09-28) <i class="tag s">STATED</i>. No retail price <span class="ts">10:47:14</span> <i class="tag s">STATED</i></td>
+              <td>A product copy per buyer <span class="ts">10:12:16</span> <i class="tag s">STATED</i>. No markup field in the SOAP schema <i class="tag k">KNOWN</i>, so markups likely can't be written back <i class="tag i">INFERRED</i>. Coverdale says apparel schedules can be applied per buyer (09-17) <i class="tag s">STATED</i></td>
+              <td>No named connection for Infoplus, Four51 or ShipStation in its Connections list <i class="tag k">KNOWN</i>, yet Brandi says it already passes Quantum shipping data to ShipStation and sends tracking to Four51 <span class="ts">10:52:54</span> <i class="tag s">STATED</i>. Schedules 32,000 a month, 61% used <i class="tag k">KNOWN</i>. It gets “so many calls per month before it turns into a stop” <span class="ts">10:56:57</span> <i class="tag s">STATED</i>. Don't break what's built <span class="ts">10:56:11</span> <i class="tag s">STATED</i></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="num">03</span><span class="ttl">Jesse's proposal</span><span class="chev">▼</span>
+        <p class="brief">One place holds all price, inventory and size pricing as the source of truth, and translates it into what each platform expects.</p></summary>
+      <div class="body">
+        <h4>IN HIS WORDS (AFTER THE RECORDED CALL, ADAM AND JESSE ONLY)</h4>
+        <p>“creator could create a module that could house and be the master of record for everything” <span class="ts">11:07:17</span> <i class="tag s">STATED</i></p>
+        <p>“the owner and the master of record for different parts is located in different pieces of software” <span class="ts">11:07:56</span> <i class="tag s">STATED</i></p>
+        <p>A nightly job in Creator, then an email listing what was received and which prices changed. <span class="ts">11:23:30</span> to <span class="ts">11:24:21</span> <i class="tag s">STATED</i></p>
+        <h4>WHAT THE ONE PLACE WOULD HOLD THAT NO SINGLE SYSTEM HOLDS TODAY</h4>
+        <ul>
+          <li>The link from each SKU to its Four51 product and every buyer copy. Four51 holds only its own side. <i class="tag k">KNOWN</i></li>
+          <li>Size markups worked out from the upstream total price: “something that sniffs out the large size versus the 3x and then does the math” <span class="ts">10:42:21</span> <i class="tag s">STATED</i></li>
+          <li>Retail pricing, which isn't held in Zoho or Infoplus <span class="ts">10:47:14</span> <i class="tag s">STATED</i>. Where per-customer margins live isn't stated. <i class="tag o">OPEN</i></li>
+          <li>Which buyers and items to leave out: “we'll have to think about the setup to exclude buyers too” <span class="ts">10:46:26</span> <i class="tag s">STATED</i></li>
+        </ul>
+        <h4>THE TRANSLATION IT HAS TO DO</h4>
+        <p>Total price per SKU in, base plus size markup out for Four51. One SKU per size in, parent plus variant plus buyer copy out. <i class="tag i">INFERRED</i></p>
+        <h4>WHY NOT ZOHO BOOKS</h4>
+        <p>Books doesn't count client-owned stock <i class="tag s">STATED</i>, has no documented size variants <i class="tag k">KNOWN</i>, and Brandi's email says Infoplus owns pricing after migration <i class="tag s">STATED</i>.</p>
+        <div class="box"><p><b>Decision to make:</b> is the one place the new master for price and inventory, or a hub that mirrors Infoplus? And where does a price start: the email says Infoplus owns pricing (09-28), while on the call the Books item is “the master” <span class="ts">10:49:38</span>. <i class="tag o">OPEN</i></p></div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="num">04</span><span class="ttl">The candidate to vet: Zoho Creator</span><span class="chev">▼</span>
+        <p class="brief">A proposal to test, not a decision. Creator has room, already touches Infoplus and Four51, but a price write to Four51 is unproven.</p></summary>
+      <div class="body">
+        <h4>WHERE IT STANDS</h4>
+        <p>“I really think after more thinking this is something that needs to be done in Creator which could be instant.” (Brandi, relayed 09-29) <i class="tag s">STATED</i> It was her idea on the call too: use that data in Creator, then send it on to update Four51. <span class="ts">10:13:44</span> <i class="tag s">STATED</i></p>
+        <p>She asked for a call with everyone next week on the approach (relayed 09-29) <i class="tag s">STATED</i>, and she is away at least a week <span class="ts">11:00:50</span> <i class="tag s">STATED</i>. Who builds it is open, and it could be us, with G involved.</p>
+        <h4>CAN IT HANG EVERYTHING IN ONE PLACE, AND HOW</h4>
+        <ul>
+          <li><b>Room to store it.</b> Unlimited records, 2.46 million stored today. <i class="tag k">KNOWN</i> The lookup table, markups, rules and change log would be Creator tables. <i class="tag i">INFERRED</i></li>
+          <li><b>A feed from Infoplus.</b> Infoplus already posts each receipt the moment it lands, and G's apps already run on events like that. <i class="tag k">KNOWN</i> That post could go to Creator. <i class="tag i">INFERRED</i></li>
+          <li><b>It already touches Infoplus and Four51.</b> Tracking goes to Four51, and a table pulls client-owned items from Infoplus. <span class="ts">10:52:54</span> <i class="tag s">STATED</i> How, with no named connection for either, is open. <i class="tag o">OPEN</i></li>
+          <li><b>A read from Books.</b> Built-in Zoho Books tasks. <i class="tag k">KNOWN</i></li>
+          <li><b>The price math.</b> Base plus size markup, worked out from the upstream total. <i class="tag i">INFERRED</i></li>
+          <li><b>Room on calls.</b> 13,500 outside calls a day, 851 used today. <i class="tag k">KNOWN</i> It gets “so many calls per month before it turns into a stop” <span class="ts">10:56:57</span> <i class="tag s">STATED</i></li>
+          <li><b>The price write to Four51.</b> Creator sends a raw body with custom headers, but SOAP isn't in its docs. <i class="tag k">KNOWN</i> Unproven. <i class="tag o">OPEN</i></li>
+          <li><b>The markups.</b> No SOAP field for them, whatever the platform. <i class="tag k">KNOWN</i> This part may stay manual or move to a price schedule per size. <i class="tag i">INFERRED</i></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="num">05</span><span class="ttl">Tests to run</span><span class="chev">▼</span>
+        <p class="brief">Six open checks decide whether Creator can hold it all or a hybrid is needed.</p></summary>
+      <div class="body">
+        <div class="tbl"><table>
+          <thead><tr><th>TEST</th><th>WHAT</th><th>WHERE</th><th>IF IT PASSES</th><th>IF IT FAILS</th></tr></thead>
+          <tbody>
+            <tr><td>T0</td><td>Can Creator take the Infoplus receipt posts?</td><td>Ask G</td><td>Instant updates through Creator</td><td>A daily mismatch list instead (option B, audit first)</td></tr>
+            <tr><td>T1</td><td>Update inventory by variant interop ID</td><td>Four51 test site</td><td>Inventory needs no price math</td><td>Not in the source: no option listed</td></tr>
+            <tr><td>T2</td><td>Assign a price schedule to one size. Does the store show that full price? Coverdale offered a Four51 support test item (09-17)</td><td>Four51 test site</td><td>Option C: a schedule per size, no markups</td><td>Option D: markup math, set by hand or script in Variable Specs</td></tr>
+            <tr><td>T3</td><td>The same size in two buyer copies, each updated without a collision</td><td>Four51 test site</td><td>One lookup table covers every buyer</td><td>Not in the source: no option listed</td></tr>
+            <tr><td>T4</td><td>Creator posting a SOAP message to Four51. Ask G how Shipment Tracking already sends tracking to Four51</td><td>Creator, ask G</td><td>Creator runs the whole loop</td><td>A hybrid for the Four51 step. The source doesn't name one</td></tr>
+            <tr><td>T7</td><td>What the Four51-to-Zoho API switch at migration carries</td><td>Ask Brandi or G</td><td>May cover part of the loop (option E)</td><td>Build it all in Creator (option A)</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">The pass and fail columns are our read. <i class="tag i">INFERRED</i> Done: outside-call quota is 13,500 a day, and Books is on Elite, which includes price lists. <i class="tag k">KNOWN</i></p>
+        <h4>STILL OPEN BEYOND THE TESTS</h4>
+        <ul>
+          <li>Who builds it. <i class="tag o">OPEN</i></li>
+          <li>Which buyers and items are left out of the first build. <i class="tag o">OPEN</i></li>
+          <li>Where a price starts: the Books item or Infoplus. <i class="tag o">OPEN</i></li>
+          <li>Which fields sync between Zoho and Infoplus: “some but not all” (09-28). <i class="tag o">OPEN</i></li>
+          <li>Adam's hyphenated-ID idea (interop-store-size) got no direct answer. <span class="ts">10:14:07</span> <i class="tag o">OPEN</i></li>
+          <li>Who owns the Amazon Web Services (AWS) endpoint Infoplus posts receipts to. <i class="tag o">OPEN</i></li>
+          <li>Brandi can load Quantum inventory into the Infoplus test site for us: “I can always get inventory into InfoPlus that is in quantum too.” <span class="ts">11:01:22</span> <i class="tag s">STATED</i></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="num">··</span><span class="ttl">Access</span><span class="chev">▼</span>
+        <p class="brief">Login pages for each platform. Passwords aren't kept here.</p></summary>
+      <div class="body">
+        <ul>
+          <li><b>Infoplus (test site)</b> · <a href="https://sidebarllc-test.infopluswms.com/login/" target="_blank" rel="noopener">sidebarllc-test.infopluswms.com/login</a> · username is your Four51 email · contact Steven Tolliver (09-29)</li>
+          <li><b>Zoho Creator</b> · <a href="https://accounts.zoho.com/signin?servicename=ZohoCreator&amp;serviceurl=https%3A%2F%2Fcreator.zoho.com%2Fuserhome%2Ffredl_gosidebar%2Fdashboard" target="_blank" rel="noopener">accounts.zoho.com (Creator sign-in)</a> · Fred's login, “since we build everything under his” (09-29) · password from Jesse</li>
+          <li><b>Four51 admin (live)</b> · <a href="https://www.four51.com/UI/Distributor.aspx" target="_blank" rel="noopener">www.four51.com/UI/Distributor.aspx</a></li>
+          <li><b>Four51 test site</b> · <a href="https://test.four51.com/ui/logon.aspx?theme=Default" target="_blank" rel="noopener">test.four51.com</a> · same login as live (07-10)</li>
+        </ul>
+      </div>
+    </details>
+
+  </div>
+
+</div>
+</div><!-- end layout -->
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a href="https://adamandroid.ai" class="footer-brand">
+    <svg class="aa-mark" width="22" height="27" viewBox="0 0 180 220" fill="none">
+      <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="62" cy="95" r="32" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="114" cy="89" r="43" stroke="url(#og)" stroke-width="13"/>
+    </svg>
+    <span class="footer-name">AdamAndroid<span class="ai">.ai</span></span>
+  </a>
+  <small>© 2026 AdamAndroid.ai · Help Humans, Ride Robots*</small>
+</footer>
+
+<script src="../../design-system/header.js" defer></script>
+
+</body>
+</html>

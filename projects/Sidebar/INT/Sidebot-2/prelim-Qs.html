@@ -20,6 +20,7 @@
       line-height: 1.7; margin: 0;
     }
     .page-head .page-sub .src { color: var(--orange); }
+    .page-head .page-sub a { color: var(--orange); }
 
     .q-count {
       display: inline-block; font-family: var(--mono); font-size: 10px;
@@ -101,6 +102,30 @@
       .q-body { padding: 0 14px 14px 14px; }
     }
 
+    /* ── Status: answered / parked / updated / new (2026-09-29) ── */
+    .q-st {
+      display: inline-block; font-family: var(--display); font-size: 11px; font-weight: 700;
+      letter-spacing: .06em; line-height: 1.3; padding: 2px 7px 1px; margin-right: 8px;
+      border-radius: var(--radius-sm); border: 1px solid var(--border2); color: var(--dim);
+      vertical-align: 1px; white-space: nowrap;
+    }
+    .q-st.parked { border-style: dashed; }
+    .q-st.upd { color: var(--yellow); border-color: color-mix(in srgb, var(--yellow) 40%, transparent); }
+    .q-st.new { color: var(--orange); border-color: var(--orange-border); }
+    .q-item.done { background: transparent; }
+    .q-item.done summary, .q-item.done .q-text, .q-item.done .q-pct { color: var(--dim); font-weight: 400; }
+    .q-item.done .q-caret { color: var(--dim); }
+    .q-item.done[open] { border-color: var(--border2); background: var(--surface); }
+    .q-ans, .q-ctx {
+      display: block; font-family: var(--sans); font-size: 13.5px; line-height: 1.6;
+      color: var(--text); margin-bottom: 10px;
+    }
+    .q-ans b, .q-ctx b { font-family: var(--display); font-weight: 700; margin-right: 6px; }
+    .q-ans b { color: var(--dim-mid); }
+    .q-ctx b { color: var(--yellow); }
+    .q-was { display: block; font-size: 11.5px; color: var(--dim); margin-bottom: 8px; }
+    .st-key { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; font-family: var(--mono); font-size: 11px; color: var(--dim-mid); }
+
     /* ── Site footer (from AdamAndroid.ai root) ──────────── */
     footer {
       border-top: 1px solid var(--border);
@@ -135,7 +160,7 @@
       <div class="logo">ADAMOS</div>
       <div class="date-pill" data-date-box></div>
       <div class="topbar-project"><span class="project-label">PROJECT:</span> <span class="project-name">SIDEBAR</span></div>
-      <span class="status" data-status data-updated="2026.09.28.16:34">
+      <span class="status" data-status data-updated="2026.09.29.15:35">
         <span class="status-dot"></span><span class="status-label"></span>
       </span>
     </div>
@@ -171,7 +196,8 @@
 <div class="nav-tabs">
   <div class="nav-tabs-inner">
     <a class="nav-tab" href="../../index.html" style="text-decoration:none"><span class="tab-icon">←</span>Sidebar Dashboard</a>
-    <div class="nav-tab active"><span class="tab-icon">?</span>Sidebot-2 · Prelim Questions</div>
+    <a class="nav-tab" href="shape-map.html" style="text-decoration:none"><span class="tab-icon">◈</span>Sidebot-2 · Shape Map</a>
+    <div class="nav-tab active"><span class="tab-icon">?</span>Sidebot-2 · Questions</div>
   </div>
 </div>
 
@@ -180,93 +206,124 @@
   <div class="page-head">
     <h1>Sidebot-2 · Questions and Assumptions</h1>
     <p class="page-sub">
-      We need to ID the actual path, and where the blocks/fails happen. This is boiled down from
+      We need to ID the actual path, and where the blocks/fails happen. First boiled down from
       the emails: <span class="src">Brandi Nichols, Jesse Newsome and the Coverdale notice,
       Jun 5 to Sep 24 2026</span>, and the Coverdale Error Report
       <span class="src">&ldquo;Four51 Inventory Update Notice – Action Required&rdquo;, 2026-09-17</span>.
+      Resolved against <span class="src">Brandi's answers, 2026-09-28</span> and the
+      <span class="src">Pricing and Inventory call, 2026-09-29</span> (times are the call recording's clock).
+      The full picture is on the <a href="shape-map.html">Shape Map</a>.
     </p>
-    <span class="q-count">5 PROBLEMS · 19 SUB-PROBLEMS · INTERNAL</span>
+    <div class="st-key">
+      <span><span class="q-st">ANSWERED</span>resolved, answer in the drawer</span>
+      <span><span class="q-st parked">PARKED</span>not answered, moot while the feed is paused</span>
+      <span><span class="q-st upd">UPDATED</span>still open, new context added</span>
+      <span><span class="q-st new">NEW</span>raised by the 09-28 email or 09-29 call</span>
+    </div>
+    <span class="q-count">40 QUESTIONS · 15 ANSWERED · 4 PARKED · 21 OPEN (14 NEW) · INTERNAL</span>
   </div>
 
   <div class="q-list">
 
     <p class="q-group-label">PROBLEM 1</p>
 
-    <details class="q-item">
-      <summary><span class="q-marker"><span class="q-num">1</span><span class="q-caret">▼</span></span><span class="q-text">The daily inventory feed into Four51 is failing at scale, and has been since at least June.</span></summary>
-      <div class="q-body">assumption* the Coverdale CSV to FTP Four51 Inventory Integration is the system Brandi refers to as not working. Is that the same build she means?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-17: “having issues with what Coverdale had built” · Four51 Inventory Update Notice, 2026-09-17 07:59 Arizona</span>
+    <details class="q-item done">
+      <summary><span class="q-marker"><span class="q-num">1</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>The daily inventory feed into Four51 is failing at scale, and has been since at least June.</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Yes, it's the Coverdale build. The daily failure email is Coverdale's inventory feed: a fetch that becomes a comma-separated values (CSV) file sent by file transfer protocol (FTP). Brandi has told Coverdale to pause it.</span>
+        <span class="q-was">Was: assumption* the Coverdale CSV to FTP Four51 Inventory Integration is the system Brandi refers to as not working. Is that the same build she means?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “that email that we get daily that has all those failures, that's just inventory alone” 10:12:01 · “a software fetch that turns into a CSV that turns into the FTP” 10:26:45 · “I just told Coverdale just to pause and table it” 10:51:12</span>
+      </div>
+    </details>
+
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">1.1</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st parked">PARKED</span><span class="q-pct">~85%</span> · Of 6,571 product identifiers rejected in one day, 5,594 (85%) are identifiers Four51 has never held. Were they ever set up in Four51?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>PARKED</b>Not answered directly. Moot while the feed is paused, since a new build reads Infoplus after migration. Brandi's view of what worked: only single interop IDs marked online.</span>
+        <span class="q-was">Was: assumption* these are items that were never set up in Four51, rather than records needing repair. Can it be confirmed which of the two is true?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “The only thing that's working is if it's a one interop ID and it is marked online to update inventory.” 10:15:42</span>
+      </div>
+    </details>
+
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">1.2</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span><span class="q-pct">~11%</span> · A further 734 (11%) fail because inventory is not switched on for that product or store. Should those clients be excluded at source?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Yes, exclude by buyer. Brandi would skip buyers with no pricing online, or with their own point-of-sale system, and says the exclusion setup still has to be designed. Where the flag lives is question 3.2.</span>
+        <span class="q-was">Was: assumption* those 734 products were never meant to be sent to Four51 at all. Was this the exclusion Brandi asked for on June 5?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “exclude certain buyers because either A, they don't have pricing online, or B, they have the POS” 10:45:36 · “we'll have to think about the setup to exclude buyers too” 10:46:26 · Brandi, 2026-06-05</span>
       </div>
     </details>
 
     <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">1.1</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-pct">~85%</span> · Of 6,571 product identifiers rejected in one day, 5,594 (85%) are identifiers Four51 has never held. Were they ever set up in Four51?</span></summary>
-      <div class="q-body">assumption* these are items that were never set up in Four51, rather than records needing repair. Can it be confirmed which of the two is true?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Notice error tally, 2026-09-17: “Product with this interopID does not exist”</span>
+      <summary><span class="q-marker"><span class="q-num">1.3</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st upd">UPDATED</span><span class="q-pct">~3%</span> · 201 (3%) fail because more than one Four51 product carries the same interop ID. Consolidate, or re-map?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>NEW CONTEXT</b>Brandi confirms each buyer gets its own copy of apparel items, and passes on Coverdale's view that Four51 fails on a repeated interop ID. Orders still have to reach Zoho with the actual interop ID, so renaming is risky. Adam's hyphenated-ID idea (interop-store-size) got no direct answer. Next: test a lookup table on the Four51 test site (Shape Map, test T3).</span>
+        assumption* the duplicate interop ID errors are the smallest share of the failures but the hardest to fix. Should it therefore be sequenced last rather than first?
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Notice error tally: “More than one product exists with this interopID” · Call, 2026-09-29, 10:12:16 and 10:14:07 · Brandi, 2026-07-14: “orders still need to pass to Zoho with the actual interop ID”</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">1.2</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-pct">~11%</span> · A further 734 (11%) fail because inventory is not switched on for that product or store. Should those clients be excluded at source?</span></summary>
-      <div class="q-body">assumption* those 734 products were never meant to be sent to Four51 at all. Was this the exclusion Brandi asked for on June 5?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Notice error tally · Brandi, 2026-06-05: “Could we identify what clients to not update instead of items”</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">1.4</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>The failure notice names the parent product, not the size that actually failed. Who traces the variant?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>The old feed read only the parent interop ID, so sizes were invisible to it. Four51's inventory call accepts a variant interop ID, so a new build can update each size directly and report the exact size that fails. To prove on the Four51 test site (Shape Map, test T1).</span>
+        <span class="q-was">Was: assumption* every line in the Coverdale notice therefore costs a manual lookup inside Four51. Is anyone still doing that lookup, or has the list become too long to work?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “it only reads this interop ID here. So it's not seeing our size.” 10:32:13 · Four51 product schema: UpdateProductInventory takes a VariantInteropID</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">1.3</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-pct">~3%</span> · 201 (3%) fail because more than one Four51 product carries the same interop ID. Consolidate, or re-map?</span></summary>
-      <div class="q-body">assumption* the duplicate interop ID errors are the smallest share of the failures but the hardest to fix. Should it therefore be sequenced last rather than first?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Notice error tally: “More than one product exists with this interopID” · Brandi, 2026-07-14, quoting “Error: Failed to update S-410”</span>
-      </div>
-    </details>
-
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">1.4</span><span class="q-caret">▼</span></span><span class="q-text">The failure notice names the parent product, not the size that actually failed. Who traces the variant?</span></summary>
-      <div class="q-body">assumption* every line in the Coverdale notice therefore costs a manual lookup inside Four51. Is anyone still doing that lookup, or has the list become too long to work?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Sidebar side, 2026-06-24 call: “it'll tell me that item SS0561 was not found, but what it really means is that it didn't find like the medium or the large”</span>
-      </div>
-    </details>
-
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">1.5</span><span class="q-caret">▼</span></span><span class="q-text">The notices go to a shared address rather than a named person. Is anyone reading them?</span></summary>
-      <div class="q-body">assumption* the notices sent to acctmgr@gosidebar.com may not be read daily. Who owns that inbox, and is the failure count being tracked by anyone?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Notice header, 2026-09-17: “To: mike_mcnew@coverdalegroup.com, Account Managers &lt;acctmgr@gosidebar.com&gt;”</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">1.5</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st parked">PARKED</span>The notices go to a shared address rather than a named person. Is anyone reading them?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>PARKED</b>Brandi does get the daily failure email. Moot while the feed is paused.</span>
+        <span class="q-was">Was: assumption* the notices sent to acctmgr@gosidebar.com may not be read daily. Who owns that inbox, and is the failure count being tracked by anyone?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “that email that we get daily that has all those failures” 10:12:01 · paused 10:51:12</span>
       </div>
     </details>
 
     <p class="q-group-label">PROBLEM 2</p>
 
-    <details class="q-item">
-      <summary><span class="q-marker"><span class="q-num">2</span><span class="q-caret">▼</span></span><span class="q-text">It is not established which system the inventory file is actually being generated from.</span></summary>
-      <div class="q-body">assumption* the mismatch between SkuVault and Infoplus has gone unnoticed by both Sidebar and Coverdale. Has the source of SkuVault_to_Four51_Inv.csv ever been confirmed in writing?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Four51 Inventory Update Notice, 2026-09-17 · Brandi / Mike McNew thread, 2026-07-14 to 09-17</span>
+    <details class="q-item done">
+      <summary><span class="q-marker"><span class="q-num">2</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>It is not established which system the inventory file is actually being generated from.</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Infoplus. SkuVault was the warehouse system Coverdale first pushed, and Sidebar dropped it for Infoplus. The name lingers in Coverdale's documents. After migration Infoplus is the “mothership” for inventory counts, locations, sell price and ownership.</span>
+        <span class="q-was">Was: assumption* the mismatch between SkuVault and Infoplus has gone unnoticed by both Sidebar and Coverdale. Has the source of SkuVault_to_Four51_Inv.csv ever been confirmed in writing?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “SKU Vault is their WMS that they pushed us to use initially and then we aborted and went to InfoPlus” 10:16:20 · Brandi, 2026-09-28: “Infoplus will be the mothership in terms of inventory counts, locations of inventory, sell price for all inventory, and ownership of all inventories.”</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">2.1</span><span class="q-caret">▼</span></span><span class="q-text">The file is named for SkuVault, while the report everyone is discussing sits in Infoplus. These are competing products, not connected ones. Which one actually feeds Four51?</span></summary>
-      <div class="q-body">assumption* SkuVault_to_Four51_Inv.csv may be a filename left over from an earlier setup. Could it instead mean the feed is not reading Infoplus at all?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Notice: “parsing the CVS File: SkuVault_to_Four51_Inv.csv” · Brandi: “Infoplus Report #: 19664 … that is being used for this”</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">2.1</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>The file is named for SkuVault, while the report everyone is discussing sits in Infoplus. These are competing products, not connected ones. Which one actually feeds Four51?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Infoplus. The SkuVault filename is left over from Coverdale's first setup.</span>
+        <span class="q-was">Was: assumption* SkuVault_to_Four51_Inv.csv may be a filename left over from an earlier setup. Could it instead mean the feed is not reading Infoplus at all?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “SKU Vault still appears in all of our documentation because they don't update it” 10:16:20</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">2.2</span><span class="q-caret">▼</span></span><span class="q-text">The word SkuVault appears once in everything held, inside machine-generated text. No person on either side has ever written it. Does Sidebar use SkuVault?</span></summary>
-      <div class="q-body">assumption* nobody has read the SkuVault line in the Coverdale notice closely. Is SkuVault a system Sidebar uses, used to use, or has never heard of?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Full text sweep of all project folders and mail: one occurrence, in the Coverdale notice body</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">2.2</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>The word SkuVault appears once in everything held, inside machine-generated text. No person on either side has ever written it. Does Sidebar use SkuVault?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Not any more. Sidebar started on it at Coverdale's push, then moved to Infoplus.</span>
+        <span class="q-was">Was: assumption* nobody has read the SkuVault line in the Coverdale notice closely. Is SkuVault a system Sidebar uses, used to use, or has never heard of?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29, 10:16:20</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">2.3</span><span class="q-caret">▼</span></span><span class="q-text">The report driving the feed was built on one Coverdale employee's personal profile and cannot be seen by anyone at Sidebar. Can it be shared?</span></summary>
-      <div class="q-body">assumption* Infoplus Report #19664 sitting on Brian Montgomery's profile is why the feed has never been audited from the Sidebar side. Has the request to share Report #19664 been escalated since July?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-08-27 and 09-16: “I do not have access to it since he created it on his profile”</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">2.3</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st parked">PARKED</span>The report driving the feed was built on one Coverdale employee's personal profile and cannot be seen by anyone at Sidebar. Can it be shared?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>PARKED</b>Not answered. Likely moot: the feed is paused, and a new build would read Infoplus directly (our read, not confirmed).</span>
+        <span class="q-was">Was: assumption* Infoplus Report #19664 sitting on Brian Montgomery's profile is why the feed has never been audited from the Sidebar side. Has the request to share Report #19664 been escalated since July?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-08-27 and 09-16: “I do not have access to it since he created it on his profile” · paused, call 2026-09-29, 10:51:12</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">2.4</span><span class="q-caret">▼</span></span><span class="q-text">Coverdale's own description of the report is limited, and they asked Sidebar whether the report number meant anything. Does Coverdale know its own source?</span></summary>
-      <div class="q-body">assumption* Coverdale may not know what feeds their own integration. Should the true data source be established before any fix is scoped?
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">2.4</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st parked">PARKED</span>Coverdale's own description of the report is limited, and they asked Sidebar whether the report number meant anything. Does Coverdale know its own source?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>PARKED</b>Not answered. Likely moot for the same reason as 2.3 (our read).</span>
+        <span class="q-was">Was: assumption* Coverdale may not know what feeds their own integration. Should the true data source be established before any fix is scoped?</span>
         <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Mike McNew, 2026-07-14: “Based on our documentation, I have the following details (limited) … Does that report number correspond to anything recognizable in the user interface?”</span>
       </div>
     </details>
@@ -274,97 +331,253 @@
     <p class="q-group-label">PROBLEM 3</p>
 
     <details class="q-item">
-      <summary><span class="q-marker"><span class="q-num">3</span><span class="q-caret">▼</span></span><span class="q-text">There is no way to mark which products belong on a Four51 storefront, so the feed sends everything.</span></summary>
-      <div class="q-body">assumption* a single ecommerce sync field would remove most of the failure list. Has anything blocked that field beyond it not being built?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Mike McNew, 2026-07-14, restated by Brandi: “In Infoplus, we don't have a way to identify which SKUs relate to specific sites on Four51”</span>
+      <summary><span class="q-marker"><span class="q-num">3</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st upd">UPDATED</span>There is no way to mark which products belong on a Four51 storefront, so the feed sends everything.</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>NEW CONTEXT</b>Zoho Books already has an “inventory update on 451” true/false box. Brandi doesn't think the matching Infoplus custom field exists, and the Infoplus test site shows no such item field (the item custom fields there are Customer Item, Inv Type and DQ BAG). With Coverdale paused, the field is ours to design.</span>
+        assumption* a single ecommerce sync field would remove most of the failure list. Has anything blocked that field beyond it not being built?
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Mike McNew, 2026-07-14, restated by Brandi: “In Infoplus, we don't have a way to identify which SKUs relate to specific sites on Four51” · Call, 2026-09-29: “I don't think that custom field has been added to the InfoPlus table” 10:46:13 · Infoplus test site, item custom fields</span>
+      </div>
+    </details>
+
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">3.1</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>A filter field was first requested on June 5 and remains open after five follow-ups. What is blocking it?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Coverdale never built it, and Brandi has now paused Coverdale. The field moves to the new build: see 3.2.</span>
+        <span class="q-was">Was: assumption* the ecommerce sync field has been treated as a nice to have by Coverdale. Is it understood on the vendor side that it would shrink the list dramatically?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-06-05, 06-23, 07-09, 08-27, 09-16, marked Importance: High · Call, 2026-09-29, 10:51:12</span>
       </div>
     </details>
 
     <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">3.1</span><span class="q-caret">▼</span></span><span class="q-text">A filter field was first requested on June 5 and remains open after five follow-ups. What is blocking it?</span></summary>
-      <div class="q-body">assumption* the ecommerce sync field has been treated as a nice to have by Coverdale. Is it understood on the vendor side that it would shrink the list dramatically?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-06-05, 06-23, 07-09, 08-27, 09-16, marked Importance: High</span>
-      </div>
-    </details>
-
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">3.2</span><span class="q-caret">▼</span></span><span class="q-text">Sidebar proposed the filter could live in either Infoplus or Zoho. Which system should own it?</span></summary>
-      <div class="q-body">assumption* the choice between Infoplus and Zoho has not been made. Which system should own that field, and who would populate it?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-16: “If you can't add an attribute in Infoplus, we could add a field in Zono that Brian's team can filter on”</span>
+      <summary><span class="q-marker"><span class="q-num">3.2</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st upd">UPDATED</span>Sidebar proposed the filter could live in either Infoplus or Zoho. Which system should own it?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>NEW CONTEXT</b>Brandi's plan from 07-14: keep the flag in Zoho and map it into Infoplus when items sync. Custom fields will be recreated in the live Infoplus to match the test setup, and our calls must reference the field by its exact name. Options: the Books flag (exists), an Infoplus custom field, or an exclusion list held in Creator.</span>
+        assumption* the choice between Infoplus and Zoho has not been made. Which system should own that field, and who would populate it?
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-16: “If you can't add an attribute in Infoplus, we could add a field in [Zoho] that Brian's team can filter on” · Brandi, 2026-07-14: “We would need to map this field from Zoho when we get the sync of items on to Infoplus” · Brandi, 2026-09-28: “verify that your calls reference the "name" field exactly”</span>
       </div>
     </details>
 
     <p class="q-group-label">PROBLEM 4</p>
 
-    <details class="q-item">
-      <summary><span class="q-marker"><span class="q-num">4</span><span class="q-caret">▼</span></span><span class="q-text">Pricing in Four51 is updated by hand and goes stale, and apparel multiplies the work.</span></summary>
-      <div class="q-body">assumption* the Four51 pricing update is the build that was already agreed before inventory was added. Is pricing still the priority, or has inventory overtaken it?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-17: “our next build being updating of pricing on Four 51” · Discovery call, 2026-06-12</span>
+    <details class="q-item done">
+      <summary><span class="q-marker"><span class="q-num">4</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>Pricing in Four51 is updated by hand and goes stale, and apparel multiplies the work.</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Both, in one build. Brandi asked to add inventory to the pricing build, and Jesse agreed the same day. She wants it automated, and built for after the migration.</span>
+        <span class="q-was">Was: assumption* the Four51 pricing update is the build that was already agreed before inventory was added. Is pricing still the priority, or has inventory overtaken it?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-17: “include inventory too in the same call” · Jesse, 2026-09-17: “I don't see any issues with adding inventory into the mix” · Call, 2026-09-29, 10:03:59 and 10:26:16</span>
       </div>
     </details>
 
     <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">4.1</span><span class="q-caret">▼</span></span><span class="q-text">Prices are changed at purchase order approval, by a person who has to remember, for every size separately. How often is a size missed?</span></summary>
-      <div class="q-body">assumption* the misses are ordinary human ones rather than a system fault. Is that how Sidebar sees it too?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Discovery call, 2026-06-12: “people place orders and then they forget to go on and update the price all the time”</span>
+      <summary><span class="q-marker"><span class="q-num">4.1</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st upd">UPDATED</span>Prices are changed at purchase order approval, by a person who has to remember, for every size separately. How often is a size missed?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>NEW CONTEXT</b>No count yet. Retail prices are audited monthly, so the misses sit on the business-to-business (B2B) side. Jesse's example: the order says $120 for a 3XL, the invoice says $132.</span>
+        assumption* the misses are ordinary human ones rather than a system fault. Is that how Sidebar sees it too?
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Discovery call, 2026-06-12: “people place orders and then they forget to go on and update the price all the time” · Call, 2026-09-29: “If we have pricing that is off, it's definitely off on the B2B side.” 10:07:19 · 10:37:50</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">4.2</span><span class="q-caret">▼</span></span><span class="q-text">Quantum holds one total price per item while Four51 holds a base price plus a size modifier, so the two cannot be compared directly. Does that rule hold everywhere?</span></summary>
-      <div class="q-body">assumption* the base plus size modifier rule has already been proven against real Quantum and Four51 data. Does it hold across all catalogues, or only the sample checked?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Jesse, 2026-07-07, item SS0539: “Quantum is a total price per item, four51 is a base price plus modifier”</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">4.2</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>Quantum holds one total price per item while Four51 holds a base price plus a size modifier, so the two cannot be compared directly. Does that rule hold everywhere?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Confirmed for Four51: a base price plus a markup per size, set in Variable Specs. After migration the total comes from Infoplus, not Quantum, and Infoplus holds one total “Sell Price” per SKU.</span>
+        <span class="q-was">Was: assumption* the base plus size modifier rule has already been proven against real Quantum and Four51 data. Does it hold across all catalogues, or only the sample checked?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “It doesn't let us set up pricing to where you can associate a full price to each different size.” 10:37:24 · Brandi, 2026-09-28: Infoplus holds “sell price for all inventory” · Infoplus test site, item record</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">4.3</span><span class="q-caret">▼</span></span><span class="q-text">The Quantum export lists incoming wholesale purchases, not prices, and the same item appears at different costs in different years. Which figure is correct?</span></summary>
-      <div class="q-body">assumption* the most recent or highest figure in the Quantum export should be used. Has a rule for this been agreed with Sidebar?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Jesse, 2026-07-07: “orders from 2023 for $12 and the same item from 2024 for $14 … For now, take the higher price”</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">4.3</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>The Quantum export lists incoming wholesale purchases, not prices, and the same item appears at different costs in different years. Which figure is correct?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>It depends on the lot and the buyer. Infoplus shows the oldest lot's price until that lot runs out, then the new one. Retail pays the newest price. B2B invoicing forks, which is new question 6.5.</span>
+        <span class="q-was">Was: assumption* the most recent or highest figure in the Quantum export should be used. Has a rule for this been agreed with Sidebar?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “it would obviously show the $10 lot, and then once we exhaust that lot, then we'd update the price to $13” 10:09:28 · retail goes to the newest number, “Correct” 10:09:23</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">4.4</span><span class="q-caret">▼</span></span><span class="q-text">The price shown on the storefront does not drive the invoice, so a wrong price costs trust rather than margin. Is trust the real cost?</span></summary>
-      <div class="q-body">assumption* the case for the Four51 pricing work is customer confidence, not recovered revenue. Is that the framing Sidebar would recognise?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Discovery call, 2026-06-12: “the price on the B2B sites, it doesn't drive what we invoice the client … We're just making customers angry”</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">4.4</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>The price shown on the storefront does not drive the invoice, so a wrong price costs trust rather than margin. Is trust the real cost?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Largely, yes. B2B clients are the ones who question the invoice. There's no friction right now, but there has been. In writing, the impact is all of it: lost orders, wrong availability, manual work and client friction, until someone notices.</span>
+        <span class="q-was">Was: assumption* the case for the Four51 pricing work is customer confidence, not recovered revenue. Is that the framing Sidebar would recognise?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “hey, why did my price go up here?” 10:10:31 · “we're not getting friction currently” 10:05:31 · Brandi, 2026-09-28: “Actual business impact is all the above until Sidebar notices inventory is incorrect and manually corrects the issue.”</span>
       </div>
     </details>
 
     <p class="q-group-label">PROBLEM 5</p>
 
     <details class="q-item">
-      <summary><span class="q-marker"><span class="q-num">5</span><span class="q-caret">▼</span></span><span class="q-text">The way per-buyer apparel pricing is set up is what creates the duplicate identifiers, and the two sides disagree on whether it has to be that way.</span></summary>
-      <div class="q-body">assumption* the Brandi and Coverdale disagreement over apparel price schedules is the one unresolved item that changes the shape of any fix. Can it be settled with a single test item?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi and Mike McNew, unresolved 2026-07-14 to 09-17</span>
+      <summary><span class="q-marker"><span class="q-num">5</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st upd">UPDATED</span>The way per-buyer apparel pricing is set up is what creates the duplicate identifiers, and the two sides disagree on whether it has to be that way.</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>NEW CONTEXT</b>Still unsettled, and we can now run the test ourselves on the Four51 test site. Coverdale also offered a Four51 support test item. This is Shape Map test T2.</span>
+        assumption* the Brandi and Coverdale disagreement over apparel price schedules is the one unresolved item that changes the shape of any fix. Can it be settled with a single test item?
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi and Mike McNew, unresolved 2026-07-14 to 09-17 · Mike McNew, 2026-09-17: “ask the Support Team to set up a test item for you”</span>
+      </div>
+    </details>
+
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">5.1</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>Sidebar states apparel cannot carry different per-buyer markups on one item, so each buyer gets its own copy of the product. Is that still the practice?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Yes, still the practice, and it's why Four51 sees the same interop ID more than once.</span>
+        <span class="q-was">Was: assumption* the duplicate Four51 products are therefore deliberate rather than accidental. Is that still the current practice?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29, 10:12:16 · Brandi, 2026-07-14: “you have to setup the item multiple times for each buyer with its applicable price plan”</span>
       </div>
     </details>
 
     <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">5.1</span><span class="q-caret">▼</span></span><span class="q-text">Sidebar states apparel cannot carry different per-buyer markups on one item, so each buyer gets its own copy of the product. Is that still the practice?</span></summary>
-      <div class="q-body">assumption* the duplicate Four51 products are therefore deliberate rather than accidental. Is that still the current practice?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-07-14: “you have to setup the item multiple times for each buyer with its applicable price plan”</span>
+      <summary><span class="q-marker"><span class="q-num">5.2</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st upd">UPDATED</span>Coverdale states Four51 can apply different price schedules to apparel per buyer, and offered to build a test item. Has that test been run?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>NEW CONTEXT</b>Not run. We have Four51 test site access (same login as live), so we can run it: Shape Map test T2.</span>
+        assumption* one of the two positions is mistaken. Has the offered test ever been run?
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Mike McNew, 2026-09-17: “You can add price schedules for vBoss apparel items, and apply those schedules to different buyers” · Brandi, 2026-07-10: test site uses the same credentials</span>
       </div>
     </details>
 
     <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">5.2</span><span class="q-caret">▼</span></span><span class="q-text">Coverdale states Four51 can apply different price schedules to apparel per buyer, and offered to build a test item. Has that test been run?</span></summary>
-      <div class="q-body">assumption* one of the two positions is mistaken. Has the offered test ever been run?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Mike McNew, 2026-09-17: “You can add price schedules for vBoss apparel items, and apply those schedules to different buyers”</span>
+      <summary><span class="q-marker"><span class="q-num">5.3</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st upd">UPDATED</span>Renaming the duplicate identifiers would break the order hand-off, because orders have to carry the real identifier into Zoho. Is consolidation the only safe path?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>NEW CONTEXT</b>Adam floated a hyphenated ID (interop-store-size) on the call, with no direct answer. Any new ID would still have to hand Zoho the actual interop ID. A lookup table from each SKU to every buyer copy would avoid renaming (our read), and is Shape Map test T3.</span>
+        assumption* consolidating the duplicate Four51 products is safer than renaming their interop IDs. Is there a supported way to run inventory for one item sold to several buyers?
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-07-14: “orders still need to pass to Zoho with the actual interop ID” · Call, 2026-09-29, 10:14:07</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">5.3</span><span class="q-caret">▼</span></span><span class="q-text">Renaming the duplicate identifiers would break the order hand-off, because orders have to carry the real identifier into Zoho. Is consolidation the only safe path?</span></summary>
-      <div class="q-body">assumption* consolidating the duplicate Four51 products is safer than renaming their interop IDs. Is there a supported way to run inventory for one item sold to several buyers?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-07-14: “orders still need to pass to Zoho with the actual interop ID”</span>
+    <details class="q-item q-sub done">
+      <summary><span class="q-marker"><span class="q-num">5.4</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>Sidebar expects to be off Quantum early in the new year, which removes the cost source any pricing check would read from. What replaces it?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Infoplus. After migration it holds the sell price for all inventory, and Quantum is kept for historical reference only. On the call Brandi also called the Books item “the master” for sales-order pricing, which is new question 6.3.</span>
+        <span class="q-was">Was: assumption* the Quantum retirement shortens the useful life of anything built against the Quantum export. What is expected to hold cost after that change?</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-28: “Infoplus will own inventory and pricing” · “we will only use it to have access to it for historical reference” · Call, 2026-09-29, 10:49:38</span>
       </div>
     </details>
 
-    <details class="q-item q-sub">
-      <summary><span class="q-marker"><span class="q-num">5.4</span><span class="q-caret">▼</span></span><span class="q-text">Sidebar expects to be off Quantum early in the new year, which removes the cost source any pricing check would read from. What replaces it?</span></summary>
-      <div class="q-body">assumption* the Quantum retirement shortens the useful life of anything built against the Quantum export. What is expected to hold cost after that change?
-        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-17: “we will likely be off Quantum at the start of the new year”</span>
+    <p class="q-group-label">NEW · FROM THE 09-28 EMAIL AND 09-29 CALL</p>
+
+    <details class="q-item done">
+      <summary><span class="q-marker"><span class="q-num">6.1</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>Where do we build it, and what changes at go-live?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>Build in the Infoplus sandbox and the Four51 test site. Going live means a new URL, application programming interface (API) key, warehouse ID and line of business (LOB) ID. Custom fields are recreated in live to match, so calls must use the exact field name.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-28: “We can use the Sandbox for Infoplus and the test environment for Four 51 for the buildout.”</span>
+      </div>
+    </details>
+
+    <details class="q-item done">
+      <summary><span class="q-marker"><span class="q-num">6.2</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st">ANSWERED</span>How firm is the January cutover?</span></summary>
+      <div class="q-body">
+        <span class="q-ans"><b>ANSWER</b>A target. Brandi will know by Nov 15, because dev work has to finish by Dec 1 for a Jan 1 launch.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-28: “January is a target date.” · Call, 2026-09-29, 10:25:13</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.3</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Where does a price start after migration: the Books item, or Infoplus?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>The email says Infoplus owns pricing. On the call, the Books item is where sales orders pull price from. The one place has to know which one wins.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-28: “Infoplus will own inventory and pricing.” · Call, 2026-09-29: “So the item is kind of the master to where all that information lives.” 10:49:38</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.4</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Is the one place the new master for price and inventory, or a hub that mirrors Infoplus?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Jesse wants one master of record, possibly in Creator. Brandi says Infoplus will own inventory and pricing.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Jesse, after the recorded call: “creator could create a module that could house and be the master of record for everything” 11:07:17 · Brandi, 2026-09-28</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.5</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Which B2B clients are invoiced at the old price until it's gone, and which are re-invoiced at receiving?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Brandi named both forks. What the store shows should match whichever rule each client is on.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “some clients will still get invoiced their old price until it's gone … Some clients will be re-invoiced at receiving.” 10:09:49 to 10:09:57</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.6</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Which non-retail buyers show stock or price online today?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Partly answered: the big clients like Swift and USX don't show stock, and many retail clients do. Retail is left out first, so the first build's buyer list may be small.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “we don't inventory for our big clients, like Swift and USX” 10:06:47 · “we also don't display sell prices or inventory for every buyer” 10:05:37</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.7</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Where should retail price live, since it isn't in Zoho or Infoplus today?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Brandi floated a retail price on the Books item, pushed to Infoplus. Retail is also the first exclusion, so this may wait for a later phase.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “We don't have retail pricing anywhere in Zoho” 10:47:14 · “if we could get to a place where we have a retail price in the item in books” 10:48:44 · “a good exclusion” 10:48:12</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.8</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Which fields will sync between Zoho and Infoplus after migration?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Brandi says “some but not all.” Anything that syncs already is something we shouldn't rebuild.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, 2026-09-28: “Both systems will sync some but not all information between the two.”</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.9</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Stock adjustments for distributor-owned items are entered in Infoplus and again in Books by hand. Is that in scope?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>It may belong to the Zoho and Infoplus sync rather than this build.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “If it's a distributor and item, we have to do that in books too, to balance it out. So that's manual.” 10:19:29 to 10:19:35</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.10</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Who builds it, and who owns it?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Coverdale can't touch Creator and G doesn't really touch Books. Brandi doesn't want a vendor-owned build, and leans to Creator, where Sidebar builds under Fred's login. Could be us, with G involved.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29, 10:22:56 · “that's not the kind of business model we want” 10:23:44 · Brandi, relayed 2026-09-29: “needs to be done in Creator which could be instant” · Brandi, 2026-09-29: “Use Fred's login since we build everything under his”</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.11</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>How does Creator already reach Four51 and Infoplus?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Brandi says Shipment Tracking sends tracking to Four51, and a table pulls client-owned items from Infoplus. Creator's Connections list shows no named connection for Infoplus, Four51 or ShipStation. Ask G how it's wired.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29, 10:52:54 · Creator account, Connections list (viewed read-only)</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.12</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>What happens when Creator hits its call limits, and what does more headroom cost?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>At a quota the app stops. More work in Creator costs more money.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “your current subscription gets so many calls per month before it turns into a stop” 10:56:57 · “as we add more stuff, it costs more money” 10:56:11</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.13</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Is the Coverdale feed retired for good, or could it restart after migration?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Two feeds writing to Four51 would collide.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “I just told Coverdale just to pause and table it.” 10:51:12</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.14</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Can Brandi load Quantum inventory into the Infoplus test site for us to build against?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>She offered on the call.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Call, 2026-09-29: “I can always get inventory into InfoPlus that is in quantum too.” 11:01:22</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.15</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>When is the group call with G?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>Brandi asked for a call with everyone next week on the approach. Jesse says she's away at least a week for a wedding.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Brandi, relayed 2026-09-29: “lets put a call together next week to discuss with all of us on the approach” · Call, 2026-09-29, 11:00:50</span>
+      </div>
+    </details>
+
+    <details class="q-item">
+      <summary><span class="q-marker"><span class="q-num">6.16</span><span class="q-caret">▼</span></span><span class="q-text"><span class="q-st new">NEW</span>Who owns the Amazon Web Services (AWS) address that Infoplus posts every receipt to?</span></summary>
+      <div class="q-body">
+        <span class="q-ctx"><b>CONTEXT</b>The Infoplus trigger “Zoho Receiving update” posts each receipt to an AWS API Gateway address. Whoever owns it may already have the feed a new build needs.</span>
+        <span class="q-src" style="margin-top:10px;margin-bottom:0"><b>SOURCE</b> · Infoplus test site, trigger “Zoho Receiving update” and its script (viewed read-only)</span>
       </div>
     </details>
 
