@@ -1,0 +1,102 @@
+/* ============================================================
+   AdamAndroid Design System — Variables
+   v1.0  2026-06-11
+
+   Color tokens, typography, and spacing for the AdamAndroid
+   brand. Import this first, then components.css.
+
+   COLOR PHILOSOPHY:
+   - Orange (#FF9900)  = AdamAndroid brand accent, UI navigation,
+                         interactive states, active tabs, logos
+   - Green  (#00e87a)  = Stoplight / status only: working ✓,
+                         done checkboxes, service OK dots,
+                         slow-burn / on-track priorities
+   - Red/Yellow        = Alerts and priority levels
+   - Everything else   = Neutral darks
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap');
+
+:root {
+  /* Backgrounds */
+  --bg:        #080808;
+  --surface:   #0f0f0f;
+  --surface2:  #151515;
+  --topbar-bg: rgba(8,8,8,0.93);   /* header bar — translucent over blur */
+
+  /* Borders */
+  --border:   #1e1e1e;
+  --border2:  #2a2a2a;
+  --border3:  #3a3a3a;
+
+  /* Text */
+  --text: #e2e2e2;
+  --dim:      #555;
+  --dim-mid:  #777;   /* panel subtitles, form labels — one step above --dim */
+  --dim2:     #333;
+
+  /* Identity — project name accent. Master = neutral gray;
+     each project overrides --project-accent in its own CSS. */
+  --project-accent: #999;
+
+  /* Red */
+  --red:        #ff3b3b;
+  --red-bg:     #ff3b3b1e;
+  --red-border: #ff3b3b55;
+
+  /* Yellow */
+  --yellow:        #ffd60a;
+  --yellow-bg:     #ffd60a1e;
+  --yellow-border: #ffd60a55;
+
+  /* Green — STOPLIGHT / STATUS ONLY */
+  --green:        #00e87a;
+  --green-bg:     #00e87a1e;
+  --green-border: #00e87a55;
+
+  /* Orange — BRAND ACCENT / UI */
+  --orange:        #FF9900;
+  --orange-bg:     #FF99001e;
+  --orange-border: #FF990055;
+
+  /* Blue */
+  --blue:        #4a8fff;
+  --blue-bg:     #4a8fff1e;
+  --blue-border: #4a8fff55;
+
+  /* Purple */
+  --purple:        #9b6dff;
+  --purple-bg:     #9b6dff1e;
+  --purple-border: #9b6dff55;
+
+  /* Typography */
+  --mono:     'Space Mono', monospace;
+  --sans:     'Syne', sans-serif;
+  --display:  'Comfortaa', cursive;  /* card titles, names, display text */
+
+  /* Radius — rounded corners (promoted from workflow.html, 2026-06-15) */
+  --radius-sm: 3px;   /* badges, checkboxes, small tiles */
+  --radius:    6px;   /* panels-inner, cards, tiles, inputs */
+  --radius-lg: 8px;   /* outer panels, large containers */
+}
+
+/* ============================================================
+   LIGHT MODE — toggle by adding class "light-mode" to <html>.
+   Promoted globally 2026-06-15 from workflow.html. Generic
+   tokens only; palette still to be refined (Adam).
+   ============================================================ */
+:root.light-mode {
+  /* High-contrast light: gray page, white panels, near-black text */
+  --bg: #e3e0d8; --surface: #ffffff; --surface2: #efece4;
+  --topbar-bg: rgba(255,255,255,0.92);
+  --border: #b4afa0; --border2: #918b7a; --border3: #686356;
+  --text: #0a0908; --dim: #46433c; --dim-mid: #211e19; --dim2: #aaa495;
+  --project-accent: #555;
+
+  --red:    #c20000; --red-bg:    #d8000018; --red-border:    #b4000088;
+  --yellow: #7c5900; --yellow-bg: #e6a4001f; --yellow-border: #93680090;
+  --green:  #00622b; --green-bg:  #009c4c1c; --green-border:  #007a3790;
+  --orange: #aa3c00; --orange-bg: #ff66001c; --orange-border: #bd4e0090;
+  --blue:   #0c34c0; --blue-bg:   #1a44ff18; --blue-border:   #0c34c090;
+  --purple: #470eaa; --purple-bg: #6618ee16; --purple-border: #5212c090;
+}
