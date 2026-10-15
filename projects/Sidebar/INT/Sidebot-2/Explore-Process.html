@@ -44,7 +44,7 @@
     .s-marker { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 26px; padding-top: 1px; }
     .s-num { font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--dim); line-height: 1; }
     .step[open] .s-num { color: var(--orange); }
-    .s-caret { font-size: 15px; line-height: 1; color: #FF6600; transition: transform 0.2s ease; }
+    .s-caret { width: 16px; height: 16px; color: #FF6600; transition: transform 0.22s ease; display: block; }
     .step[open] .s-caret { transform: rotate(180deg); }
     .s-title { flex: 1; font-family: var(--display); font-weight: 700; letter-spacing: 0.005em; }
     .s-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; margin-top: 1px; }
@@ -143,7 +143,7 @@
     <!-- STEP 1 -->
     <details class="step" open>
       <summary>
-        <span class="s-marker"><span class="s-num">1</span><span class="s-caret">▾</span></span>
+        <span class="s-marker"><span class="s-num">1</span><svg class="s-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l6 4.5 6-4.5"/><path d="M6 10l6 4.5 6-4.5"/><path d="M6 16.5l6 4.5 6-4.5"/></svg></span>
         <span class="s-title">Get the base prices</span>
         <span class="s-badges"><span class="st-badge done">Done</span></span>
       </summary>
@@ -158,9 +158,9 @@
     </details>
 
     <!-- STEP 2 -->
-    <details class="step">
+    <details class="step" open>
       <summary>
-        <span class="s-marker"><span class="s-num">2</span><span class="s-caret">▾</span></span>
+        <span class="s-marker"><span class="s-num">2</span><svg class="s-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l6 4.5 6-4.5"/><path d="M6 10l6 4.5 6-4.5"/><path d="M6 16.5l6 4.5 6-4.5"/></svg></span>
         <span class="s-title">Find which products have sizes</span>
         <span class="s-badges"><span class="st-badge ready">Ready, not run</span></span>
       </summary>
@@ -176,9 +176,9 @@
     </details>
 
     <!-- STEP 3 -->
-    <details class="step">
+    <details class="step" open>
       <summary>
-        <span class="s-marker"><span class="s-num">3</span><span class="s-caret">▾</span></span>
+        <span class="s-marker"><span class="s-num">3</span><svg class="s-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l6 4.5 6-4.5"/><path d="M6 10l6 4.5 6-4.5"/><path d="M6 16.5l6 4.5 6-4.5"/></svg></span>
         <span class="s-title">Read the size markups</span>
         <span class="s-badges"><span class="st-badge done">Done</span></span>
       </summary>
@@ -194,9 +194,9 @@
     </details>
 
     <!-- STEP 4 -->
-    <details class="step">
+    <details class="step" open>
       <summary>
-        <span class="s-marker"><span class="s-num">4</span><span class="s-caret">▾</span></span>
+        <span class="s-marker"><span class="s-num">4</span><svg class="s-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l6 4.5 6-4.5"/><path d="M6 10l6 4.5 6-4.5"/><path d="M6 16.5l6 4.5 6-4.5"/></svg></span>
         <span class="s-title">Build the combined master</span>
         <span class="s-badges"><span class="st-badge done">Done</span></span>
       </summary>
@@ -211,9 +211,9 @@
     </details>
 
     <!-- STEP 5 -->
-    <details class="step">
+    <details class="step" open>
       <summary>
-        <span class="s-marker"><span class="s-num">5</span><span class="s-caret">▾</span></span>
+        <span class="s-marker"><span class="s-num">5</span><svg class="s-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l6 4.5 6-4.5"/><path d="M6 10l6 4.5 6-4.5"/><path d="M6 16.5l6 4.5 6-4.5"/></svg></span>
         <span class="s-title">Get the correct prices (source of truth)</span>
         <span class="s-badges"><span class="st-badge pending">Pending</span></span>
       </summary>
@@ -229,9 +229,9 @@
     </details>
 
     <!-- STEP 6 -->
-    <details class="step">
+    <details class="step" open>
       <summary>
-        <span class="s-marker"><span class="s-num">6</span><span class="s-caret">▾</span></span>
+        <span class="s-marker"><span class="s-num">6</span><svg class="s-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l6 4.5 6-4.5"/><path d="M6 10l6 4.5 6-4.5"/><path d="M6 16.5l6 4.5 6-4.5"/></svg></span>
         <span class="s-title">Reconcile and flag the wrong ones</span>
         <span class="s-badges"><span class="st-badge blocked">Blocked by Step 5</span></span>
       </summary>
@@ -246,9 +246,9 @@
     </details>
 
     <!-- STEP 7 -->
-    <details class="step">
+    <details class="step" open>
       <summary>
-        <span class="s-marker"><span class="s-num">7</span><span class="s-caret">▾</span></span>
+        <span class="s-marker"><span class="s-num">7</span><svg class="s-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l6 4.5 6-4.5"/><path d="M6 10l6 4.5 6-4.5"/><path d="M6 16.5l6 4.5 6-4.5"/></svg></span>
         <span class="s-title">Apply the corrections (write back)</span>
         <span class="s-badges"><span class="st-badge later">Later</span><span class="st-badge pending">Unconfirmed</span></span>
       </summary>
@@ -263,9 +263,9 @@
     </details>
 
     <!-- STEP 8 -->
-    <details class="step">
+    <details class="step" open>
       <summary>
-        <span class="s-marker"><span class="s-num">8</span><span class="s-caret">▾</span></span>
+        <span class="s-marker"><span class="s-num">8</span><svg class="s-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l6 4.5 6-4.5"/><path d="M6 10l6 4.5 6-4.5"/><path d="M6 16.5l6 4.5 6-4.5"/></svg></span>
         <span class="s-title">Make it run on its own</span>
         <span class="s-badges"><span class="st-badge later">Later</span><span class="st-badge pending">Builder undecided</span></span>
       </summary>
