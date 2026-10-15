@@ -9,12 +9,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../sidebar-style.css">
   <style>
+    :root{ --ui: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
     .page-head { margin: 8px 0 20px; }
     .page-head h1 { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--text); margin: 0 0 8px; letter-spacing: -0.01em; }
-    .page-head .page-sub { font-family: var(--mono); font-size: 12px; color: var(--dim-mid); line-height: 1.7; margin: 0; }
+    .page-head .page-sub { font-family: var(--ui); font-size: 12px; color: var(--dim-mid); line-height: 1.7; margin: 0; }
     .page-head .page-sub .src { color: var(--orange); }
 
-    .goalbar { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: var(--text);
+    .goalbar { font-family: var(--ui); font-size: 12.5px; line-height: 1.6; color: var(--text);
       background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--orange);
       border-radius: var(--radius); padding: 13px 16px; margin: 0 0 20px; }
     .goalbar b { color: var(--orange); }
@@ -24,7 +25,7 @@
     .skey .st-badge { cursor: default; }
 
     /* status badges */
-    .st-badge { font-family: var(--mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em;
+    .st-badge { font-family: var(--ui); font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em;
       text-transform: uppercase; padding: 2px 8px; border: 1px solid; border-radius: var(--radius-sm); white-space: nowrap; }
     .st-badge.done    { color: var(--green);  border-color: var(--green-border);  background: var(--green-bg); }
     .st-badge.ready   { color: var(--orange); border-color: var(--orange-border); background: var(--orange-bg); }
@@ -38,18 +39,18 @@
     .step:hover { border-color: var(--border2); }
     .step[open] { border-color: var(--orange-border); background: var(--surface2); }
     .step summary { list-style: none; cursor: pointer; padding: 15px 18px; display: flex; align-items: flex-start; gap: 14px;
-      font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.45; }
+      font-family: var(--ui); font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.45; }
     .step summary::-webkit-details-marker { display: none; }
     .s-marker { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 26px; padding-top: 1px; }
     .s-num { font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--dim); line-height: 1; }
     .step[open] .s-num { color: var(--orange); }
     .s-caret { font-size: 15px; line-height: 1; color: #FF6600; transition: transform 0.2s ease; }
     .step[open] .s-caret { transform: rotate(180deg); }
-    .s-title { flex: 1; }
+    .s-title { flex: 1; font-family: var(--display); font-weight: 700; letter-spacing: 0.005em; }
     .s-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; margin-top: 1px; }
 
     .s-body { padding: 2px 20px 18px 58px; }
-    .rowline { display: grid; grid-template-columns: 96px 1fr; gap: 3px 14px; font-family: var(--mono); font-size: 12.5px; line-height: 1.6; margin-bottom: 9px; }
+    .rowline { display: grid; grid-template-columns: 96px 1fr; gap: 3px 14px; font-family: var(--ui); font-size: 12.5px; line-height: 1.6; margin-bottom: 9px; }
     .rowline .k { color: var(--dim); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 10.5px; padding-top: 1px; }
     .rowline .v { color: var(--dim-mid); }
     .rowline .v b { color: var(--text); font-weight: 700; }
@@ -59,7 +60,7 @@
     .rowline.owner .v { color: var(--text); }
     @media (max-width: 640px) { .rowline { grid-template-columns: 1fr; gap: 1px; } .s-body { padding-left: 20px; } }
 
-    h2.sec { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--dim);
+    h2.sec { font-family: var(--ui); font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--dim);
       margin: 30px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 7px; }
 
     .lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -67,10 +68,10 @@
     .lane { border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 15px; background: var(--surface); }
     .lane .lh { font-family: var(--display); font-size: 13px; font-weight: 700; margin-bottom: 5px; }
     .lane.us .lh { color: var(--green); } .lane.jesse .lh { color: var(--orange); } .lane.g .lh { color: var(--yellow); }
-    .lane p { font-family: var(--mono); font-size: 11px; color: var(--dim-mid); line-height: 1.6; margin: 0; }
+    .lane p { font-family: var(--ui); font-size: 11px; color: var(--dim-mid); line-height: 1.6; margin: 0; }
 
     ul.plain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-    ul.plain li { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: var(--dim-mid);
+    ul.plain li { font-family: var(--ui); font-size: 12.5px; line-height: 1.6; color: var(--dim-mid);
       padding-left: 16px; position: relative; }
     ul.plain li::before { content: '›'; position: absolute; left: 0; color: var(--orange); font-weight: 700; }
     ul.plain li b { color: var(--text); }
@@ -204,7 +205,7 @@
         <div class="rowline"><span class="k">How</span><span class="v">A script joins the Step 1 base prices to the Step 3 markups on Product ID.</span></div>
         <div class="rowline"><span class="k">Returns</span><span class="v">One spreadsheet, one row per product-size, with base, markup, and effective price (base + markup). <b>UBB-04 2X = $10.75 + $2.00 = $12.75. 72 rows for Uncle Bears.</b></span></div>
         <div class="rowline"><span class="k">Feeds</span><span class="v">This "what 451 charges now" master is one side of the compare in Step 6.</span></div>
-        <div class="rowline artifact"><span class="k">Artifact</span><span class="v">Sidebot2_Combined_Master_UncleBears_2026-10-14.csv, plus the Combined-Master proof page.</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v">Master-List_Price-Per-Size (file: Sidebot2_Combined_Master_UncleBears_2026-10-14.csv), plus the Combined-Master proof page.</span></div>
         <div class="rowline owner"><span class="k">Owner</span><span class="v">Us</span></div>
       </div>
     </details>
@@ -219,10 +220,10 @@
       <div class="s-body">
         <div class="rowline"><span class="k">Do</span><span class="v">Pull what each item and size should cost.</span></div>
         <div class="rowline"><span class="k">How</span><span class="v">Export current pricing from Quantum today, from Infoplus after the migration.</span></div>
-        <div class="rowline"><span class="k">Returns</span><span class="v">The correct price per item and size.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">The correct price per item and size, the Source-of-Truth_Pricing.</span></div>
         <div class="rowline"><span class="k">Feeds</span><span class="v">The other side of the compare in Step 6.</span></div>
         <div class="rowline blocked"><span class="k">Blocked on</span><span class="v">Not attempted. We have no Quantum access in this session, no one has told us where Quantum exports pricing or in what format, and Quantum stores a whole per-size price while 451 stores base plus modifier, so we also need to know how to decode it. This is a dependency on Jesse or Brandi.</span></div>
-        <div class="rowline artifact"><span class="k">Artifact</span><span class="v" style="color:var(--dim-mid)">None yet.</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v" style="color:var(--dim-mid)">Source-of-Truth_Pricing (future).</span></div>
         <div class="rowline owner"><span class="k">Owner</span><span class="v">Us, once we are told where to pull from</span></div>
       </div>
     </details>
@@ -237,9 +238,9 @@
       <div class="s-body">
         <div class="rowline"><span class="k">Do</span><span class="v">Compare what 451 charges now against the correct prices, and flag every mismatch.</span></div>
         <div class="rowline"><span class="k">How</span><span class="v">A script compares the Step 4 master to the Step 5 source of truth. The logic is designed, it cannot run until Step 5 lands.</span></div>
-        <div class="rowline"><span class="k">Returns</span><span class="v">A color-coded spreadsheet, the fix list, like Sidebot-1. <b style="color:var(--red)">Red</b> = wrong, fix now. <b style="color:var(--yellow)">Yellow</b> = needs a human call (lot timing, retail harmonization, tier pricing). <b style="color:var(--green)">Green</b> = matches. Separate tab for point-of-sale and no-online-price buyers, never auto-flagged.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">A color-coded spreadsheet, the Fix-List_Price-Per-Size, like Sidebot-1. <b style="color:var(--red)">Red</b> = wrong, fix now. <b style="color:var(--yellow)">Yellow</b> = needs a human call (lot timing, retail harmonization, tier pricing). <b style="color:var(--green)">Green</b> = matches. Separate tab for point-of-sale and no-online-price buyers, never auto-flagged.</span></div>
         <div class="rowline"><span class="k">Feeds</span><span class="v">This is the report Brandi asked for, and the fix list for Step 7. It is the lowest-risk first thing to ship.</span></div>
-        <div class="rowline artifact"><span class="k">Artifact</span><span class="v" style="color:var(--dim-mid)">The reconciliation / fix-list spreadsheet (future).</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v" style="color:var(--dim-mid)">Fix-List_Price-Per-Size (future).</span></div>
         <div class="rowline owner"><span class="k">Owner</span><span class="v">Us</span></div>
       </div>
     </details>
