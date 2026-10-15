@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebot-2 · Explore the Process</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../sidebar-style.css">
+  <style>
+    .page-head { margin: 8px 0 20px; }
+    .page-head h1 { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--text); margin: 0 0 8px; letter-spacing: -0.01em; }
+    .page-head .page-sub { font-family: var(--mono); font-size: 12px; color: var(--dim-mid); line-height: 1.7; margin: 0; }
+    .page-head .page-sub .src { color: var(--orange); }
+
+    .goalbar { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: var(--text);
+      background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--orange);
+      border-radius: var(--radius); padding: 13px 16px; margin: 0 0 20px; }
+    .goalbar b { color: var(--orange); }
+
+    /* status key */
+    .skey { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 18px; }
+    .skey .st-badge { cursor: default; }
+
+    /* status badges */
+    .st-badge { font-family: var(--mono); font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 2px 8px; border: 1px solid; border-radius: var(--radius-sm); white-space: nowrap; }
+    .st-badge.done    { color: var(--green);  border-color: var(--green-border);  background: var(--green-bg); }
+    .st-badge.ready   { color: var(--orange); border-color: var(--orange-border); background: var(--orange-bg); }
+    .st-badge.pending { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .st-badge.blocked { color: var(--red);    border-color: var(--red-border);    background: var(--red-bg); }
+    .st-badge.later   { color: var(--dim-mid);border-color: var(--border2);        background: var(--surface2); }
+
+    /* step drawers */
+    .steps { display: flex; flex-direction: column; gap: 8px; }
+    .step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.15s ease; }
+    .step:hover { border-color: var(--border2); }
+    .step[open] { border-color: var(--orange-border); background: var(--surface2); }
+    .step summary { list-style: none; cursor: pointer; padding: 15px 18px; display: flex; align-items: flex-start; gap: 14px;
+      font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.45; }
+    .step summary::-webkit-details-marker { display: none; }
+    .s-marker { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 26px; padding-top: 1px; }
+    .s-num { font-family: var(--display); font-size: 17px; font-weight: 700; color: var(--dim); line-height: 1; }
+    .step[open] .s-num { color: var(--orange); }
+    .s-caret { font-size: 15px; line-height: 1; color: #FF6600; transition: transform 0.2s ease; }
+    .step[open] .s-caret { transform: rotate(180deg); }
+    .s-title { flex: 1; }
+    .s-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; margin-top: 1px; }
+
+    .s-body { padding: 2px 20px 18px 58px; }
+    .rowline { display: grid; grid-template-columns: 96px 1fr; gap: 3px 14px; font-family: var(--mono); font-size: 12.5px; line-height: 1.6; margin-bottom: 9px; }
+    .rowline .k { color: var(--dim); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 10.5px; padding-top: 1px; }
+    .rowline .v { color: var(--dim-mid); }
+    .rowline .v b { color: var(--text); font-weight: 700; }
+    .rowline.artifact .v { color: var(--green); }
+    .rowline.blocked .k { color: var(--yellow); }
+    .rowline.blocked .v { color: var(--yellow); }
+    .rowline.owner .v { color: var(--text); }
+    @media (max-width: 640px) { .rowline { grid-template-columns: 1fr; gap: 1px; } .s-body { padding-left: 20px; } }
+
+    h2.sec { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--dim);
+      margin: 30px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 7px; }
+
+    .lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 760px) { .lanes { grid-template-columns: 1fr; } }
+    .lane { border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 15px; background: var(--surface); }
+    .lane .lh { font-family: var(--display); font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .lane.us .lh { color: var(--green); } .lane.jesse .lh { color: var(--orange); } .lane.g .lh { color: var(--yellow); }
+    .lane p { font-family: var(--mono); font-size: 11px; color: var(--dim-mid); line-height: 1.6; margin: 0; }
+
+    ul.plain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    ul.plain li { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: var(--dim-mid);
+      padding-left: 16px; position: relative; }
+    ul.plain li::before { content: '›'; position: absolute; left: 0; color: var(--orange); font-weight: 700; }
+    ul.plain li b { color: var(--text); }
+    ul.plain li .ver { color: var(--green); font-size: 10px; letter-spacing: 0.06em; }
+    ul.plain.q li::before { content: counter(qc); counter-increment: qc; color: var(--orange); font-weight: 700; font-size: 11px; }
+    ul.plain.q { counter-reset: qc; }
+  </style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+  <defs><linearGradient id="og" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF9900"/><stop offset="100%" stop-color="#FF6600"/></linearGradient></defs>
+</svg>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <div class="logo">ADAMOS</div>
+      <div class="date-pill" data-date-box></div>
+      <div class="topbar-project"><span class="project-label">PROJECT:</span> <span class="project-name">SIDEBAR</span></div>
+      <span class="status" data-status data-updated="2026.10.15.14:45"><span class="status-dot"></span><span class="status-label"></span></span>
+    </div>
+    <div class="topbar-right">
+      <span class="theme-toggle" data-theme-toggle>🌙</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <div class="nav-tabs-inner">
+    <a class="nav-tab" href="../../index.html" style="text-decoration:none"><span class="tab-icon">←</span>Sidebar Dashboard</a>
+    <a class="nav-tab" href="shape-map.html" style="text-decoration:none"><span class="tab-icon">◈</span>Sidebot-2 · Shape Map</a>
+    <a class="nav-tab" href="prelim-Qs.html" style="text-decoration:none"><span class="tab-icon">?</span>Sidebot-2 · Questions</a>
+    <div class="nav-tab active"><span class="tab-icon">▦</span>Sidebot-2 · Explore Process</div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <div class="page-head">
+    <h1>Sidebot-2 · Explore the Process</h1>
+    <p class="page-sub">
+      The full pricing-correction chain, end to end, step by step. Each step shows what we do, what it returns,
+      and how it hands to the next link, with honest status and where each file gets created. Built like the
+      Sidebot-1 interop fix-list. Verified live in <span class="src">Four51 admin, read-only, 2026-10-14 and 2026-10-15</span>,
+      against <span class="src">Jesse's SOAP handoff 2026-10-13</span>, the <span class="src">Sept 29 and Oct 2 calls</span>,
+      and <span class="src">Brandi and Jesse emails, Sep 28 to Oct 13</span>.
+    </p>
+  </div>
+
+  <div class="goalbar">
+    <b>The goal:</b> keep Four51 storefront prices correct for every item, size, and buyer, with far less manual updating,
+    and catch wrong prices before a customer sees them.
+  </div>
+
+  <div class="skey">
+    <span class="st-badge done">Done · proven on a real catalog</span>
+    <span class="st-badge ready">Ready · built, not yet run</span>
+    <span class="st-badge pending">Pending · blocked on an answer</span>
+    <span class="st-badge blocked">Blocked · waits on an earlier step</span>
+    <span class="st-badge later">Later · another owner's lane</span>
+  </div>
+
+  <h2 class="sec">The chain, step by step</h2>
+  <div class="steps">
+
+    <!-- STEP 1 -->
+    <details class="step" open>
+      <summary>
+        <span class="s-marker"><span class="s-num">1</span><span class="s-caret">▾</span></span>
+        <span class="s-title">Get the base prices</span>
+        <span class="s-badges"><span class="st-badge done">Done</span></span>
+      </summary>
+      <div class="s-body">
+        <div class="rowline"><span class="k">Do</span><span class="v">Pull the base price of every product in a catalog.</span></div>
+        <div class="rowline"><span class="k">How</span><span class="v">In Four51: Reports, Product Reports, Price Breaks. Pick one catalog, click Download.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">A comma-separated values (CSV) file: Product ID, Interop ID, Company, Price Schedule, Quantity, Price. <b>UBB-04 base came back $10.75.</b></span></div>
+        <div class="rowline"><span class="k">Feeds</span><span class="v">Staged into the workspace for the join in Step 4.</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v">Sidebot2_PriceBreaks_UncleBears_2026-10-14.csv (33 rows), plus the Price-Pull proof page.</span></div>
+        <div class="rowline owner"><span class="k">Owner</span><span class="v">Us</span></div>
+      </div>
+    </details>
+
+    <!-- STEP 2 -->
+    <details class="step">
+      <summary>
+        <span class="s-marker"><span class="s-num">2</span><span class="s-caret">▾</span></span>
+        <span class="s-title">Find which products have sizes</span>
+        <span class="s-badges"><span class="st-badge ready">Ready, not run</span></span>
+      </summary>
+      <div class="s-body">
+        <div class="rowline"><span class="k">Do</span><span class="v">Get the list of products that carry a SIZE spec, so we only scrape the ones that need it.</span></div>
+        <div class="rowline"><span class="k">How</span><span class="v">In Four51: Reports, Product Reports, Variable Spec. Same catalog, Download.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">A list of products and whether each has a SIZE spec.</span></div>
+        <div class="rowline"><span class="k">Feeds</span><span class="v">That list is the work order for Step 3. No-size products skip Step 3.</span></div>
+        <div class="rowline"><span class="k">Reality</span><span class="v">We have <b>not run this yet.</b> In the one-catalog test we skipped it and checked each product directly. The report exists and its columns are confirmed. This is the method we use at scale, so we do not scrape every product.</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v" style="color:var(--dim-mid)">None yet.</span></div>
+        <div class="rowline owner"><span class="k">Owner</span><span class="v">Us</span></div>
+      </div>
+    </details>
+
+    <!-- STEP 3 -->
+    <details class="step">
+      <summary>
+        <span class="s-marker"><span class="s-num">3</span><span class="s-caret">▾</span></span>
+        <span class="s-title">Read the size markups</span>
+        <span class="s-badges"><span class="st-badge done">Done</span></span>
+      </summary>
+      <div class="s-body">
+        <div class="rowline"><span class="k">Do</span><span class="v">Collect the per-size upcharge for each sized product.</span></div>
+        <div class="rowline"><span class="k">How</span><span class="v">Claude in the browser opens each sized product's SIZE spec screen, reads the size-and-markup fields, and writes them to a file. A script then joins that file to the base prices. Out comes a spreadsheet.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">Per product, a list of sizes and their markups. <b>11 of 13 apparel items had a SIZE spec.</b> Markup type confirmed fixed amount per unit (for example UBB-04 2X = +$2.00, jersey 3X = +$5.50).</span></div>
+        <div class="rowline"><span class="k">Feeds</span><span class="v">The markups file goes into the join in Step 4.</span></div>
+        <div class="rowline"><span class="k">Fix applied</span><span class="v">In the first test the markups went straight into the master with no file of their own. We now write them to their own file first, so the read is auditable and re-runnable.</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v">Sidebot2_SizeMarkups_UncleBears_2026-10-15.csv (51 rows, size + markup + type per product).</span></div>
+        <div class="rowline owner"><span class="k">Owner</span><span class="v">Us</span></div>
+      </div>
+    </details>
+
+    <!-- STEP 4 -->
+    <details class="step">
+      <summary>
+        <span class="s-marker"><span class="s-num">4</span><span class="s-caret">▾</span></span>
+        <span class="s-title">Build the combined master</span>
+        <span class="s-badges"><span class="st-badge done">Done</span></span>
+      </summary>
+      <div class="s-body">
+        <div class="rowline"><span class="k">Do</span><span class="v">Merge base prices and size markups into one picture of what Four51 charges now.</span></div>
+        <div class="rowline"><span class="k">How</span><span class="v">A script joins the Step 1 base prices to the Step 3 markups on Product ID.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">One spreadsheet, one row per product-size, with base, markup, and effective price (base + markup). <b>UBB-04 2X = $10.75 + $2.00 = $12.75. 72 rows for Uncle Bears.</b></span></div>
+        <div class="rowline"><span class="k">Feeds</span><span class="v">This "what 451 charges now" master is one side of the compare in Step 6.</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v">Sidebot2_Combined_Master_UncleBears_2026-10-14.csv, plus the Combined-Master proof page.</span></div>
+        <div class="rowline owner"><span class="k">Owner</span><span class="v">Us</span></div>
+      </div>
+    </details>
+
+    <!-- STEP 5 -->
+    <details class="step">
+      <summary>
+        <span class="s-marker"><span class="s-num">5</span><span class="s-caret">▾</span></span>
+        <span class="s-title">Get the correct prices (source of truth)</span>
+        <span class="s-badges"><span class="st-badge pending">Pending</span></span>
+      </summary>
+      <div class="s-body">
+        <div class="rowline"><span class="k">Do</span><span class="v">Pull what each item and size should cost.</span></div>
+        <div class="rowline"><span class="k">How</span><span class="v">Export current pricing from Quantum today, from Infoplus after the migration.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">The correct price per item and size.</span></div>
+        <div class="rowline"><span class="k">Feeds</span><span class="v">The other side of the compare in Step 6.</span></div>
+        <div class="rowline blocked"><span class="k">Blocked on</span><span class="v">Not attempted. We have no Quantum access in this session, no one has told us where Quantum exports pricing or in what format, and Quantum stores a whole per-size price while 451 stores base plus modifier, so we also need to know how to decode it. This is a dependency on Jesse or Brandi.</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v" style="color:var(--dim-mid)">None yet.</span></div>
+        <div class="rowline owner"><span class="k">Owner</span><span class="v">Us, once we are told where to pull from</span></div>
+      </div>
+    </details>
+
+    <!-- STEP 6 -->
+    <details class="step">
+      <summary>
+        <span class="s-marker"><span class="s-num">6</span><span class="s-caret">▾</span></span>
+        <span class="s-title">Reconcile and flag the wrong ones</span>
+        <span class="s-badges"><span class="st-badge blocked">Blocked by Step 5</span></span>
+      </summary>
+      <div class="s-body">
+        <div class="rowline"><span class="k">Do</span><span class="v">Compare what 451 charges now against the correct prices, and flag every mismatch.</span></div>
+        <div class="rowline"><span class="k">How</span><span class="v">A script compares the Step 4 master to the Step 5 source of truth. The logic is designed, it cannot run until Step 5 lands.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">A color-coded spreadsheet, the fix list, like Sidebot-1. <b style="color:var(--red)">Red</b> = wrong, fix now. <b style="color:var(--yellow)">Yellow</b> = needs a human call (lot timing, retail harmonization, tier pricing). <b style="color:var(--green)">Green</b> = matches. Separate tab for point-of-sale and no-online-price buyers, never auto-flagged.</span></div>
+        <div class="rowline"><span class="k">Feeds</span><span class="v">This is the report Brandi asked for, and the fix list for Step 7. It is the lowest-risk first thing to ship.</span></div>
+        <div class="rowline artifact"><span class="k">Artifact</span><span class="v" style="color:var(--dim-mid)">The reconciliation / fix-list spreadsheet (future).</span></div>
+        <div class="rowline owner"><span class="k">Owner</span><span class="v">Us</span></div>
+      </div>
+    </details>
+
+    <!-- STEP 7 -->
+    <details class="step">
+      <summary>
+        <span class="s-marker"><span class="s-num">7</span><span class="s-caret">▾</span></span>
+        <span class="s-title">Apply the corrections (write back)</span>
+        <span class="s-badges"><span class="st-badge later">Later</span><span class="st-badge pending">Unconfirmed</span></span>
+      </summary>
+      <div class="s-body">
+        <div class="rowline"><span class="k">Do</span><span class="v">Write the corrected base and markup back into Four51 for the red rows.</span></div>
+        <div class="rowline"><span class="k">How</span><span class="v">Two possible paths. One, Jesse's API write method, already in progress on the SSTEST test items. Two, browser automation writing through the admin screen, the same screen we already read cleanly. SOAP cannot write markups, so it is not a SOAP job.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">Corrected prices live in 451.</span></div>
+        <div class="rowline"><span class="k">Safe because</span><span class="v">The SIZE spec is product-local, so a write touches only that one product. No shared-spec cascade.</span></div>
+        <div class="rowline blocked"><span class="k">Open</span><span class="v">We do not yet know if Jesse's API write works, or which API it is. If it does, we feed it. If not, browser automation is the fallback. One product at a time, test items first, before-values saved for rollback.</span></div>
+        <div class="rowline owner"><span class="k">Owner</span><span class="v">Jesse (we feed and validate)</span></div>
+      </div>
+    </details>
+
+    <!-- STEP 8 -->
+    <details class="step">
+      <summary>
+        <span class="s-marker"><span class="s-num">8</span><span class="s-caret">▾</span></span>
+        <span class="s-title">Make it run on its own</span>
+        <span class="s-badges"><span class="st-badge later">Later</span><span class="st-badge pending">Builder undecided</span></span>
+      </summary>
+      <div class="s-body">
+        <div class="rowline"><span class="k">Do</span><span class="v">Turn the pull, reconcile, and correct cycle into a scheduled job so nobody updates prices by hand.</span></div>
+        <div class="rowline"><span class="k">How</span><span class="v">The rule set lives in Zoho Creator, scoped by buyer, on a schedule. We hand over a build list, not a discovery or story-problem list.</span></div>
+        <div class="rowline"><span class="k">Returns</span><span class="v">A nightly or weekly reconciliation and update, plus an email of what changed.</span></div>
+        <div class="rowline"><span class="k">Feeds</span><span class="v">This is the end state. It ends the manual updating and carries into the Infoplus migration.</span></div>
+        <div class="rowline blocked"><span class="k">Open</span><span class="v">Who builds it is not decided. The Oct 2 plan was to ask G if he wants to build the Creator side, and we floated that we could offer to build it instead. That is a decision to make, not a fact.</span></div>
+        <div class="rowline owner"><span class="k">Owner</span><span class="v">G, or us if we offer</span></div>
+      </div>
+    </details>
+
+  </div>
+
+  <h2 class="sec">Who owns what</h2>
+  <div class="lanes">
+    <div class="lane us"><div class="lh">Us (Adam)</div><p>Steps 1 to 6. Pull the data, build the master, produce the reconciliation report. We hand over the build list.</p></div>
+    <div class="lane jesse"><div class="lh">Jesse</div><p>Step 7. The API write method, already in progress on the test items. We feed and validate it, we do not rebuild it.</p></div>
+    <div class="lane g"><div class="lh">G</div><p>Step 8. Builds the Creator master-of-record from our build list, if he takes it. Open question whether he or we build it.</p></div>
+  </div>
+
+  <h2 class="sec">Assumptions</h2>
+  <ul class="plain">
+    <li><b>Base price</b> comes clean from the Price Breaks report per catalog. <span class="ver">Verified, one catalog.</span></li>
+    <li><b>The Variable Spec report</b> flags every product that has a SIZE spec. Report confirmed, not yet run at scale.</li>
+    <li><b>Markups</b> are browser-readable and fixed amount per unit. <span class="ver">Verified for Uncle Bears apparel only.</span></li>
+    <li><b>Editing one product's markup</b> affects only that product. <span class="ver">Verified on a three-product sample.</span></li>
+    <li><b>Markups get written to their own file</b> before the join, so the read is auditable.</li>
+    <li><b>Source-of-truth pricing</b> can be pulled from Quantum now and Infoplus later. Stated by Brandi, not yet obtained.</li>
+    <li><b>Effective price = base + markup</b> for per-unit items. The three forks, lot timing, retail harmonization, tiers, are human calls, not auto-fixes.</li>
+    <li><b>The write path</b> is Jesse's API or browser automation, not SOAP. Which one, and whether Jesse's works, is unconfirmed.</li>
+    <li><b>The Creator build</b> goes to G from our build list, within Creator's per-call limits, unless we offer to build it.</li>
+    <li>We pull <b>per catalog</b>, because the all-catalogs export fails.</li>
+    <li>Day-one excludes: <b>point-of-sale and no-online-price buyers.</b></li>
+  </ul>
+
+  <h2 class="sec">Questions to troubleshoot</h2>
+  <ul class="plain q">
+    <li><b>Source of truth:</b> where do we pull today's Quantum pricing, in what format, and is it a whole per-size price or base plus modifier?</li>
+    <li><b>Jesse's write method:</b> what API, does it set base and markup per buyer, did it work on the SSTEST items, and can it roll back?</li>
+    <li><b>Write path choice:</b> if the API is not reliable, do we use browser automation to write through the admin screen?</li>
+    <li><b>Per-buyer pricing:</b> can one 451 item hold per-buyer pricing, or do we need the duplicate or hyphenated-ID approach?</li>
+    <li><b>Variable Spec coverage:</b> does every sized product use a SIZE selection spec, or are some sized differently and would get missed?</li>
+    <li><b>Markup type variance:</b> are any products percentage or per-line instead of per-unit? We only checked one catalog.</li>
+    <li><b>Quantity breaks:</b> some schedules have more than one break. Which break is the price for reconciliation?</li>
+    <li><b>Multiple schedules per product</b> (B2B vs Employee): which schedule do we reconcile per buyer?</li>
+    <li><b>Buyer exclusions:</b> the exact list of day-one excluded buyers.</li>
+    <li><b>Scale:</b> total catalogs and sized products, so we know if scraping all markups fits in one run.</li>
+    <li><b>Creator ownership:</b> does G want to own the build, or do we offer it, and what are the per-call limits for a scheduled run?</li>
+  </ul>
+
+</div><!-- end layout -->
+
+<footer>
+  <a href="https://adamandroid.ai" class="footer-brand">
+    <svg class="aa-mark" width="22" height="27" viewBox="0 0 180 220" fill="none">
+      <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="62" cy="95" r="32" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="114" cy="89" r="43" stroke="url(#og)" stroke-width="13"/>
+    </svg>
+    <span class="footer-name">AdamAndroid<span class="ai">.ai</span></span>
+  </a>
+  <small>© 2026 AdamAndroid.ai · Help Humans, Ride Robots*</small>
+</footer>
+
+<script src="../design-system/header.js" defer></script>
+
+</body>
+</html>
