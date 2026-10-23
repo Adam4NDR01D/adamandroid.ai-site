@@ -83,14 +83,15 @@
     /* question drawers */
     .qdrawer { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 8px; }
     .qdrawer[open] { border-color: var(--orange-border); background: var(--surface2); }
-    .qdrawer summary { list-style: none; cursor: pointer; padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start;
+    .qdrawer summary { list-style: none; cursor: pointer; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start;
       font-family: var(--ui); font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.5; }
     .qdrawer summary::-webkit-details-marker { display: none; }
-    .qdrawer .qid { font-family: var(--display); font-weight: 700; color: var(--orange); font-size: 14px; flex: 0 0 auto; }
+    .qmark { display: flex; flex-direction: row-reverse; align-items: center; gap: 7px; flex: 0 0 auto; padding-top: 1px; }
+    .qdrawer .qid { font-family: var(--display); font-weight: 700; color: var(--orange); font-size: 15px; line-height: 1; }
     .qdrawer .qwho { color: var(--dim); font-weight: 700; }
-    .qcaret { margin-left: auto; width: 16px; height: 16px; color: #FF6600; transition: transform 0.2s ease; flex: 0 0 auto; }
+    .qcaret { width: 18px; height: 18px; color: #FF6600; transition: transform 0.2s ease; display: block; filter: drop-shadow(0 0 5px rgba(255,153,0,.45)); }
     .qdrawer[open] .qcaret { transform: rotate(180deg); }
-    .qbody { padding: 0 16px 16px 42px; font-family: var(--ui); font-size: 12.5px; line-height: 1.65; color: var(--dim-mid); }
+    .qbody { padding: 0 16px 16px 50px; font-family: var(--ui); font-size: 12.5px; line-height: 1.65; color: var(--dim-mid); }
     .qbody .pstar { color: var(--orange); font-weight: 700; }
     .qbody b { color: var(--text); }
 
@@ -240,32 +241,27 @@
   <h2 class="sec">7 · Open questions</h2>
 
   <details class="qdrawer" open>
-    <summary><span class="qid">Q1</span><span><span class="qwho">(G)</span> What format will G's price update list come in?</span>
-      <svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <summary><span class="qmark"><span class="qid">Q1</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(G)</span> What format will G's price update list come in?</span></summary>
     <div class="qbody"><span class="pstar">* Preferred:</span> a CSV with one row per variant per buyer, keyed by the same <b>variant ID</b> our capture uses, carrying either base + markup or a total price. We are flexible on file type (CSV, spreadsheet or JSON all work); the matching variant ID is what matters. Can G match it?</div>
   </details>
 
   <details class="qdrawer" open>
-    <summary><span class="qid">Q2</span><span><span class="qwho">(G)</span> Will his list be the full set or only the changed items? This decides whether step 4 is needed.</span>
-      <svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <summary><span class="qmark"><span class="qid">Q2</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(G)</span> Will his list be the full set or only the changed items? This decides whether step 4 is needed.</span></summary>
     <div class="qbody"><span class="pstar">* Preferred:</span> the <b>full set</b>. Sidebot-3 compares each of G's prices against our capture (what Four51 charges now): a match means no change, a difference is a change to write. Every captured variant either gets a price back or shows as missing, so we can confirm the list is complete. This checks <b>coverage, not correctness</b>; whether G's prices are right depends on his source data. Fallback: changed items only, with a total count so we can check we got everything he meant to send.</div>
   </details>
 
   <details class="qdrawer" open>
-    <summary><span class="qid">Q3</span><span><span class="qwho">(Brandi)</span> Does each buyer get its own price, and where is that price set today?</span>
-      <svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <summary><span class="qmark"><span class="qid">Q3</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(Brandi)</span> Does each buyer get its own price, and where is that price set today?</span></summary>
     <div class="qbody"><span class="pstar">* Preferred:</span> Brandi clarifies first. The Sept 29 call showed per-buyer pricing exists (price varies by customer and by who owns the stock), with possible entry points in <b>Books</b> (purchase orders, customer price lists) and <b>Four51</b> (price schedules assigned to buyer companies). B2B lot timing and retail point-of-sale add variations. Once we know where it is set, G can say whether his list carries it.</div>
   </details>
 
   <details class="qdrawer" open>
-    <summary><span class="qid">Q4</span><span><span class="qwho">(Nicole + Brandi)</span> Partial inventory. Nicole asked (2026-10-21) for fractional quantities to be rounded up before they go to Four51. Is this part of the pricing fix, or a separate piece of work?</span>
-      <svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <summary><span class="qmark"><span class="qid">Q4</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(Nicole + Brandi)</span> Partial inventory. Nicole asked (2026-10-21) for fractional quantities to be rounded up before they go to Four51. Is this part of the pricing fix, or a separate piece of work?</span></summary>
     <div class="qbody"><span class="pstar">* Preferred:</span> confirm scope first. This is <b>inventory, not price</b>, and Sidebot-2 and Sidebot-3 only handle prices. Get one real example of a fractional quantity to see where it comes from. If it is in scope, round up wherever the quantity is produced, before it is sent to Four51, likely in G's Creator layer (to confirm with G).</div>
   </details>
 
   <details class="qdrawer" open>
-    <summary><span class="qid">Q5</span><span><span class="qwho">(Brandi)</span> How often do people hand-edit prices?</span>
-      <svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <summary><span class="qmark"><span class="qid">Q5</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(Brandi)</span> How often do people hand-edit prices?</span></summary>
     <div class="qbody"><span class="pstar">* Why it matters:</span> it tells us how big the Warnings tab is likely to be, how often the pricing fix needs to run, and whether to build it on a schedule or on a trigger.</div>
   </details>
 
