@@ -115,6 +115,12 @@
     .cflag.red { border-left-color: var(--red); }
     .cflag b { color: var(--text); }
     .chain-cap { font-family: var(--ui); font-size: 11px; color: var(--dim); line-height: 1.6; margin: 14px 0 0; }
+    .twoflow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .fcol { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 14px 14px 16px; }
+    .fcol-head { font-family: var(--display); font-size: 15px; font-weight: 700; margin: 0 0 3px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .fcol.now .fcol-head { color: var(--dim); } .fcol.future .fcol-head { color: var(--green); }
+    .fcol-sub { font-family: var(--ui); font-size: 10.5px; color: var(--dim); line-height: 1.5; margin: 0 0 12px; }
+    @media (max-width: 760px){ .twoflow { grid-template-columns: 1fr; } }
 
     /* footer, matched to the main site */
     footer { border-top: 1px solid var(--border); padding: 30px 56px; display: flex; align-items: center; justify-content: space-between; }
@@ -269,105 +275,181 @@
   <h2 class="sec">7 · Open questions</h2>
 
   <details class="qdrawer" open>
-    <summary><span class="qmark"><span class="qid">Q1</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(G)</span> What format will G's price update list come in?</span></summary>
+    <summary><span class="qmark"><span class="qid">Q1</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(G)</span> What format will G's price update list come in?</span></summary>
     <div class="qbody"><span class="pstar">* Preferred:</span> a CSV with one row per variant per buyer, keyed by the same <b>variant ID</b> our capture uses, carrying either base + markup or a total price. We are flexible on file type (CSV, spreadsheet or JSON all work); the matching variant ID is what matters. Can G match it?</div>
   </details>
 
   <details class="qdrawer" open>
-    <summary><span class="qmark"><span class="qid">Q2</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(G)</span> Will his list be the full set or only the changed items? This decides whether step 4 is needed.</span></summary>
+    <summary><span class="qmark"><span class="qid">Q2</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(G)</span> Will his list be the full set or only the changed items? This decides whether step 4 is needed.</span></summary>
     <div class="qbody"><span class="pstar">* Preferred:</span> the <b>full set</b>. Sidebot-3 compares each of G's prices against our capture (what Four51 charges now): a match means no change, a difference is a change to write. Every captured variant either gets a price back or shows as missing, so we can confirm the list is complete. This checks <b>coverage, not correctness</b>; whether G's prices are right depends on his source data. Fallback: changed items only, with a total count so we can check we got everything he meant to send.</div>
   </details>
 
   <details class="qdrawer" open>
-    <summary><span class="qmark"><span class="qid">Q3</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(Brandi)</span> Does each buyer get its own price, and where is that price set today?</span></summary>
+    <summary><span class="qmark"><span class="qid">Q3</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(Brandi)</span> Does each buyer get its own price, and where is that price set today?</span></summary>
     <div class="qbody"><span class="pstar">* Preferred:</span> Brandi clarifies first. The Sept 29 call showed per-buyer pricing exists (price varies by customer and by who owns the stock), with possible entry points in <b>Books</b> (purchase orders, customer price lists) and <b>Four51</b> (price schedules assigned to buyer companies). B2B lot timing and retail point-of-sale add variations. Once we know where it is set, G can say whether his list carries it.</div>
   </details>
 
   <details class="qdrawer" open>
-    <summary><span class="qmark"><span class="qid">Q4</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(Nicole + Brandi)</span> Partial inventory. Nicole asked (2026-10-21) for fractional quantities to be rounded up before they go to Four51. Is this part of the pricing fix, or a separate piece of work?</span></summary>
+    <summary><span class="qmark"><span class="qid">Q4</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(Nicole + Brandi)</span> Partial inventory. Nicole asked (2026-10-21) for fractional quantities to be rounded up before they go to Four51. Is this part of the pricing fix, or a separate piece of work?</span></summary>
     <div class="qbody"><span class="pstar">* Preferred:</span> confirm scope first. This is <b>inventory, not price</b>, and Sidebot-2 and Sidebot-3 only handle prices. Get one real example of a fractional quantity to see where it comes from. If it is in scope, round up wherever the quantity is produced, before it is sent to Four51, likely in G's Creator layer (to confirm with G).</div>
   </details>
 
   <details class="qdrawer" open>
-    <summary><span class="qmark"><span class="qid">Q5</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span><span><span class="qwho">(Brandi)</span> How often do people hand-edit prices?</span></summary>
+    <summary><span class="qmark"><span class="qid">Q5</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(Brandi)</span> How often do people hand-edit prices?</span></summary>
     <div class="qbody"><span class="pstar">* Why it matters:</span> it tells us how big the Warnings tab is likely to be, how often the pricing fix needs to run, and whether to build it on a schedule or on a trigger.</div>
   </details>
 
-  <!-- 8 SUPPLY CHAIN FLOW -->
-  <h2 class="sec">8 · Supply chain flow <span style="color:var(--dim);font-weight:700">(verified against G's email 2026-10-23 + the Sept 29 call)</span></h2>
+  <p class="para" style="margin-top:18px"><b style="color:var(--orange)">From G's email (2026-10-23)</b> — items G raised that still need answers.</p>
+
+  <details class="qdrawer" open>
+    <summary><span class="qmark"><span class="qid">G1</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(Us + Jesse)</span> Was our successful price update done through SOAP or browser automation? G needs this to decide how he builds the Creator side.</span></summary>
+    <div class="qbody"><span class="pstar">* Our answer:</span> browser. SOAP cannot set size markups, and G confirmed SOAP writes fail on shared Interop IDs. Jesse to confirm what his successful update used.</div>
+  </details>
+
+  <details class="qdrawer" open>
+    <summary><span class="qmark"><span class="qid">G2</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(Group)</span> Shared Interop IDs (e.g. SSTEST) break SOAP writes for both price and inventory. What is the path for items that share an Interop ID?</span></summary>
+    <div class="qbody">G tested all four SOAP methods on the three SSTEST items and they failed with "more than one product exists," even with unique Product and API IDs. The browser write sidesteps SOAP, but the shared-ID case still needs a confirmed approach.</div>
+  </details>
+
+  <details class="qdrawer" open>
+    <summary><span class="qmark"><span class="qid">G3</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(Nicole + Brandi)</span> Partial inventory under 1: should 0.4 show as 1 available or 0?</span></summary>
+    <div class="qbody">G will round up to the next whole (4.25 → 5). Rounding up means Four51 can show one more unit than is physically on hand, so the under-1 case needs a call.</div>
+  </details>
+
+  <details class="qdrawer" open>
+    <summary><span class="qmark"><span class="qid">G4</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(G)</span> Add buyer assignment + size markups to Billing &amp; Fee Manager, or build a separate Four51 Creator app for them?</span></summary>
+    <div class="qbody">Those two fields live only in Four51 today. G will recommend one of the two once the write method (G1) is settled.</div>
+  </details>
+
+  <!-- 8 SUPPLY CHAIN: NOW vs FUTURE -->
+  <h2 class="sec">8 · Price + inventory supply chain: now vs future <span style="color:var(--dim);font-weight:700">(verified against G's email 2026-10-23 + the Sept 29 call)</span></h2>
   <div class="clegend">
     <span class="cn-type human">Human</span>
     <span class="cn-type sys">System</span>
     <span class="cn-type price">Price / inventory point</span>
     <span class="cn-type bot">Our bot</span>
   </div>
-  <div class="chain">
+  <div class="twoflow">
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Sidebar account managers (Angela, Nicole)</span><span class="st-badge stated">Stated</span></div>
-      <div class="cn-detail">Negotiate unit price at contract, issue the PO, and set or adjust the sell price.</div>
-      <div class="cflag"><b>▲ Core leak:</b> price is set at contract and often not updated on reorder, so Sidebar eats the margin (Brandi's example: $4 shown, $7 actual). This is the pain the project fixes.</div>
+    <!-- ============ NOW ============ -->
+    <div class="fcol now">
+      <div class="fcol-head">Now</div>
+      <p class="fcol-sub">How a price gets set and reaches the buyer today. Set in several places, held in several systems, no single source of truth.</p>
+      <div class="chain">
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Account managers (Angela, Nicole)</span><span class="st-badge stated">Stated</span></div>
+          <div class="cn-detail">Negotiate unit cost, issue the PO, and set the contracted sell price in Four51.</div>
+          <div class="cflag"><b>▲ The leak:</b> price is set at contract and often not updated on reorder ($4 shown, $7 actual). This is what the project fixes.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">PO written, new price enters Zoho Books</span><span class="ar">▼</span></div>
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Zoho Books</span><span class="st-badge known">Known</span></div>
+          <div class="cn-detail">PO written here; holds the sales rate per SKU.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">goods delivered, warehouse scans them in</span><span class="ar">▼</span></div>
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Warehouse</span><span class="st-badge stated">Stated</span></div>
+          <div class="cn-detail">Records item receipts: SKU, production lot, received qty, sell price.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">counts + lots recorded</span><span class="ar">▼</span></div>
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">InfoPlus (warehouse system)</span><span class="st-badge known">Known</span></div>
+          <div class="cn-detail">Counts, lots, sell price per SKU, oldest receipt date. B2B invoiced at the oldest lot.</div>
+          <div class="cflag"><b>▲ Round-up (Nicole):</b> partial quantities round up to the next whole before Four51 (4.25 → 5). Open: does under 1 show as 1 or 0?</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">Billing &amp; Fee Manager syncs from InfoPlus</span><span class="ar">▼</span></div>
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Billing &amp; Fee Manager (Creator app)</span><span class="st-badge known">Known</span></div>
+          <div class="cn-detail">Already syncs InfoPlus (item receipts, items, inventory) and the Books rate.</div>
+          <div class="cflag"><b>▲ Not here yet:</b> buyer assignment and size markups live only in Four51.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">Quantum is the legacy catalog/order system still in the mix</span><span class="ar">▼</span></div>
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Quantum (legacy)</span><span class="st-badge stated">Stated</span></div>
+          <div class="cn-detail">Old catalog / order system. Per G, no longer the pricing source going forward.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">prices + size markups maintained by hand in Four51</span><span class="ar">▼</span></div>
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Sidebar staff</span><span class="st-badge stated">Stated</span></div>
+          <div class="cn-detail">Set and adjust base price and size markups in Four51 by hand; assign interop IDs.</div>
+          <div class="cflag"><b>▲ Manual and drifts:</b> no single source of truth, so prices fall out of date.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">buyers browse their contracted catalog</span><span class="ar">▼</span></div>
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type price">Price / inv point</span><span class="cn-title">Four51 storefront</span><span class="st-badge known">Known</span></div>
+          <div class="cn-detail">Base + size markup per variant, assigned per buyer via price schedules. What the buyer sees.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">buyer places the order</span><span class="ar">▼</span></div>
+
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Buyer</span><span class="st-badge stated">Stated</span></div>
+          <div class="cn-detail">Sees the contracted price, right or stale, and orders.</div>
+        </div>
+
+      </div>
     </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">a PO is written and the new price enters Zoho Books</span><span class="ar">▼</span></div>
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Zoho Books</span><span class="st-badge known">Known</span></div>
-      <div class="cn-detail">The PO is written here; Books holds the <b>sales rate per SKU</b> (confirmed by G).</div>
-    </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">the PO flows to InfoPlus and the goods are delivered</span><span class="ar">▼</span></div>
+    <!-- ============ FUTURE ============ -->
+    <div class="fcol future">
+      <div class="fcol-head">Future</div>
+      <p class="fcol-sub">After G's Creator integration and the bots. One source of truth, changes flow through it, far fewer hand-edits.</p>
+      <div class="chain">
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Warehouse</span><span class="st-badge stated">Stated</span></div>
-      <div class="cn-detail">Scans each delivery into item receipts: SKU, PO number, production lot, received date and quantity, and sell price.</div>
-    </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">receipts and on-hand counts are recorded</span><span class="ar">▼</span></div>
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Billing &amp; Fee Manager — source of truth</span><span class="st-badge stated">Stated</span></div>
+          <div class="cn-detail">The one pricing source, fed by InfoPlus + Books. Every price change starts here. G's target, 2026-10-23.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">Sidebot-2 captures the current Four51 baseline (5-day export)</span><span class="ar">▼</span></div>
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">InfoPlus (warehouse system)</span><span class="st-badge known">Known</span></div>
-      <div class="cn-detail">Holds counts and lots, item receipts, sell price per SKU, and the oldest receipt date. B2B is invoiced at the oldest lot while the newest shows online.</div>
-      <div class="cflag"><b>▲ Inventory round-up (Nicole):</b> partial quantities get rounded up to the next whole before they reach Four51 (4.25 becomes 5). Open: should under 1 (0.4) show as 1 or 0?</div>
-    </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">Billing &amp; Fee Manager syncs the data from InfoPlus</span><span class="ar">▼</span></div>
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type bot">Our bot</span><span class="cn-title">Sidebot-2 — capture</span><span class="st-badge known">Known</span></div>
+          <div class="cn-detail">Reads current Four51 pricing per variant into the master price-variant list. Proven on ZZ_Uncle Bears.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">Creator matches the export to InfoPlus sell prices by SKU and flags every mismatch</span><span class="ar">▼</span></div>
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Billing &amp; Fee Manager — pricing source of truth</span><span class="st-badge known">Known</span></div>
-      <div class="cn-detail">The Zoho Creator app G built for Sidebar, already syncing InfoPlus. Pulls item receipts, items, inventory and the Books sales rate. <b>Per G, pricing comes from here, not Quantum.</b></div>
-      <div class="cflag"><b>▲ Not in the app yet:</b> buyer assignment (which buyer / catalog a product belongs to) and size markups (e.g. 2XL +$3.15). Those live only in Four51, which is why we need the baseline export below.</div>
-    </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">to get buyer assignment + size markups, pull the current Four51 state</span><span class="ar">▼</span></div>
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Sidebar approver</span><span class="st-badge stated">Stated</span></div>
+          <div class="cn-detail">Confirms the correct value once, inside Creator. G: approval happens there, no later "click approve" step.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">approved set becomes the one source; changes emitted as JSON (push or pull) with a status</span><span class="ar">▼</span></div>
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type price">Price / inv point</span><span class="cn-title">Four51 storefront (current prices)</span><span class="st-badge known">Known</span></div>
-      <div class="cn-detail">Price = base + size markup per variant, assigned per buyer via price schedules. Markups are hand-edited, and account managers adjust size prices by hand.</div>
-    </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">Sidebot-2 captures the full current Four51 state (the 5-day baseline export)</span><span class="ar">▼</span></div>
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Creator reconcile</span><span class="st-badge stated">Stated</span></div>
+          <div class="cn-detail">Emits the price update list: each change carries old price, new price, buyer, price schedule, size markup, approver.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">price update list to Sidebot-3</span><span class="ar">▼</span></div>
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type bot">Our bot</span><span class="cn-title">Sidebot-2 — capture</span><span class="st-badge known">Known</span></div>
-      <div class="cn-detail">Reads current Four51 pricing per variant into the master price-variant list. Proven on ZZ_Uncle Bears.</div>
-    </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">match the export to InfoPlus sell prices by SKU and flag every mismatch for Sidebar to confirm</span><span class="ar">▼</span></div>
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type bot">Our bot</span><span class="cn-title">Sidebot-3 — write + report</span><span class="st-badge known">Known</span></div>
+          <div class="cn-detail">Browser write per variant, gated, skip-and-flag, writeback status to Creator. Browser, because SOAP cannot set size markups.</div>
+          <div class="cflag red"><b>✕ Blocker (G, 2026-10-23):</b> shared Interop IDs break SOAP writes (all four SOAP methods failed on the three SSTEST items, even with unique Product/API IDs; same hits inventory). Items sharing an Interop ID still need a path.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">corrected prices go live</span><span class="ar">▼</span></div>
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Creator reconcile (Billing &amp; Fee Manager, or a new Four51 app)</span><span class="st-badge stated">Stated</span></div>
-      <div class="cn-detail">Matches our export to InfoPlus prices, flags mismatches, Sidebar confirms the correct value, and the approved set becomes the one source going forward. Returns changes as push or pull <b>JSON</b> with a status (Pending, Sent, Applied, Failed). G's recommendation, 2026-10-23.</div>
-    </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">price update list: each change carries old price, new price, buyer, price schedule, size markup, approver</span><span class="ar">▼</span></div>
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type price">Price / inv point</span><span class="cn-title">Four51 storefront (corrected)</span><span class="st-badge known">Known</span></div>
+          <div class="cn-detail">Right base + markup per variant, per buyer.</div>
+        </div>
+        <div class="cedge"><span class="ar">▼</span><span class="ex">buyer places the order</span><span class="ar">▼</span></div>
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type bot">Our bot</span><span class="cn-title">Sidebot-3 — write + report</span><span class="st-badge known">Known</span></div>
-      <div class="cn-detail">Writes the new prices into Four51 by browser, one variant at a time, gated, with skip-and-flag, then writes the result back to Creator. Browser, because SOAP cannot set size markups.</div>
-      <div class="cflag red"><b>✕ Blocker (G, 2026-10-23):</b> shared Interop IDs break SOAP writes. SaveProducts, UpdateProductInventory, SavePriceSchedules and SaveVariants all failed on the three SSTEST items (same Interop ID), even with unique Product and API IDs. The same hits inventory (worked on SW-410, failed on SSTEST). Items that share an Interop ID still need a path.</div>
-    </div>
-    <div class="cedge"><span class="ar">▼</span><span class="ex">writeback status returns to Creator: Applied or Failed</span><span class="ar">▼</span></div>
+        <div class="cnode">
+          <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Buyer</span><span class="st-badge known">Known</span></div>
+          <div class="cn-detail">Sees the correct price.</div>
+        </div>
 
-    <div class="cnode">
-      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Four51 storefront (corrected)</span><span class="st-badge known">Known</span></div>
-      <div class="cn-detail">Corrected base + markup per variant, per buyer. Buyers see the right price.</div>
+      </div>
     </div>
 
   </div>
-  <p class="chain-cap"><b>Correction from G (2026-10-23):</b> Quantum is dropped as the pricing source. Billing &amp; Fee Manager (a Creator app fed by InfoPlus) is the source of truth. Everything is tagged by confidence; the Stated nodes are G's recommendations, not yet built.</p>
+  <p class="chain-cap"><b>Correction from G (2026-10-23):</b> Quantum is dropped as the pricing source; Billing &amp; Fee Manager (a Creator app fed by InfoPlus) becomes the source of truth. This is the price + inventory slice; the full end-to-end supply chain (order fulfillment, ShipStation, shipping, customer comms) lives in the SidebarOS workflow map (workflow.html) and is not repeated here.</p>
 
 </div><!-- end layout -->
 
