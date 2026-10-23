@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebot Pricing · Progress (READ FIRST)</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../sidebar-style.css">
+  <style>
+    :root{ --ui: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+    .page-head { margin: 8px 0 20px; }
+    .page-head h1 { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--text); margin: 0 0 8px; letter-spacing: -0.01em; }
+    .page-head .page-sub { font-family: var(--ui); font-size: 12px; color: var(--dim-mid); line-height: 1.7; margin: 0; }
+    .page-head .page-sub .src { color: var(--orange); }
+
+    .goalbar { font-family: var(--ui); font-size: 12.5px; line-height: 1.6; color: var(--text);
+      background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--orange);
+      border-radius: var(--radius); padding: 13px 16px; margin: 0 0 18px; }
+    .goalbar b { color: var(--orange); }
+
+    /* tag key + badges */
+    .skey { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 18px; }
+    .st-badge { font-family: var(--ui); font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 2px 8px; border: 1px solid; border-radius: var(--radius-sm); white-space: nowrap; }
+    .st-badge.known      { color: var(--green);  border-color: var(--green-border);  background: var(--green-bg); }
+    .st-badge.stated     { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .st-badge.assumption { color: var(--red);    border-color: var(--red-border);    background: var(--red-bg); }
+
+    h2.sec { font-family: var(--ui); font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--dim);
+      margin: 30px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 7px; }
+
+    /* tagged lists */
+    ul.tagged { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+    ul.tagged li { font-family: var(--ui); font-size: 12.5px; line-height: 1.6; color: var(--dim-mid);
+      display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: start; }
+    ul.tagged li .tcell { padding-top: 1px; }
+    ul.tagged li b { color: var(--text); }
+    @media (max-width: 560px){ ul.tagged li { grid-template-columns: 1fr; gap: 3px; } }
+
+    ul.plain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    ul.plain li { font-family: var(--ui); font-size: 12.5px; line-height: 1.6; color: var(--dim-mid);
+      padding-left: 16px; position: relative; }
+    ul.plain li::before { content: '›'; position: absolute; left: 0; color: var(--orange); font-weight: 700; }
+    ul.plain li b { color: var(--text); }
+    ul.plain.q { counter-reset: qc; }
+    ul.plain.q li { padding-left: 34px; }
+    ul.plain.q li::before { content: 'Q' counter(qc); counter-increment: qc; color: var(--orange); font-weight: 700; font-size: 11px; font-family: var(--display); }
+    ul.plain.q li .who { color: var(--dim); font-weight: 700; }
+
+    /* bot + report cards */
+    .lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 760px) { .lanes { grid-template-columns: 1fr; } }
+    .lane { border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 15px; background: var(--surface); }
+    .lane .lh { font-family: var(--display); font-size: 14px; font-weight: 700; margin-bottom: 5px; display:flex; align-items:center; gap:8px; }
+    .lane.b1 .lh { color: var(--dim); } .lane.b2 .lh { color: var(--orange); } .lane.b3 .lh { color: var(--green); }
+    .lane p { font-family: var(--ui); font-size: 11.5px; color: var(--dim-mid); line-height: 1.6; margin: 0; }
+    .lane .role { font-family: var(--ui); font-size: 9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color: var(--dim); }
+
+    .tabs2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 640px){ .tabs2 { grid-template-columns: 1fr; } }
+
+    .handoff { font-family: var(--ui); font-size: 11.5px; color: var(--dim-mid); line-height: 1.6;
+      background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 14px; margin-top: 10px; }
+    .handoff b { color: var(--text); }
+
+    /* the loop */
+    .loop { display: flex; flex-direction: column; gap: 0; }
+    .lstep { display: grid; grid-template-columns: 34px 1fr; gap: 13px; align-items: start; }
+    .lmark { display: flex; flex-direction: column; align-items: center; }
+    .lmark .dot { width: 28px; height: 28px; border-radius: 50%; display:flex; align-items:center; justify-content:center;
+      font-family: var(--display); font-weight: 700; font-size: 13px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+    .lstep.us .dot { border-color: var(--orange-border); color: var(--orange); }
+    .lstep.g  .dot { border-color: var(--green-border);  color: var(--green); }
+    .lmark .bar { width: 2px; flex: 1; min-height: 14px; background: var(--border); margin: 3px 0; }
+    .lstep:last-child .bar { display: none; }
+    .lstep .lbody { padding-bottom: 16px; font-family: var(--ui); font-size: 12.5px; line-height: 1.55; color: var(--dim-mid); }
+    .lstep .lbody b { color: var(--text); }
+    .lstep .owner { font-family: var(--ui); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-left: 8px; }
+    .lstep.us .owner { color: var(--orange); } .lstep.g .owner { color: var(--green); }
+
+    /* skip-and-flag callout */
+    .flagbox { border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: var(--radius);
+      background: var(--surface); padding: 13px 16px; font-family: var(--ui); font-size: 12.5px; line-height: 1.6; color: var(--dim-mid); margin-top: 10px; }
+    .flagbox b { color: var(--text); }
+    .flagbox .warn { color: var(--yellow); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+  <defs><linearGradient id="og" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF9900"/><stop offset="100%" stop-color="#FF6600"/></linearGradient></defs>
+</svg>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <div class="logo">ADAMOS</div>
+      <div class="date-pill" data-date-box></div>
+      <div class="topbar-project"><span class="project-label">PROJECT:</span> <span class="project-name">SIDEBAR</span></div>
+      <span class="status" data-status data-updated="2026.10.22.15:40"><span class="status-dot"></span><span class="status-label"></span></span>
+    </div>
+    <div class="topbar-right">
+      <span class="theme-toggle" data-theme-toggle>🌙</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <div class="nav-tabs-inner">
+    <a class="nav-tab" href="../../index.html" style="text-decoration:none"><span class="tab-icon">←</span>Sidebar Dashboard</a>
+    <div class="nav-tab active"><span class="tab-icon">★</span>Progress · READ FIRST</div>
+    <a class="nav-tab" href="shape-map.html" style="text-decoration:none"><span class="tab-icon">◈</span>Shape Map</a>
+    <a class="nav-tab" href="prelim-Qs.html" style="text-decoration:none"><span class="tab-icon">?</span>Questions</a>
+    <a class="nav-tab" href="Explore-Process.html" style="text-decoration:none"><span class="tab-icon">▦</span>Explore Process</a>
+  </div>
+</div>
+
+<div class="layout">
+
+  <div class="page-head">
+    <h1>Sidebot Pricing · Progress <span style="color:var(--orange)">(READ FIRST)</span></h1>
+    <p class="page-sub">
+      The source of truth for Sidebar pricing work. Read it before answering any question on this project. If something is not in this doc, it is <span class="src">NOT VERIFIED</span>, so say so rather than filling the gap.
+      <br>Last updated: <span class="src">2026-10-22</span>
+    </p>
+  </div>
+
+  <div class="goalbar">
+    <b>Tags:</b> KNOWN = checked against evidence. STATED = said by Adam, Brandi, Jesse or G and not tested. ASSUMPTION = what we are working from, still to be confirmed.
+  </div>
+
+  <div class="skey">
+    <span class="st-badge known">Known</span>
+    <span class="st-badge stated">Stated</span>
+    <span class="st-badge assumption">Assumption</span>
+  </div>
+
+  <!-- 1 STATUS -->
+  <h2 class="sec">1 · Status</h2>
+  <ul class="tagged">
+    <li><span class="tcell"><span class="st-badge known">Known</span></span><span class="tcell">Brandi greenlit the solution on 2026-10-21. Fee not set yet.</span></li>
+    <li><span class="tcell"><span class="st-badge known">Known</span></span><span class="tcell">Sidebar stays on legacy Four51 for a year or more (Brandi via Jesse, 2026-10-14).</span></li>
+    <li><span class="tcell"><span class="st-badge known">Known</span></span><span class="tcell">Capture is proven on the ZZ_Uncle Bears catalog: 33 base-price rows and a 72-row combined master (2026-10-14/15).</span></li>
+    <li><span class="tcell"><span class="st-badge known">Known</span></span><span class="tcell">Browser write-back of a price is proven on ZZ_Uncle Bears (2026-10-16).</span></li>
+    <li><span class="tcell"><span class="st-badge stated">Stated</span></span><span class="tcell">G owns the Creator side, and the meeting with G is planned for the week of 2026-10-26. G is out recovering from dental work, and Brandi knows.</span></li>
+  </ul>
+
+  <!-- 2 THE BOTS -->
+  <h2 class="sec">2 · The bots</h2>
+  <div class="lanes">
+    <div class="lane b1"><div class="lh">Sidebot-1 <span class="role">separate</span></div><p>A finished project (the InteropID fix-list). Not part of this work. Do not mix it in.</p></div>
+    <div class="lane b2"><div class="lh">Sidebot-2 <span class="role">capture only</span></div><p>Reads current Four51 pricing and outputs the master price-variant list.</p></div>
+    <div class="lane b3"><div class="lh">Sidebot-3 <span class="role">write + report</span></div><p>Reads files only and needs no context from Sidebot-2.</p></div>
+  </div>
+  <div class="handoff"><b>Rule:</b> the bots hand off through files, never through memory. Each one runs a fixed script and does not improvise.</div>
+
+  <!-- 3 THE LOOP -->
+  <h2 class="sec">3 · The loop</h2>
+  <div class="loop">
+    <div class="lstep us"><div class="lmark"><div class="dot">1</div><div class="bar"></div></div><div class="lbody"><b>Sidebot-2</b> captures current pricing per variant and outputs the master price-variant list. <span class="owner">Us</span></div></div>
+    <div class="lstep us"><div class="lmark"><div class="dot">2</div><div class="bar"></div></div><div class="lbody">Send our captured list to G. It is the <b>full current-state map</b>: every product, size and buyer, with what Four51 charges now. It flags nothing as wrong, it is the baseline G checks against. <span class="owner">Us</span></div></div>
+    <div class="lstep g"><div class="lmark"><div class="dot">3</div><div class="bar"></div></div><div class="lbody">G compares our current prices against his <b>source-of-truth prices</b> and sends back the ones that need updating. <span class="st-badge assumption">Assumption</span> <span class="owner">G</span></div></div>
+    <div class="lstep us"><div class="lmark"><div class="dot">4</div><div class="bar"></div></div><div class="lbody"><b>Sidebot-3</b> combines G's list with the latest Sidebot-2 capture, but only if G's list is partial. <span class="owner">Us</span></div></div>
+    <div class="lstep us"><div class="lmark"><div class="dot">5</div><div class="bar"></div></div><div class="lbody"><b>Sidebot-3</b> writes the new prices via the browser, one variant at a time, after approval. <span class="owner">Us</span></div></div>
+    <div class="lstep us"><div class="lmark"><div class="dot">6</div><div class="bar"></div></div><div class="lbody"><b>Sidebot-3</b> produces the update report. <span class="owner">Us</span></div></div>
+  </div>
+
+  <!-- 4 HOW SIDEBOT-2 CAPTURES -->
+  <h2 class="sec">4 · How Sidebot-2 captures <span style="color:var(--green);font-weight:700">(Known, from the 2026-10-14 review)</span></h2>
+  <ul class="plain">
+    <li>Base price comes from the <b>Price Breaks report</b>, downloaded for each catalog.</li>
+    <li>The <b>Variable Spec report</b> shows which products have a SIZE spec.</li>
+    <li>SIZE markups are <b>browser reads</b> from each product's spec screen, only for products that have a SIZE spec. Markups are decimals stored to 6 places.</li>
+    <li>Markup type is <b>fixed amount per unit</b> for all 11 sized Uncle Bears products.</li>
+    <li>Each SIZE spec belongs to its own product, so editing one product's spec does not affect others.</li>
+    <li>The bot always reaches a product through its own link and never browses freely.</li>
+    <li><b>Guards:</b> a completeness check for every product, a check that the size chart was scrolled to the end, and smaller-than-last runs are saved as drafts, not as the canonical capture.</li>
+    <li><b>SOAP is not part of the pricing path in either direction.</b></li>
+  </ul>
+
+  <!-- 5 HOW SIDEBOT-3 WRITES -->
+  <h2 class="sec">5 · How Sidebot-3 writes <span style="color:var(--dim)">(fixed behaviour)</span></h2>
+  <p style="font-family:var(--ui);font-size:12.5px;color:var(--dim-mid);line-height:1.6;margin:0 0 10px">
+    Inputs: the latest canonical Sidebot-2 capture, G's price update list, and this doc's rules.
+  </p>
+  <ul class="plain">
+    <li>Before each write, it <b>re-reads the live price</b>.</li>
+    <li>If the live price <b>matches</b> the capture, it writes the new price and records the before and after values.</li>
+  </ul>
+  <div class="flagbox">
+    <span class="warn">Skip and flag:</span> if the live price does <b>not</b> match the capture, Sidebot-3 <b>skips that variant, flags it, and carries on</b>. It never overwrites and never stops the run, so every other price still gets written. The likely cause is a hand edit, since markups are updated by hand today and account managers sometimes adjust size prices by hand. Before-values are kept for rollback.
+  </div>
+
+  <!-- 6 THE UPDATE REPORT -->
+  <h2 class="sec">6 · The update report</h2>
+  <div class="tabs2">
+    <div class="lane b3"><div class="lh">Tab · Updated</div><p>Product, size, buyer, before value, new value.</p></div>
+    <div class="lane"><div class="lh" style="color:var(--yellow)">Tab · Warnings</div><p>Product, size, buyer and a link to the product in Four51; the captured price, live price and G's new price; and why it was skipped.</p></div>
+  </div>
+  <div class="handoff">A human reviews each warning.</div>
+
+  <!-- 7 OPEN QUESTIONS -->
+  <h2 class="sec">7 · Open questions</h2>
+  <ul class="plain q">
+    <li><span class="who">(G)</span> What format will G's price update list come in?</li>
+    <li><span class="who">(G)</span> Will his list be the full set or only the changed items? This decides whether step 4 is needed.</li>
+    <li><span class="who">(Brandi + G)</span> Does the list give a price for each buyer?</li>
+    <li><span class="who">(G)</span> Partial inventory. Nicole asked (2026-10-21) for partial quantities to be rounded up before they go to Four51. Where does that happen?</li>
+    <li><span class="who">(Brandi)</span> How often do people hand-edit prices? This tells us how big the Warnings tab is likely to be.</li>
+  </ul>
+
+  <!-- 8 RULES -->
+  <h2 class="sec">8 · Rules for any session</h2>
+  <ul class="plain">
+    <li>Read this doc first.</li>
+    <li>Do not assume. If something is not here, say it is not verified.</li>
+    <li>Do not add questions, systems or variables that are not in this doc unless Adam brings them up.</li>
+    <li>Update this doc whenever something is decided.</li>
+  </ul>
+
+</div><!-- end layout -->
+
+<footer>
+  <a href="https://adamandroid.ai" class="footer-brand">
+    <svg class="aa-mark" width="22" height="27" viewBox="0 0 180 220" fill="none">
+      <ellipse cx="90" cy="110" rx="80" ry="105" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="62" cy="95" r="32" stroke="url(#og)" stroke-width="13"/>
+      <circle cx="114" cy="89" r="43" stroke="url(#og)" stroke-width="13"/>
+    </svg>
+    <span class="footer-name">AdamAndroid<span class="ai">.ai</span></span>
+  </a>
+  <small>© 2026 AdamAndroid.ai · Help Humans, Ride Robots*</small>
+</footer>
+
+<script src="../design-system/header.js" defer></script>
+
+</body>
+</html>
