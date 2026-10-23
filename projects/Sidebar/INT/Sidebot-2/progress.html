@@ -95,22 +95,26 @@
     .qbody .pstar { color: var(--orange); font-weight: 700; }
     .qbody b { color: var(--text); }
 
-    /* supply chain two columns */
-    .supply { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    @media (max-width: 820px){ .supply { grid-template-columns: 1fr; } }
-    .scol { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 14px 15px; }
-    .scol > .ch { font-family: var(--display); font-size: 15px; font-weight: 700; margin: 0 0 3px; display:flex; align-items:center; gap:8px; }
-    .scol.now > .ch { color: var(--dim); } .scol.tobe > .ch { color: var(--green); }
-    .scol > .csub { font-family: var(--ui); font-size: 10.5px; color: var(--dim); line-height: 1.5; margin: 0 0 12px; }
-    .snode { border: 1px solid var(--border2); border-radius: 9px; background: var(--surface2); padding: 10px 12px; }
-    .snode .sn-t { font-family: var(--display); font-size: 12.5px; font-weight: 700; color: var(--text); display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
-    .snode .sn-r { font-family: var(--ui); font-size: 11px; color: var(--dim-mid); line-height: 1.5; margin-top: 4px; }
-    .snode .sn-who { font-family: var(--ui); font-size: 10px; color: var(--orange); margin-top: 5px; font-weight: 700; letter-spacing: 0.03em; }
-    .sconn { text-align: center; color: var(--dim); font-size: 15px; line-height: 1; padding: 4px 0; }
-    .sconn .lbl { display:block; font-family: var(--ui); font-size: 9.5px; letter-spacing: 0.04em; color: var(--dim); margin-top: 2px; font-weight: 600; }
-    .sgap { margin-top: 10px; border-top: 1px dashed var(--border2); padding-top: 9px; font-family: var(--ui); font-size: 10.5px; line-height: 1.55; color: var(--yellow); }
-    .sgap b { color: var(--text); }
-    .supply-cap { font-family: var(--ui); font-size: 11px; color: var(--dim); line-height: 1.6; margin: 12px 0 0; }
+    /* supply-chain flow */
+    .clegend { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
+    .cn-type { font-family: var(--ui); font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: var(--radius-sm); border: 1px solid; white-space: nowrap; }
+    .cn-type.sys   { color: var(--dim-mid); border-color: var(--border2); background: var(--surface); }
+    .cn-type.human { color: var(--orange); border-color: var(--orange-border); background: var(--orange-bg); }
+    .cn-type.price { color: var(--yellow); border-color: var(--yellow-border); background: var(--yellow-bg); }
+    .cn-type.bot   { color: var(--green); border-color: var(--green-border); background: var(--green-bg); }
+    .chain { display: flex; flex-direction: column; gap: 0; }
+    .cnode { border: 1px solid var(--border2); border-radius: 10px; background: var(--surface2); padding: 11px 14px; }
+    .cnode .cn-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .cnode .cn-title { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--text); }
+    .cnode .cn-detail { font-family: var(--ui); font-size: 11px; color: var(--dim-mid); line-height: 1.5; margin-top: 5px; }
+    .cnode .cn-detail b { color: var(--text); }
+    .cedge { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; }
+    .cedge .ar { color: var(--orange); font-size: 13px; line-height: 1; }
+    .cedge .ex { font-family: var(--ui); font-size: 10.5px; color: var(--dim-mid); line-height: 1.45; text-align: center; max-width: 85%; }
+    .cflag { margin-top: 8px; border-left: 3px solid var(--yellow); background: var(--surface); border-radius: 6px; padding: 8px 11px; font-family: var(--ui); font-size: 10.5px; line-height: 1.5; color: var(--dim-mid); }
+    .cflag.red { border-left-color: var(--red); }
+    .cflag b { color: var(--text); }
+    .chain-cap { font-family: var(--ui); font-size: 11px; color: var(--dim); line-height: 1.6; margin: 14px 0 0; }
 
     /* footer, matched to the main site */
     footer { border-top: 1px solid var(--border); padding: 30px 56px; display: flex; align-items: center; justify-content: space-between; }
@@ -265,68 +269,81 @@
     <div class="qbody"><span class="pstar">* Why it matters:</span> it tells us how big the Warnings tab is likely to be, how often the pricing fix needs to run, and whether to build it on a schedule or on a trigger.</div>
   </details>
 
-  <!-- 8 SUPPLY CHAIN -->
-  <h2 class="sec">8 · Supply chain: now vs to-be <span style="color:var(--red);font-weight:700">(assumption-heavy, for discussion)</span></h2>
-  <div class="supply">
+  <!-- 8 SUPPLY CHAIN FLOW -->
+  <h2 class="sec">8 · Supply chain flow <span style="color:var(--dim);font-weight:700">(verified against G's email 2026-10-23 + the Sept 29 call)</span></h2>
+  <div class="clegend">
+    <span class="cn-type human">Human</span>
+    <span class="cn-type sys">System</span>
+    <span class="cn-type price">Price / inventory point</span>
+    <span class="cn-type bot">Our bot</span>
+  </div>
+  <div class="chain">
 
-    <!-- NOW -->
-    <div class="scol now">
-      <div class="ch">Now <span class="st-badge stated">mostly unverified</span></div>
-      <p class="csub">How a price is set and reaches the storefront today.</p>
-
-      <div class="snode">
-        <div class="sn-t">Source of correct price <span class="st-badge assumption">Assumption</span></div>
-        <div class="sn-r">Thought to be Quantum. What Quantum is and what it holds is not verified.</div>
-        <div class="sn-who">Who sets it: unknown — ask G / Jesse</div>
-      </div>
-      <div class="sconn">↓<span class="lbl">entered by hand</span></div>
-      <div class="snode">
-        <div class="sn-t">Four51 admin <span class="st-badge stated">Stated</span></div>
-        <div class="sn-r">Base price and size markups typed in by hand. Account managers also adjust size prices by hand.</div>
-        <div class="sn-who">Who inputs: Sidebar account managers</div>
-      </div>
-      <div class="sconn">↓</div>
-      <div class="snode">
-        <div class="sn-t">Four51 storefront <span class="st-badge known">Known</span></div>
-        <div class="sn-r">Price = base + size markup per variant, assigned per buyer via price schedules. InfoPlus holds counts and lots; B2B is invoiced at the oldest lot while the newest shows online.</div>
-      </div>
-
-      <div class="sgap"><b>Gap:</b> where the correct price actually originates, and who keeps it current, is unconfirmed. Ask G / Jesse.</div>
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Sidebar account managers (Angela, Nicole)</span><span class="st-badge stated">Stated</span></div>
+      <div class="cn-detail">Negotiate unit price at contract, issue the PO, and set or adjust the sell price.</div>
+      <div class="cflag"><b>▲ Core leak:</b> price is set at contract and often not updated on reorder, so Sidebar eats the margin (Brandi's example: $4 shown, $7 actual). This is the pain the project fixes.</div>
     </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">a PO is written and the new price enters Zoho Books</span><span class="ar">▼</span></div>
 
-    <!-- TO-BE -->
-    <div class="scol tobe">
-      <div class="ch">To-be <span class="st-badge stated">design-stage</span></div>
-      <p class="csub">The migration target, with Creator as the hub and the bots doing capture and write.</p>
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Zoho Books</span><span class="st-badge known">Known</span></div>
+      <div class="cn-detail">The PO is written here; Books holds the <b>sales rate per SKU</b> (confirmed by G).</div>
+    </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">the PO flows to InfoPlus and the goods are delivered</span><span class="ar">▼</span></div>
 
-      <div class="snode">
-        <div class="sn-t">Source of truth <span class="st-badge stated">Stated</span></div>
-        <div class="sn-r">Quantum now, InfoPlus after the migration.</div>
-        <div class="sn-who">Who inputs: automated feed — to confirm</div>
-      </div>
-      <div class="sconn">↓</div>
-      <div class="snode">
-        <div class="sn-t">Zoho Creator — compute + reconcile <span class="st-badge assumption">Assumption</span></div>
-        <div class="sn-r">Holds the price model, compares against our captured Four51 state, and returns the price update list. G owns Creator; its exact role is unconfirmed.</div>
-        <div class="sn-who">Input from us: Sidebot-2 capture (Known) as the baseline</div>
-      </div>
-      <div class="sconn">↓<span class="lbl">price update list (assumption)</span></div>
-      <div class="snode">
-        <div class="sn-t">Sidebot-3 — write <span class="st-badge known">Known</span></div>
-        <div class="sn-r">Writes the new prices into Four51 by browser, one variant at a time, gated, with skip-and-flag. Write-back is proven.</div>
-        <div class="sn-who">Who inputs: us (Sidebot-3)</div>
-      </div>
-      <div class="sconn">↓</div>
-      <div class="snode">
-        <div class="sn-t">Four51 storefront <span class="st-badge known">Known</span></div>
-        <div class="sn-r">Corrected base + markup per variant, per buyer.</div>
-      </div>
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type human">Human</span><span class="cn-title">Warehouse</span><span class="st-badge stated">Stated</span></div>
+      <div class="cn-detail">Scans each delivery into item receipts: SKU, PO number, production lot, received date and quantity, and sell price.</div>
+    </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">receipts and on-hand counts are recorded</span><span class="ar">▼</span></div>
 
-      <div class="sgap"><b>Gaps:</b> whether Creator emits base + markup or a total (Q1), how per-buyer price is carried (Q3), and how it is triggered (Q5).</div>
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">InfoPlus (warehouse system)</span><span class="st-badge known">Known</span></div>
+      <div class="cn-detail">Holds counts and lots, item receipts, sell price per SKU, and the oldest receipt date. B2B is invoiced at the oldest lot while the newest shows online.</div>
+      <div class="cflag"><b>▲ Inventory round-up (Nicole):</b> partial quantities get rounded up to the next whole before they reach Four51 (4.25 becomes 5). Open: should under 1 (0.4) show as 1 or 0?</div>
+    </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">Billing &amp; Fee Manager syncs the data from InfoPlus</span><span class="ar">▼</span></div>
+
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Billing &amp; Fee Manager — pricing source of truth</span><span class="st-badge known">Known</span></div>
+      <div class="cn-detail">The Zoho Creator app G built for Sidebar, already syncing InfoPlus. Pulls item receipts, items, inventory and the Books sales rate. <b>Per G, pricing comes from here, not Quantum.</b></div>
+      <div class="cflag"><b>▲ Not in the app yet:</b> buyer assignment (which buyer / catalog a product belongs to) and size markups (e.g. 2XL +$3.15). Those live only in Four51, which is why we need the baseline export below.</div>
+    </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">to get buyer assignment + size markups, pull the current Four51 state</span><span class="ar">▼</span></div>
+
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type price">Price / inv point</span><span class="cn-title">Four51 storefront (current prices)</span><span class="st-badge known">Known</span></div>
+      <div class="cn-detail">Price = base + size markup per variant, assigned per buyer via price schedules. Markups are hand-edited, and account managers adjust size prices by hand.</div>
+    </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">Sidebot-2 captures the full current Four51 state (the 5-day baseline export)</span><span class="ar">▼</span></div>
+
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type bot">Our bot</span><span class="cn-title">Sidebot-2 — capture</span><span class="st-badge known">Known</span></div>
+      <div class="cn-detail">Reads current Four51 pricing per variant into the master price-variant list. Proven on ZZ_Uncle Bears.</div>
+    </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">match the export to InfoPlus sell prices by SKU and flag every mismatch for Sidebar to confirm</span><span class="ar">▼</span></div>
+
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Creator reconcile (Billing &amp; Fee Manager, or a new Four51 app)</span><span class="st-badge stated">Stated</span></div>
+      <div class="cn-detail">Matches our export to InfoPlus prices, flags mismatches, Sidebar confirms the correct value, and the approved set becomes the one source going forward. Returns changes as push or pull <b>JSON</b> with a status (Pending, Sent, Applied, Failed). G's recommendation, 2026-10-23.</div>
+    </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">price update list: each change carries old price, new price, buyer, price schedule, size markup, approver</span><span class="ar">▼</span></div>
+
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type bot">Our bot</span><span class="cn-title">Sidebot-3 — write + report</span><span class="st-badge known">Known</span></div>
+      <div class="cn-detail">Writes the new prices into Four51 by browser, one variant at a time, gated, with skip-and-flag, then writes the result back to Creator. Browser, because SOAP cannot set size markups.</div>
+      <div class="cflag red"><b>✕ Blocker (G, 2026-10-23):</b> shared Interop IDs break SOAP writes. SaveProducts, UpdateProductInventory, SavePriceSchedules and SaveVariants all failed on the three SSTEST items (same Interop ID), even with unique Product and API IDs. The same hits inventory (worked on SW-410, failed on SSTEST). Items that share an Interop ID still need a path.</div>
+    </div>
+    <div class="cedge"><span class="ar">▼</span><span class="ex">writeback status returns to Creator: Applied or Failed</span><span class="ar">▼</span></div>
+
+    <div class="cnode">
+      <div class="cn-head"><span class="cn-type sys">System</span><span class="cn-title">Four51 storefront (corrected)</span><span class="st-badge known">Known</span></div>
+      <div class="cn-detail">Corrected base + markup per variant, per buyer. Buyers see the right price.</div>
     </div>
 
   </div>
-  <p class="supply-cap">For Adam and Jesse to work through. If we cannot pin the boxes ourselves, this becomes an external diagram to put in front of G or Brandi.</p>
+  <p class="chain-cap"><b>Correction from G (2026-10-23):</b> Quantum is dropped as the pricing source. Billing &amp; Fee Manager (a Creator app fed by InfoPlus) is the source of truth. Everything is tagged by confidence; the Stated nodes are G's recommendations, not yet built.</p>
 
 </div><!-- end layout -->
 
