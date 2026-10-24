@@ -168,7 +168,7 @@
       <div class="logo">ADAMOS</div>
       <div class="date-pill" data-date-box></div>
       <div class="topbar-project"><span class="project-label">PROJECT:</span> <span class="project-name">SIDEBAR</span></div>
-      <span class="status" data-status data-updated="2026.10.23.12:10"><span class="status-dot"></span><span class="status-label"></span></span>
+      <span class="status" data-status data-updated="2026.10.23.14:21"><span class="status-dot"></span><span class="status-label"></span></span>
     </div>
     <div class="topbar-right">
       <span class="theme-toggle" data-theme-toggle>🌙</span>
@@ -193,7 +193,7 @@
     <h1>Sidebot Pricing · Progress <span style="color:var(--orange)">(READ FIRST)</span></h1>
     <p class="page-sub">
       The source of truth for Sidebar pricing work. Read it before answering any question on this project. If something is <span class="src">missing, say so</span>.
-      <br>Last updated: <span class="src">2026.10.23.12:10</span>
+      <br>Last updated: <span class="src">2026.10.23.14:21</span>
     </p>
   </div>
 
@@ -248,6 +248,7 @@
     <li>The bot always reaches a product through its own link and never browses freely.</li>
     <li><b>Guards:</b> a completeness check for every product, a check that the size chart was scrolled to the end, and smaller-than-last runs are saved as drafts, not as the canonical capture.</li>
     <li><b>SOAP is not part of the pricing path in either direction.</b></li>
+    <li><b>Buyer assignment is already in our pull:</b> the Price Breaks report carries <b>Company Name</b> (the buyer / catalog) and <b>Price Schedule Name</b> per row, so an item in several buyers' stores appears once per catalog. The all-catalogue pull on disk (29 catalogues) confirms these columns. Carrying them into the master is a small Sidebot-2 change. <span class="st-badge known">Known from the report</span> live edge cases to confirm when logged into Four51.</li>
   </ul>
 
   <!-- 5 HOW SIDEBOT-3 WRITES -->
@@ -318,7 +319,7 @@
 
   <details class="qdrawer" open>
     <summary><span class="qmark"><span class="qid">G4</span><svg class="qcaret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7l6 6 6-6"/><path d="M6 13l6 6 6-6"/></svg></span><span><span class="qwho">(G)</span> Add buyer assignment + size markups to Billing &amp; Fee Manager, or build a separate Four51 Creator app for them?</span></summary>
-    <div class="qbody">Those two fields live only in Four51 today. G will recommend one of the two once the write method (G1) is settled.</div>
+    <div class="qbody">Those two fields live only in Four51 today. G will recommend one of the two once the write method (G1) is settled. <b>Note:</b> we can already supply both from our capture, size markups from the spec screen, and buyer assignment from the Price Breaks report's Company Name + Price Schedule Name columns (a small Sidebot-2 change; live edge cases to confirm when logged into Four51).</div>
   </details>
 
   <!-- 8 SUPPLY CHAIN: NOW vs FUTURE -->
